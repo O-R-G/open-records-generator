@@ -1,0 +1,95 @@
+
+
+
+body, table, tr, td {
+	border-spacing: 0px;
+ 	border-collapse: collapse; 
+	border-style: none;
+	empty-cells: show;
+	vertical-align: top;
+	padding: 0px 0px 0px 0px;
+	margin: 0px 0px 0px 0px;
+	color: #555555;
+	text-align: left;
+	font-family: "Andale Mono", "Courier New", "Courier", monospace;
+	font-size: 12px;
+	line-height: 16px; }
+
+body {
+	background-color: #BBBBBB;
+	padding: 0px 0px 0px 0px;
+	width: 100%;
+	height: 100%; }
+
+html {
+	width: 100%;
+	height: 100%; }
+
+
+
+
+a:link {
+	color: #777777; 
+	text-decoration: none; 
+	background-color: #D6D6D6; }
+
+a:visited {
+	color: #777777; 
+	text-decoration: none; 
+	background-color: #D6D6D6; }
+
+a:active { 
+	color: #777777; 
+	text-decoration: none; 
+	background-color: #D6D6D6; }
+
+a:hover	{
+	color: #FFFFFF; 
+	text-decoration: none; 
+	background-color: #999999; }
+
+
+
+.button {
+	/* cursor: pointer;*/
+ }
+
+
+
+
+.monoLit {
+	font-family: "Andale Mono", "Courier New", "Courier", monospace;
+	color: #999999; }
+
+.monoLit a:link {
+	color: #999999; 
+	text-decoration: none; 
+	background-color: #D3D3D3; }
+
+.monoLit a:visited {
+	color: #999999; 
+	text-decoration: none; 
+	background-color: #D3D3D3; }
+
+.monoLit a:active { 
+	color: #999999; 
+	text-decoration: none; 
+	background-color: #D3D3D3; }
+
+.monoLit a:hover {
+	color: #FFFFFF; 
+	text-decoration: none; 
+	background-color: #BBBBBB; }
+
+
+
+.monoReg {
+	font-family: "Andale Mono", "Courier New", "Courier", monospace;
+	color: #555555; }
+
+.monoHvy {
+	font-family: "Andale Mono", "Courier New", "Courier", monospace;
+	color: #000000; }
+
+
+

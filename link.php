@@ -1,60 +1,93 @@
 <?php require_once("GLOBAL/head.php"); 
 
+// $t = "";
+$t = 0; 
+function traverse($n)
+{
+	global $t;
+	$c = get_children($n);
+	if(empty($c))
+		return;
+	else
+	{
+		// $t.="+";
+		$t++;
+		foreach($c as $child)
+		{
+			$s = "";
+			for($i = 1; $i < $t; $i++)
+				$s.="&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo "<option value=".$child.">".$s.get_name($child)."</option>";
+			traverse($child);
+		}
+		$t--;
+		// $t = substr($t, strlen($t)-1);
+	}
+		
+}
 
+function get_children($n)
+{
+	$c = NULL;
+	$sql = "SELECT toid
+			FROM wires
+			INNER JOIN objects
+			ON wires.fromid = objects.id
+			WHERE
+				objects.id = ".$n."
+				AND wires.active = 1
+			ORDER BY objects.rank";
+	$result = MYSQL_QUERY($sql);
+	while($myrow = MYSQL_FETCH_ARRAY($result))
+		$c[] = $myrow['toid'];
 
+	return $c;
+}
 
+function get_name($n)
+{
+	$sql = "SELECT name1
+			FROM objects
+			WHERE objects.id = ".$n;
+	$result = MYSQL_QUERY($sql);
+	$myrow = MYSQL_FETCH_ARRAY($result);
+	return $myrow['name1'];
+}
 
+if ($action != "link") 
+{
+?>
+<!--  LINK TO EXISTING OBJECT  -->
 
-if ($action != "link") {
-
-
-
-
-
-
-
-	?>
-
-	<!--  LINK TO EXISTING OBJECT  -->
-
-	You are linking to an existing object. <br /><br />The linked object will remain in its original location and also appear here. Please choose from the list of active objects:<br /><br />
+	<p>You are linking to an existing object.</p>
+	<p>The linked object will remain in its original location and also appear here.</p> 
+	<p>Please choose from the list of active objects:</p>
 
 	<table cellpadding="0" cellspacing="0" border="0">
-	<form enctype="multipart/form-data" action="<?php echo $dbAdmin ."link.php". urlData(); ?>" method="post" style="padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;">
-	
-	<tr>
-	<td colspan = '2'>
-	<select name='wirestoid'>
-	<?php	
-	
-		// Developed query to only get currently active wires, but includes redundant records which is confusing so suppress in printout
-		
-		$sql = "SELECT objects.id, objects.name1, wires.fromid, wires.toid FROM objects, wires WHERE objects.active=1 AND wires.toid=objects.id AND wires.active = 1 AND wires.fromid != $object AND objects.id != $object ORDER BY objects.name1";
-
-		// Simple query, just active objects
-		
-		// $sql = "SELECT objects.id, objects.name1 FROM objects WHERE objects.active=1 AND objects.id != $object ORDER BY objects.name1";
-		
-		$result = MYSQL_QUERY($sql);
-
-		while ( $myrow = MYSQL_FETCH_ARRAY($result)) {
-		
-			// Suppress multiple appearances of an object
-			// Suppress roots (+) and hidden objects (.)
-			
-			$lastObjectName = $thisObjectName;
-			$thisObjectName = $myrow['name1'];
-
-			if ( substr($thisObjectName, 0, 1) != "+" && substr($thisObjectName, 0,1) != "." && $thisObjectName != $lastObjectName ) echo "\n<option value=".$myrow['id'].">" . $myrow['name1'] . "</option>"; 
-			
-			//if ($thisObjectName != $lastObjectName) echo "\n<option value=".$myrow['id'].">" . $myrow['name1'] . "</option>"; 
-		}
-		
-	?>
-		
-	</select>
-	<br />&nbsp;</td></tr>
-
+	<form 
+		enctype="multipart/form-data" 
+		action="<?php echo $dbAdmin ."link.php". urlData(); ?>" 
+		method="post" 
+		style="padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"
+	>
+		<tr>
+			<td colspan = '2'>
+			<select name='wirestoid'><?
+			$sql = "SELECT objects.id
+					FROM 
+						objects, 
+						wires
+					WHERE 
+						wires.fromid = 0
+						AND wires.toid = objects.id
+						AND wires.active = 1";
+			$result = MYSQL_QUERY($sql);
+			while($myrow = MYSQL_FETCH_ARRAY($result))
+				traverse($myrow['id']);
+			?></select>
+			<br />&nbsp;
+			</td>
+		</tr>
 	</table>
 
 
@@ -69,28 +102,12 @@ if ($action != "link") {
 	</form><br />&nbsp;
 	<?php
 
-
-
-
-
-
-
-
-
-
-} else {
-
-
-
-
-
-
-
-
-
-	if (!get_magic_quotes_gpc()) {
-
-		$wirestoid = 	addslashes($wirestoid);
+} 
+else 
+{
+	if (!get_magic_quotes_gpc()) 
+	{
+		$wirestoid = addslashes($wirestoid);
 	}
 
 
@@ -98,13 +115,6 @@ if ($action != "link") {
 
 	// $begin = ($begin) ? date("Y-m-d H:i:s", strToTime($begin)) : NULL;
 	// $end = ($end) ? date("Y-m-d H:i:s", strToTime($end)) : NULL;
-
-
-
-
-
-
-
 
 	  /////////////
 	 //  WIRES  //

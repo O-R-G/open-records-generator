@@ -1,7 +1,7 @@
 OPEN RECORDS GENERATOR 
-Version 2.9.6
+Version 2.9.7
 O-R-G inc.
-Last updated March 12, 2015
+Last updated April 23, 2015
 
 --
 
@@ -16,4 +16,4 @@ Last updated March 12, 2015
 2.9 -- March 2014: configure for running on localhost including date_default_timezone_set('America/New_York'); and config.php and systemDatabase.php. removed php auth completely, and works with .htaccess and .hpasswd only
 2.9.5 -- August 2014: add date begin field, add notes field
 2.9.6 -- March 2015: add quicktime, mp4 support
-2.9.7 -- April 2015: update link selection to reflect site hierachy
+2.9.7 -- April 2015: update link drop-down to reflect o-r-g hierarchy

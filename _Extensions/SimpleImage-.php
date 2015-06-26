@@ -19,13 +19,35 @@
 *
 */
  
+ 
+ 
 class SimpleImage {
    
    var $image;
    var $image_type;
- 
+   
    function load($filename) {
       $image_info = getimagesize($filename);
+
+		// This part added to account for out of memory issue
+		// from http://www.daniweb.com/web-development/php/threads/203890 
+		// It also is possible to override the php.ini file to change max memory use and using php.cgi on pair.com: http://drupal.org/node/145883
+		// also see this for calculating memory sizes: http://www.dotsamazing.com/en/labs/phpmemorylimit
+		
+		/* debug
+		$memoryNeeded = round(($image_info[0] * $image_info[1] *
+		$image_info['bits'] * $image_info['channels'] / 8 + Pow(2, 16)) * 1.65);
+		echo("Memory needed: " . $memoryNeeded . " bytes. <br/>");
+		echo("Memory limit: " . ini_get('memory_limit') . " bytes. <br/>");
+		setMemoryForImage($filename);		
+		echo("Memory expanded 1: " . ini_get('memory_limit') . " bytes. <br/>");
+		*/
+		
+		// According to http://www.dotsamazing.com/en/labs/phpmemorylimit, this should accommodate images up to 6000 x 6000 pixels (36 megapixels or ~100 MB RGB)
+		
+		ini_set('memory_limit','256M');
+		echo("Memory limit: " . ini_get('memory_limit') . "<br/>");
+
       $this->image_type = $image_info[2];
       if( $this->image_type == IMAGETYPE_JPEG ) {
          $this->image = imagecreatefromjpeg($filename);
@@ -82,5 +104,39 @@ class SimpleImage {
       imagecopyresampled($new_image, $this->image, 0, 0, 0, 0, $width, $height, $this->getWidth(), $this->getHeight());
       $this->image = $new_image;   
    }      
+}
+
+function setMemoryForImage($filename){
+	
+	// This function is added from http://php.net/manual/en/function.imagecreatefromjpeg.php#64155
+	// however, it does not seem to be working so i am simply doing a hard increase of memory size in the load function with set_ini
+	
+	$imageInfo = getimagesize($filename);
+	$MB = 1048576;  // number of bytes in 1M
+	$K64 = 65536;    // number of bytes in 64K
+	$TWEAKFACTOR = 1.5;  // Or whatever works for you
+	$memoryNeeded = round( ( $imageInfo[0] * $imageInfo[1]
+										   * $imageInfo['bits']
+										   * $imageInfo['channels'] / 8
+							 + $K64
+						   ) * $TWEAKFACTOR
+						 );
+	$memoryLimit = 8 * $MB;
+	if (function_exists('memory_get_usage') && 
+		memory_get_usage() + $memoryNeeded > $memoryLimit) 
+	{
+		$newLimit = $memoryLimitMB + ceil( ( memory_get_usage()
+											+ $memoryNeeded
+											- $memoryLimit
+											) / $MB
+										);
+		
+		ini_set( 'memory_limit', $newLimit . 'M' );
+		return true;
+		
+	} else {
+	
+		return false;
+	}
 }
 ?>

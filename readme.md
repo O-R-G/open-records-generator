@@ -80,35 +80,19 @@ This button generates a live view of the website whose contents you are managing
 + [shop.dextersinister.org](http://shop.dextersinister.org/)
 + [sinisterdexter.org](http://www.sinisterdexter.org/)
 + [wallspacegallery.com](http://www.wallspacegallery.com/)
-<!-- + [transmissiondifficulties.vancouverartinthesixties.com](http://transmissiondifficulties.vancouverartinthesixties.com/) -->
-<!-- + [objectif-exhibitions.org](http://www.objectif-exhibitions.org/) -->
++ [transmissiondifficulties.vancouverartinthesixties.com](http://transmissiondifficulties.vancouverartinthesixties.com/)+ [objectif-exhibitions.org](http://www.objectif-exhibitions.org/)
 + [ninarappaport.com](http://www.ninarappaport.com/)
-<!-- + [theshowroom.org](http://www.theshowroom.org/) -->
-<!-- + [visualartsworkshop.org](http://www.visualartsworkshop.org/) -->
-<!-- + [processingprocessing.org](http://processingprocessing.org/) -->
++ [theshowroom.org](http://www.theshowroom.org/)+ [visualartsworkshop.org](http://www.visualartsworkshop.org/)+ [processingprocessing.org](http://processingprocessing.org/)
 + [portabledocumentformats.org](http://portabledocumentformats.org/)
 + [dot-dot-dot.us](http://www.dot-dot-dot.us/)
-<!-- + [cavs.mit.edu](http://cavs.mit.edu/) -->
++ [cavs.mit.edu](http://cavs.mit.edu/)
 + [welcometolab.org](http://www.welcometolab.org/)
 + [antrimcaskey.com](http://www.antrimcaskey.com/)
-<!-- + [foldingpatterns.com](http://www.foldingpatterns.com/) -->
-<!-- + [sarahoppenheimer.com](http://www.sarahoppenheimer.com/)  -->
-<!-- + [maxprotetch.com](http://www.maxprotetch.com/) -->
-<!-- + [spatialinformationdesignlab.org](http://www.spatialinformationdesignlab.org/) -->
-<!-- + [wordswithoutpictures.org](http://www.wordswithoutpictures.org/) -->
-<!-- + [pictureswithoutwords.org](http://www.pictureswithoutwords.org/) -->
-<!-- + [projectprojects.com](http://www.projectprojects.com/) -->
-<!-- + [whitecolumns.org](http://www.whitecolumns.org/) -->
-<!-- + [damelioterras.com](http://www.damelioterras.com/) -->
-<!-- + [clipstampfold.com](http://www.clipstampfold.com/) -->
++ [foldingpatterns.com](http://www.foldingpatterns.com/)+ [sarahoppenheimer.com](http://www.sarahoppenheimer.com/) + [maxprotetch.com](http://www.maxprotetch.com/)+ [spatialinformationdesignlab.org](http://www.spatialinformationdesignlab.org/)+ [wordswithoutpictures.org](http://www.wordswithoutpictures.org/)+ [pictureswithoutwords.org](http://www.pictureswithoutwords.org/)+ [projectprojects.com](http://www.projectprojects.com/)+ [whitecolumns.org](http://www.whitecolumns.org/)+ [damelioterras.com](http://www.damelioterras.com/)+ [clipstampfold.com](http://www.clipstampfold.com/)
 + [masdesigned.com](http://www.masdesigned.com/)
-<!-- + [nationaldesignawards.org](http://www.nationaldesignawards.org/) -->
++ [nationaldesignawards.org](http://www.nationaldesignawards.org/)
 + [elkelehmann.com](http://www.elkelehmann.com/)
-<!-- + [patternfoundry.com](http://www.patternfoundry.com/) -->
-<!-- + [solomonplanning.com](http://www.solomonplanning.com/) -->
-<!-- + [jonathandsolomon.com](http://www.jonathandsolomon.com/) -->
-<!-- + [306090.org](http://www.306090.org/) -->
-<!-- + [solomonworkshop.com](http://www.solomonworkshop.com/) -->
++ [patternfoundry.com](http://www.patternfoundry.com/)+ [solomonplanning.com](http://www.solomonplanning.com/)+ [jonathandsolomon.com](http://www.jonathandsolomon.com/)+ [306090.org](http://www.306090.org/)+ [solomonworkshop.com](http://www.solomonworkshop.com/)
 + [cornelljournalofarchitecture.org](http://www.cornelljournalofarchitecture.org/)
 + [c-o-o-l.org](http://www.c-o-o-l.org/)
 + [mgmtdesign.com](http://www.mgmtdesign.com/)

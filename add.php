@@ -56,10 +56,10 @@ if ($action != "add") {
 
 	//  Upload New Images
 
-	for ($j = 0; $j < 1; $j++) {
+	for ($j = 0; $j < $uploadsMax; $j++) {
 
-		//echo "\n\n<tr><td>Image ". STR_PAD($i++, 2, "0", STR_PAD_LEFT) ."&nbsp; </td>";
-		echo "\n\n<tr><td>Image&nbsp; </td>";
+		echo "\n\n<tr><td>Image ". STR_PAD(++$i, 2, "0", STR_PAD_LEFT) ."&nbsp; </td>";
+		// echo "\n\n<tr><td>Image&nbsp; </td>";
 		echo "\n<td><input type='file' name='upload". $j ."' /><br />&nbsp;";
 		echo "\n</td></tr>";
 	}

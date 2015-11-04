@@ -26,6 +26,7 @@ echo "UNIQUE ". $dbRequests. ". ";
 */
 
 echo "<a href='". $dbAdmin ."info.php'>INFO</a> ";
+echo "<a href='". $dbAdmin ."settings.php'>SETTINGS</a> ";
 echo "<a href='". $dbHost ."' target='_blank'>GENERATE &gt;</a>";
 
 		?>

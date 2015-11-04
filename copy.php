@@ -54,19 +54,18 @@ function get_name($n)
 	return $myrow['name1'];
 }
 
-if ($action != "link") 
+if ($action != "copy") 
 {
 ?>
 <!--  LINK TO EXISTING OBJECT  -->
-
-	<p>You are linking to an existing object.</p>
-	<p>The linked object will remain in its original location and also appear here.</p> 
+	<p>You are copying an existing object.</p>
+	<p>The copied object will remain in its original location and also appear here.</p> 
 	<p>Please choose from the list of active objects:</p>
 
 	<table cellpadding="0" cellspacing="0" border="0">
 	<form 
 		enctype="multipart/form-data" 
-		action="<?php echo $dbAdmin ."link.php". urlData(); ?>" 
+		action="<?php echo $dbAdmin ."copy.php". urlData(); ?>" 
 		method="post" 
 		style="padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"
 	>
@@ -91,11 +90,11 @@ if ($action != "link")
 	</table><?
 
 	?><br /><br /><br />
-	<input name='action' type='hidden' value='link' />
+	<input name='action' type='hidden' value='copy' />
 	<input name='cancel' type='button' value='Cancel' onClick="javascript:location.href='<?php
 	echo "browse.php". urlData();
 	?>';" /> 
-	<input name='submit' type='submit' value='Link to Object' />
+	<input name='submit' type='submit' value='Copy Object' />
 	</form><br />&nbsp;
 	<?php
 
@@ -106,28 +105,66 @@ else
 	{
 		$wirestoid = addslashes($wirestoid);
 	}
-
-
 	//  Process variables
-
 	// $begin = ($begin) ? date("Y-m-d H:i:s", strToTime($begin)) : NULL;
 	// $end = ($end) ? date("Y-m-d H:i:s", strToTime($end)) : NULL;
-
+	
+	// duplicate object record
+	// edit created / modified
+	$sql = "INSERT INTO objects (created, modified, name1, url, notes, deck, body, begin, end, rank)
+			SELECT created, modified, name1, url, notes, deck, body, begin, end, rank
+			FROM objects
+			WHERE id = '$wirestoid'";
+	$result = MYSQL_QUERY($sql);
+	$insertId = MYSQL_INSERT_ID();
+	
+	// duplicate media
+	
+	// get media files attached to object being copied
+	$sql = "SELECT * from media where object = '$wirestoid' AND active = '1'";
+	$result = MYSQL_QUERY($sql);
+	echo $sql;
+	
+	$marrarr = array();
+	while($myrow = mysql_fetch_array($result))
+	{
+		$marr = array();
+		$m = "".STR_PAD($myrow['id'], 5, "0", STR_PAD_LEFT);
+		$mfile = $dbMediaAbs.$m.".".$myrow['type'];
+		$marr['f'] = $mfile;
+		$marr['id'] = $myrow['id'];
+		$marrarr[] = $marr;
+	}
+	
+	// copy media attached to old object and attach to new object
+	foreach($marrarr as $marr)
+	{
+		$sql = "SELECT id FROM media ORDER BY id DESC LIMIT 1";
+		$result = MYSQL_QUERY($sql);
+		$myrow = mysql_fetch_array($result);
+		
+		$targetType = end(explode(".", $marr['f']));
+		$targetFile = str_pad(($myrow["id"]+1), 5, "0", STR_PAD_LEFT) .".". $targetType;
+		$target = $dbMediaAbs.$targetFile;
+		
+		copy($marr['f'], $target);
+		
+		$sql = "INSERT INTO media (type, caption, object, created, modified, rank)
+				SELECT type, caption, '$insertId', created, modified, rank
+				FROM media
+				WHERE id = '".$marr['id']."'";
+		$result = MYSQL_QUERY($sql);
+	}
 	  /////////////
 	 //  WIRES  //
 	/////////////
 
-	$sql = "INSERT INTO wires (created, modified, fromid, toid) VALUES('". date("Y-m-d H:i:s") ."', '". date("Y-m-d H:i:s") ."', '$object', '$wirestoid')";
+	$sql = "INSERT INTO wires (created, modified, fromid, toid) VALUES('". date("Y-m-d H:i:s") ."', '". date("Y-m-d H:i:s") ."', '$object', '$insertId')";
 	$result = MYSQL_QUERY($sql);
 
 	//echo "wirestoid = " . $wirestoid . " / wiresfromid = " . $object . "<br />";
-	echo "Object linked successfully.<br /><br />";
+	echo "Object copied successfully.<br /><br />";
 	echo "<a href='". $dbAdmin ."browse.php". urlData() ."'>CONTINUE...</a>";
 }
-
-
-
-
-
 
 require_once("GLOBAL/foot.php"); ?>

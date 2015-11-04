@@ -1,59 +1,5 @@
 <?php require_once("GLOBAL/head.php"); 
 
-// $t = "";
-$t = 0; 
-function traverse($n)
-{
-	global $t;
-	$c = get_children($n);
-	if(empty($c))
-		return;
-	else
-	{
-		// $t.="+";
-		$t++;
-		foreach($c as $child)
-		{
-			$s = "";
-			for($i = 1; $i < $t; $i++)
-				$s.="&nbsp;&nbsp;&nbsp;&nbsp;";
-			echo "<option value=".$child.">".$s.get_name($child)."</option>";
-			traverse($child);
-		}
-		$t--;
-		// $t = substr($t, strlen($t)-1);
-	}
-		
-}
-
-function get_children($n)
-{
-	$c = NULL;
-	$sql = "SELECT toid
-			FROM wires
-			INNER JOIN objects
-			ON wires.fromid = objects.id
-			WHERE
-				objects.id = ".$n."
-				AND wires.active = 1
-			ORDER BY objects.rank";
-	$result = MYSQL_QUERY($sql);
-	while($myrow = MYSQL_FETCH_ARRAY($result))
-		$c[] = $myrow['toid'];
-
-	return $c;
-}
-
-function get_name($n)
-{
-	$sql = "SELECT name1
-			FROM objects
-			WHERE objects.id = ".$n;
-	$result = MYSQL_QUERY($sql);
-	$myrow = MYSQL_FETCH_ARRAY($result);
-	return $myrow['name1'];
-}
-
 if ($action != "link") 
 {
 ?>
@@ -70,27 +16,59 @@ if ($action != "link")
 		method="post" 
 		style="padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"
 	>
-		<tr>
-			<td colspan = '2'>
-			<select name='wirestoid'><?
-			$sql = "SELECT objects.id
-					FROM 
-						objects, 
-						wires
-					WHERE 
-						wires.fromid = 0
-						AND wires.toid = objects.id
-						AND wires.active = 1";
-			$result = MYSQL_QUERY($sql);
-			while($myrow = MYSQL_FETCH_ARRAY($result))
-				traverse($myrow['id']);
-			?></select>
-			<br />&nbsp;
-			</td>
-		</tr>
-	</table><?
+	<tr>
+		<td colspan = '2'>
+		<select name='wirestoid'>
+	<?php	
+	
+		// Developed query to only get currently active wires, 
+		// but includes redundant records which is confusing 
+		// so suppress in printout
+		$sql = "SELECT 
+					objects.id, 
+					objects.name1, 
+					wires.fromid, 
+					wires.toid 
+				FROM 
+					objects, 
+					wires 
+				WHERE 
+					objects.active=1 
+					AND wires.toid=objects.id 
+					AND wires.active = 1 
+					AND wires.fromid != $object 
+					AND objects.id != $object 
+				ORDER BY objects.name1";
 
-	?><br /><br /><br />
+		// Simple query, just active objects
+		// $sql = "SELECT objects.id, objects.name1 FROM objects WHERE objects.active=1 AND objects.id != $object ORDER BY objects.name1";
+		
+		$result = MYSQL_QUERY($sql);
+
+		while ( $myrow = MYSQL_FETCH_ARRAY($result))
+		{
+			// Suppress multiple appearances of an object
+			// Suppress roots (+) and hidden objects (.)	
+			$lastObjectName = $thisObjectName;
+			$thisObjectName = $myrow['name1'];
+
+			if(substr($thisObjectName, 0, 1) != "+" && substr($thisObjectName, 0,1) != "." && $thisObjectName != $lastObjectName) 
+				echo "\n<option value=".$myrow['id'].">" . $myrow['name1'] . "</option>"; 
+			
+			//if ($thisObjectName != $lastObjectName) echo "\n<option value=".$myrow['id'].">" . $myrow['name1'] . "</option>"; 
+		}
+		
+	?>
+		
+	</select>
+	<br />&nbsp;</td></tr>
+
+	</table>
+
+
+
+
+	<br /><br /><br />
 	<input name='action' type='hidden' value='link' />
 	<input name='cancel' type='button' value='Cancel' onClick="javascript:location.href='<?php
 	echo "browse.php". urlData();
@@ -119,6 +97,7 @@ else
 
 	$sql = "INSERT INTO wires (created, modified, fromid, toid) VALUES('". date("Y-m-d H:i:s") ."', '". date("Y-m-d H:i:s") ."', '$object', '$wirestoid')";
 	$result = MYSQL_QUERY($sql);
+
 
 	//echo "wirestoid = " . $wirestoid . " / wiresfromid = " . $object . "<br />";
 	echo "Object linked successfully.<br /><br />";

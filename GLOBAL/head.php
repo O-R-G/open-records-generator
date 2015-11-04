@@ -1,7 +1,9 @@
 <?php
-date_default_timezone_set('America/New_York'); 
+date_default_timezone_set('Europe/Berlin'); 
 
 require_once("config.php");
+require_once("settings.inc");
+
 $pageName = basename($_SERVER['PHP_SELF'], ".php");
 $object = $_REQUEST['object'];
 $id = $_REQUEST['id'];
@@ -36,12 +38,18 @@ $mediaType = $_REQUEST['mediaType'];
 ////////////////
 
 // by .htaccess and .htpasswd
-$dbUserSelected = 1;
+$dbUserSelected = 2;
 
-
-
-
-
+// settings
+$settings_file = getcwd()."/GLOBAL/settings.store";
+if(file_exists($settings_file))
+{
+	$f = file_get_contents($settings_file);
+	$settings = unserialize($f);
+	$uploadsMax = $settings->num_uploads;
+}
+else
+	$uploadsMax = 5;
 
   ///////////////////////////////////////////////
  //  Connect to database as authenticated user//
@@ -211,6 +219,7 @@ echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"; ?>
 
 		<meta name="MSSmartTagsPreventParsing" content="true" />
 		<meta http-equiv="imagetoolbar" content="no" />
+		<link rel="shortcut icon" href="../../MEDIA/km.png">
 
 		<link rel="stylesheet" type="text/css" media="all" href="<?php echo $dbAdmin; ?>GLOBAL/global.css" />
 		<!-- link rel="alternate" type="application/rss+xml" title="RSS" href="/rss" / -->
@@ -254,9 +263,11 @@ echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"; ?>
 		<tr class="dbClientStyle">
 		<td style="padding: 16px 16px 16px 16px; color: #FFFFFF;">
 		<?php
-		if ($pageName != "index" && $object) echo "<a href='". $dbAdmin ."browse.php" ."'>";
+		// if ($pageName != "index" && $object) 
+		echo "<a href='". $dbAdmin ."browse.php" ."'>";
 		echo strToUpper($dbClient) ." Database";
-		if ($pageName != "index" && $object) echo "</a>";
+		// if ($pageName != "index" && $object) 
+		echo "</a>";
 
 
 

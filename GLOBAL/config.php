@@ -1,15 +1,9 @@
 <?php
 
-
-
-
-
-
-
-
-  ///////////////////
- //  DB Settings  //
-///////////////////
+   ////////////////////////////
+  //  Kunstverein-Muenchen  //
+ //   DB Settings   	   //
+////////////////////////////
 
 	// Client Name
 	$dbClient = "OPEN-RECORDS-GENERATOR";
@@ -32,22 +26,19 @@
 	$dbPass3 = "admin";
 
 	// Database Start Date/Time
-	$dbStart = mktime(20, 53, 00, 06, 04, 2014);
+	$dbStart = mktime(13, 25, 00, 02, 10, 2015);
 	// (hour, minute, second, month, day, year)
 
 	// Client URL
-	$dbHost = "http://localhost/RADIOATHENES/";
+	$dbHost = "http://www.kunstverein-muenchen.de/";
 
 	// DB Admin
 	$dbAdmin = $dbHost ."OPEN-RECORDS-GENERATOR/";
 
 	// DB Media
 	$dbMedia = $dbHost ."MEDIA/";
+	$dbMediaAbs = "/kunden/98668_22767/rp-hosting/20082/20084/km-2015/web/MEDIA/";
 	// Don't forget to set the permissions on this folder!
-
-
-
-
 
 
 
@@ -55,19 +46,30 @@
  //  Database  //
 ////////////////
 
-function dbConnectMain($dbUser) {
+function dbConnectMain($dbUser)
+{
 
-	$dbMainHost = "localhost";
-	$dbMainDbse = "local_radioathenes";
+	$dbMainHost = "mysql5.kunstverein-muenchen.de";
+	$dbMainDbse = "db98668_71";
 
-	if 		($dbUser == 1) {		$dbMainUser = "root"; 	$dbMainPass = ""; }
-	else if ($dbUser == 2) {		$dbMainUser = "root"; 	$dbMainPass = ""; }
-	else if ($dbUser == 3) {		$dbMainUser = "root";   	$dbMainPass = ""; }
+	if ($dbUser == 1)
+	{
+		$dbMainUser = "db98668_71";
+		$dbMainPass = "muriel1919"; 
+	}
+	else if ($dbUser == 2) 
+	{
+		$dbMainUser = "db98668_71"; 
+		$dbMainPass = "muriel1919"; 
+	}
+	else if ($dbUser == 3) 
+	{
+		$dbMainUser = "db98668_71";   	
+		$dbMainPass = "muriel1919"; 
+	}
 
 	$dbConnect = MYSQL_CONNECT($dbMainHost, $dbMainUser, $dbMainPass);
 	MYSQL_SELECT_DB($dbMainDbse, $dbConnect);
 }
-
-
 
 ?>

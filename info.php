@@ -12,7 +12,29 @@ Version 2.9.5, August 7, 2014
 <br />
 <br />
 <textarea cols="48" rows="16">
-OPEN-RECORDS-GENERATOR can accommodate all standards-compliant HTML tags. This includes basic markup, advanced formatting and embedding. The most common HTML tags are provided here for copy-paste reference:
+OPEN-RECORDS-GENERATOR supports Markdown as well as standard HTML. This includes basic markup, advanced formatting and embedding. The most common Markdown syntax rules are provided here for copy-paste reference:
+
+emphasis: 
+
+*words within single asterisks are emphasized*
+
+_words within single underscores are emphasized_
+
+**words within double asterisks are strongly emphasized**
+
+__words within double underscores are strongly emphasized__
+
+note: to underline an asterisk, escape it with a back
+
+links:
+
+This is a [link](http://www.google.com) to google.com.
+
+Full Documentation of Markdown syntax may be found at: 
+
+https://daringfireball.net/projects/markdown
+
+Here are some standard HTML tags, for reference: 
 
 <i>words here appear in italics</i>
 

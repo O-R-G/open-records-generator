@@ -128,3 +128,14 @@ This button generates a live view of the website whose contents you are managing
 + [g-e-s-t-a-l-t.org](http://www.g-e-s-t-a-l-t.org/)
 + [radioathenes.org](http://www.radioathenes.org/)
 + [kunstverein-muenchen.de](http://www.kunstverein-muenchen.de)
+
+## DEV NOTES
+for basic password protection, create the an `.htpasswd` file with the following command:
+`htpasswd -c /PATH/TO/HTPASSWD`
+
+
+and then create an `.htaccess` file in the OPEN-RECORDS-GENERATOR directory:
+`AuthUserFile /PATH/TO/HTPASSWD`
+`AuthName "OPEN-RECORDS-GENERATOR"`
+`AuthType Basic`
+`Require valid-user`

@@ -130,6 +130,7 @@ This button generates a live view of the website whose contents you are managing
 + [kunstverein-muenchen.de](http://www.kunstverein-muenchen.de)
 + [amiesiegel.net](http://amiesiegel.net/)
 + [framenoir.com](http://framenoir.com/)
++ [tschumi.com](http://www.tschumi.com/)
 
 ## DEV NOTES
 for basic password protection, create the an `.htpasswd` file with the following command:

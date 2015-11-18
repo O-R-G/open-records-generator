@@ -123,7 +123,6 @@ else
 	// get media files attached to object being copied
 	$sql = "SELECT * from media where object = '$wirestoid' AND active = '1'";
 	$result = MYSQL_QUERY($sql);
-	echo $sql;
 	
 	$marrarr = array();
 	while($myrow = mysql_fetch_array($result))

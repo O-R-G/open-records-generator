@@ -32,7 +32,6 @@ echo "<a href='". $dbHost ."' target='_blank'>GENERATE &gt;</a>";
 		?>
 		</td></tr>
 		</table>
-		</div></td></tr></table>
 		<!-- 
 
 

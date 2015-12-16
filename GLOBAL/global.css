@@ -54,11 +54,43 @@ a:hover	{
 	/* cursor: pointer;*/
  }
 
+table.main {
+	max-width: 512px;
+	margin-left: auto;
+	margin-right: auto;
+}
 
+tr.head {
+	background-color: #000;
+}
 
+.head {
+	color: #fff;
+	background-color: #000;
+}
+
+.head a:link,
+.head a:visited,
+.head a:active {
+	color: #fff;
+	background-color: #666;
+}
+
+.head a:hover {
+	color: #fff;
+	background-color: #333;
+}
+
+textarea {
+	width: 100%;
+}
+
+table.edit {
+	width: 100%;
+}
 
 .monoLit {
-	font-family: "Andale Mono", "Courier New", "Courier", monospace;
+	font-family: "Andale Mono", monospace;
 	color: #999999; }
 
 .monoLit a:link {
@@ -84,11 +116,11 @@ a:hover	{
 
 
 .monoReg {
-	font-family: "Andale Mono", "Courier New", "Courier", monospace;
+	font-family: "Andale Mono", monospace;
 	color: #555555; }
 
 .monoHvy {
-	font-family: "Andale Mono", "Courier New", "Courier", monospace;
+	font-family: "Andale Mono", monospace;
 	color: #000000; }
 
 

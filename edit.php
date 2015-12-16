@@ -27,7 +27,7 @@ if ($action != "update") {
 
 
 		<br />
-		<table cellpadding="0" cellspacing="0" border="0">
+		<table class="edit" cellpadding="0" cellspacing="0" border="0">
 		<form enctype="multipart/form-data" action="<?php echo $dbAdmin ."edit.php". urlData(); ?>" method="post" style="margin: 0; padding: 0;">
 		<input name='id' type='hidden' value='<?php echo $id; ?>'>
 		<input name='action' type='hidden' value='update'>

@@ -251,23 +251,15 @@ echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"; ?>
 		</style>
 	</head>
 	<body>
-
-		<table cellpadding="0" cellspacing="0" border="0" style="width: 100%; height: 85%;">
-		<tr><td style="width: 100%; height: 100%;"><div style="padding: 0px 0px 0px 120px;">
-		<table cellpadding="0" cellspacing="0" border="0" style="width: 512px;">
-
-
-
-		<!--  DATABASE NAME  -->
-
-		<tr class="dbClientStyle">
-		<td style="padding: 16px 16px 16px 16px; color: #FFFFFF;">
-		<?php
-		// if ($pageName != "index" && $object) 
-		echo "<a href='". $dbAdmin ."browse.php" ."'>";
-		echo strToUpper($dbClient) ." Database";
-		// if ($pageName != "index" && $object) 
-		echo "</a>";
+		<table class="main" cellpadding="0" cellspacing="0" border="0">
+			<!--  DATABASE NAME  -->
+			<tr class="head">
+				<td style="padding: 16px 16px 16px 16px; color: #FFFFFF;"><?php
+				// if ($pageName != "index" && $object) 
+				echo "<a href='". $dbAdmin ."browse.php" ."'>";
+				echo strToUpper($dbClient) ." Database";
+				// if ($pageName != "index" && $object) 
+				echo "</a>";
 
 
 

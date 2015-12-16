@@ -1,18 +1,11 @@
-
-
-
-
-
-		</td></tr>
+			</td>
+		</tr>
 		<tr style="background-color: #CCCCCC;">
-		<td style="padding: 16px 16px 16px 16px;">
-
-		&nbsp;</td></tr>
-
-		<tr class="dbClientStyle">
-		<td class="monoLit" style="padding: 16px 16px 16px 16px; color: #FFFFFF;">
-		ACTIVITY 
-		<img src="<?php echo $dbAdmin; ?>MEDIA/org_activity.gif" width="64" heigh="16" alt="ORG Activity" style="background-color: #<?php echo $dbColor2;?>;" />&nbsp; 
+			<td style="padding: 16px 16px 16px 16px;">&nbsp;</td>
+		</tr>
+		<tr class="foot">
+			<td style="padding: 16px 16px 16px 16px; color: #FFFFFF;">ACTIVITY 
+			<img src="<?php echo $dbAdmin; ?>MEDIA/org_activity.gif" width="64" heigh="16" alt="ORG Activity" style="background-color: #<?php echo $dbColor2;?>;" />&nbsp; 
 <?php
 
 $dbUptime = floor(((time() - $dbStart) / 3600) * 100) / 100;
@@ -32,9 +25,7 @@ echo "<a href='". $dbHost ."' target='_blank'>GENERATE &gt;</a>";
 		?>
 		</td></tr>
 		</table>
-		<!-- 
-
-
+		<!--
 	myNameIs  =  Stewart Smith
 	findMeAt  =  stewdio.org
 	iRunWith  =  Command+N
@@ -60,8 +51,6 @@ echo "<a href='". $dbHost ."' target='_blank'>GENERATE &gt;</a>";
 		skellaby.com
 		tweedmag.com
 	}
-
-
 		-->
 	</body>
 </html>

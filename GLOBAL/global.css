@@ -11,7 +11,7 @@ body, table, tr, td {
 	margin: 0px 0px 0px 0px;
 	color: #555555;
 	text-align: left;
-	font-family: "Andale Mono", "Courier New", "Courier", monospace;
+	font-family: "Andale Mono", "Menlo", monospace;
 	font-size: 12px;
 	line-height: 16px; }
 
@@ -90,7 +90,7 @@ table.edit {
 }
 
 .monoLit {
-	font-family: "Andale Mono", monospace;
+	font-family: "Andale Mono", "Menlo", monospace;
 	color: #999999; }
 
 .monoLit a:link {
@@ -116,11 +116,11 @@ table.edit {
 
 
 .monoReg {
-	font-family: "Andale Mono", monospace;
+	font-family: "Andale Mono", "Menlo", monospace;
 	color: #555555; }
 
 .monoHvy {
-	font-family: "Andale Mono", monospace;
+	font-family: "Andale Mono", "Menlo", monospace;
 	color: #000000; }
 
 

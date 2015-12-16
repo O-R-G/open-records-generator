@@ -206,7 +206,7 @@ echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"; ?>
 
 		<meta http-equiv="Content-Type" content="text/xhtml; charset=utf-8" />
 		<meta http-equiv="Title" content="<?php echo $documentTitle; ?>" />
-
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="distribution" content="all" />
 		<meta name="rating" content="general" />
 		<meta name="resource-type" content="document" />

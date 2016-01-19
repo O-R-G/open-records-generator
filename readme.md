@@ -1,13 +1,13 @@
 # OPEN RECORDS GENERATOR
-Version 2.9.7  
+Version 3 
 O-R-G inc.  
-Last updated 4 November 2015
+Last updated 19 January 2016
 
 ## INSTRUCTIONS
 
 Your new website runs off of a database. You can easily modify this database by using OPEN-RECORDS-GENERATOR, a light-weight web interface to a robust content management system. You can access this interface by entering the following URL:
 
-http://domain.tld/OPEN-RECORDS-GENERATOR/
+http://domain.tld/open-records-generator/
 
 Once you've entered this and connected to the database, click "ENTER DATABASE..." to begin. You will now see a brief menu that corresponds to the structure of your website. Clicking on any of these choices will navigate you through the hierarchical menu tree that organizes your site. As you navigate, you will always see the previous level that you have just selected above you in sequential "bands" of alternating background colors. In fact, you will notice throughout that the interface of the OPEN-RECORDS-GENERATOR is organized around this interface metaphor.
 
@@ -29,20 +29,11 @@ The OPEN-RECORDS-GENERATOR allows you to create and modify RECORDS within your d
 
 Similar to ADD OBJECT . . . , however LINK . . . lets you redundantly add a record in more than one place in the database. So for example, you might like the same project or text to appear in more than one place in the menu structure. This button allows that simple functionality. When you click on LINK . . . you will be presented with a pull-down menu of all of the available RECORDS in the database. Clicking one RECORD attaches it redundantly to this position in the menu. If there are any other RECORDS attached, these are also duplicated.
 
-### COPY. . . 
-
-Similar to LINK. . . , however COPY. . . makes a completely new, independent record of the one you choose. Attached MEDIA and captions are also duplicated, though WIRES coming from the original RECORD are not.
-
 ### INFO
 
 This is the license agreement that accompanies the purchase of this software.
 
-
-### SETTINGS
-
-Choose how many images you would like to upload at any given time.
-
-### GENERATE >
+### GENERATE
 
 This button generates a live view of the website whose contents you are managing with OPEN-RECORDS-GENERATOR.
 
@@ -52,12 +43,14 @@ This button generates a live view of the website whose contents you are managing
 
 1. As you use this interface, it should become increasingly transparent to you. As you work in OPEN-RECORDS-GENERATOR, use the GENERATE > button consistently to check your work and to see live changes you have just made to your website.
 2. OPEN-RECORDS-GENERATOR automatically sorts object lists based on each object's fields. Objects are sorted by their Rank (ascending) field. So, to make a RECORD appear first in the Menu, give it a RANK of 1. Alternately, you could rank your RECORDS 100, 200, 300 and they would still appear in ascending order. Doing it this way makes it easier to add new RECORDS in between as needed without re-ranking the list.
-3. OPEN-RECORDS-GENERATOR supports both Markdown and basic HTML commands within its fields. You can make text bold or create hyperlinks which will be rendered on your website. It will even allow full `<embed>` tags, such as from youtube.com, vimeo, issuu or other sites. For your reference, here's a short list of common html markup:
-   + `<b>bold</b>`  
-   + `<i>italic</i>`  
-   + `<u>underline</u>`  
-   + `<a href="http://www.example.com">A hyperlink</a>`  
-   + `<a href="http://www.example.com" target="_blank">Opens in a new window</a>`  
+3. OPEN-RECORDS-GENERATOR supports both Markdown and basic HTML commands within its fields. You can make text bold or create hyperlinks which will be rendered on your website. It will even allow full `<embed>` tags, such as from youtube.com, vimeo, issuu or other sites. For your reference, here's a short list of common markdown syntax:
+   + `**bold**`
+   + `__bold__`
+   + `*italic*`
+   + `_italic_`
+   + `[A hyperlink](http://www.example.com)`
+
+Full markdown syntax can be found [here](https://daringfireball.net/projects/markdown/syntax). 
 
 ## VERSION HISTORY
 
@@ -73,6 +66,7 @@ This button generates a live view of the website whose contents you are managing
   - 2.9.5 -- August 2014: add date begin field, add notes field
   - 2.9.6 -- April 2015: change link page to designate O-R-G hierarchy
   - 2.9.7 -- November 2015: add copy function, settings page
++ 3.0.0 -- January 2016: add clean URL schema
 
 ## SITES
 + [o-r-g.com](http://www.o-r-g.com/)

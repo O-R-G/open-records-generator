@@ -2,15 +2,11 @@ OPEN-RECORDS-GENERATOR supports Markdown as well as standard HTML. This includes
 
 emphasis: 
 
-*words within single asterisks are emphasized*
+*words within single asterisks are italicised*
 
-_words within single underscores are emphasized_
+**words within double asterisks are bold**
 
-**words within double asterisks are strongly emphasized**
-
-__words within double underscores are strongly emphasized__
-
-note: to underline an asterisk, escape it with a back
+note: to underline an asterisk, escape it with a backslash, \*.
 
 links:
 

@@ -44,10 +44,8 @@ This button generates a live view of the website whose contents you are managing
 1. As you use this interface, it should become increasingly transparent to you. As you work in OPEN-RECORDS-GENERATOR, use the GENERATE > button consistently to check your work and to see live changes you have just made to your website.
 2. OPEN-RECORDS-GENERATOR automatically sorts object lists based on each object's fields. Objects are sorted by their Rank (ascending) field. So, to make a RECORD appear first in the Menu, give it a RANK of 1. Alternately, you could rank your RECORDS 100, 200, 300 and they would still appear in ascending order. Doing it this way makes it easier to add new RECORDS in between as needed without re-ranking the list.
 3. OPEN-RECORDS-GENERATOR supports both Markdown and basic HTML commands within its fields. You can make text bold or create hyperlinks which will be rendered on your website. It will even allow full `<embed>` tags, such as from youtube.com, vimeo, issuu or other sites. For your reference, here's a short list of common markdown syntax:
-   + `**bold**`
-   + `__bold__`
    + `*italic*`
-   + `_italic_`
+   + `**bold**`
    + `[A hyperlink](http://www.example.com)`
 
 Full markdown syntax can be found [here](https://daringfireball.net/projects/markdown/syntax). 

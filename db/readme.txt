@@ -1,7 +1,7 @@
 OPEN RECORDS GENERATOR 
-Version 2.9.7
+Version 2.9.5
 O-R-G inc.
-Last updated 4 November 2015
+Last updated August 7, 2014
 
 --
 
@@ -15,5 +15,3 @@ Last updated 4 November 2015
 2.8 -- July 2013 : add .htaccess and .htpasswd authentication, requires using .htpasswd to set user pass combination (use htpasswd -c /home/pwww/.htpasswd main to generate .htpwd file)
 2.9 -- March 2014: configure for running on localhost including date_default_timezone_set('America/New_York'); and config.php and systemDatabase.php. removed php auth completely, and works with .htaccess and .hpasswd only
 2.9.5 -- August 2014: add date begin field, add notes field
-2.9.6 -- April 2015: change link page to designate O-R-G hierarchy
-2.9.7 -- November 2015: add copy function, settings page

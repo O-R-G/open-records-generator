@@ -1,4 +1,5 @@
-<?php require_once("GLOBAL/head.php"); 
+<?php 
+// require_once("GLOBAL/head.php"); 
 
 // $t = "";
 $t = 0; 
@@ -65,7 +66,7 @@ if ($action != "copy")
 	<table cellpadding="0" cellspacing="0" border="0">
 	<form 
 		enctype="multipart/form-data" 
-		action="<?php echo $dbAdmin ."copy.php". urlData(); ?>" 
+		action="<?php echo $dbAdmin ."link.php". urlData(); ?>" 
 		method="post" 
 		style="padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"
 	>
@@ -123,13 +124,14 @@ else
 	// get media files attached to object being copied
 	$sql = "SELECT * from media where object = '$wirestoid' AND active = '1'";
 	$result = MYSQL_QUERY($sql);
+	echo $sql;
 	
 	$marrarr = array();
 	while($myrow = mysql_fetch_array($result))
 	{
 		$marr = array();
 		$m = "".STR_PAD($myrow['id'], 5, "0", STR_PAD_LEFT);
-		$mfile = $dbMediaAbs.$m.".".$myrow['type'];
+		$mfile = $dbMedia.$m.".".$myrow['type'];
 		$marr['f'] = $mfile;
 		$marr['id'] = $myrow['id'];
 		$marrarr[] = $marr;
@@ -142,14 +144,14 @@ else
 		$result = MYSQL_QUERY($sql);
 		$myrow = mysql_fetch_array($result);
 		
-		$targetType = end(explode(".", $marr['f']));
+		$targetType = explode(".", $mfile);
 		$targetFile = str_pad(($myrow["id"]+1), 5, "0", STR_PAD_LEFT) .".". $targetType;
-		$target = $dbMediaAbs.$targetFile;
+		$target = $dbMedia.$targetFile;
 		
-		copy($marr['f'], $target);
+		copy($mfile, $target);
 		
-		$sql = "INSERT INTO media (type, caption, object, created, modified, rank)
-				SELECT type, caption, '$insertId', created, modified, rank
+		$sql = "INSERT INTO media (type, caption, object, created, modified)
+				SELECT type, caption, '$insertId', created, modified
 				FROM media
 				WHERE id = '".$marr['id']."'";
 		$result = MYSQL_QUERY($sql);
@@ -159,11 +161,13 @@ else
 	/////////////
 
 	$sql = "INSERT INTO wires (created, modified, fromid, toid) VALUES('". date("Y-m-d H:i:s") ."', '". date("Y-m-d H:i:s") ."', '$object', '$insertId')";
+	echo $sql;
 	$result = MYSQL_QUERY($sql);
 
 	//echo "wirestoid = " . $wirestoid . " / wiresfromid = " . $object . "<br />";
-	echo "Object copied successfully.<br /><br />";
+	echo "Object linked successfully.<br /><br />";
 	echo "<a href='". $dbAdmin ."browse.php". urlData() ."'>CONTINUE...</a>";
 }
 
-require_once("GLOBAL/foot.php"); ?>
+//require_once("GLOBAL/foot.php"); 
+?>

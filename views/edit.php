@@ -1,5 +1,6 @@
 <?
 $vars = array("name1", "deck", "body", "notes",  "url", "rank", "begin", "end");
+
 $kvars = array();
 $kvars["name1"] = "text";
 $kvars["deck"] = "textarea";
@@ -102,7 +103,7 @@ if ($rr->action != "update" && $uu->id)
 						{
 						?><input name='<? echo $var; ?>' 
 								type='<? echo $kvars[$var]; ?>'
-								value='<? echo $item[$var]; ?>'><?
+								value='<? echo htmlspecialchars($item[$var], ENT_QUOTES); ?>'><?
 						}
 					?></div><?
 					}

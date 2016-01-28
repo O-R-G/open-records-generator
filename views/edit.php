@@ -8,7 +8,7 @@ $kvars["notes"] = "textarea";
 $kvars["begin"] = "datetime-local";
 $kvars["end"] = "datetime-local";
 $kvars["url"] = "text";
-$kvars["rank"] = "number";
+$kvars["rank"] = "text";
 
 $var_labels = array();
 $var_labels["name1"] = "Name";

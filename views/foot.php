@@ -6,4 +6,6 @@
 			</div>
 		</div>
 	</body>
-</html>
+</html><?
+$db-> close();
+?>

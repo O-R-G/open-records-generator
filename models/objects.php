@@ -60,7 +60,9 @@ class Objects extends Model
 	// returns: the ids of all children of object with id $o
 	public function children_ids($o)
 	{
-		$fields = array("objects.id AS id");
+		$fields = array("objects.id AS id",
+						"objects.rank",
+						"objects.name1");
 		$tables = array("objects", "wires");
 		$where	= array("wires.fromid = '".$o."'",
 						"wires.active = 1",
@@ -120,7 +122,8 @@ class Objects extends Model
 		$objects = array();
 		for($i = 0; $i < count($u); $i++)
 		{
-			$fields = array("objects.id");
+			$fields = array("objects.id",
+							"objects.name1");
 			$tables = array("objects", "wires");
 			$where 	= array("wires.fromid = '".$fromid."'",
 							"wires.toid = objects.id",

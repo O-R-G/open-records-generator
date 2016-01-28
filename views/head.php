@@ -9,6 +9,9 @@ require_once($config_dir."request.php");
 
 // logged in user via .htaccess, .htpasswd
 $user = $_SERVER['REMOTE_USER'];
+if(!$user)
+	$user = $_SERVER['REDIRECT_REMOTE_USER'];
+
 $db = db_connect($user);
 
 $oo = new Objects();

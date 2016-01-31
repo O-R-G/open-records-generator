@@ -47,7 +47,7 @@ class Objects extends Model
 	// return the children of object with id $o
 	public function children($o)
 	{
-		$fields = array("*", "objects.id AS id");
+		$fields = array("objects.*");
 		$tables = array("objects", "wires");
 		$where	= array("wires.fromid = '".$o."'",
 						"wires.active = 1",

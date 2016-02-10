@@ -212,6 +212,8 @@ else
 	$end = ($end) ? date("Y-m-d H:i:s", strToTime($end)) : NULL;
 	if(!$url)
 		$url = slug($name1);
+	else
+		$url = slug($url);
 	
 	// check that the desired URL is valid
 	// URL is valid if it is not the same as any of its siblings

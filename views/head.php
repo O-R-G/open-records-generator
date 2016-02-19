@@ -6,6 +6,7 @@ require_once($config_dir."config.php");
 // specific to this 'app'
 require_once($config_dir."url.php");
 require_once($config_dir."request.php");
+require_once($config_dir."org-settings.php"); // should this be stored somewhere else?
 
 // logged in user via .htaccess, .htpasswd
 $user = $_SERVER['REMOTE_USER'];
@@ -37,6 +38,18 @@ $title = $db_name." | ".$name;
 
 // used in add.php, edit.php, browse.php
 $ancestors = $oo->ancestors($uu->id);
+
+// settings
+$settings_file = $config_dir."/settings.store";
+if(file_exists($settings_file))
+{
+	$f = file_get_contents($settings_file);
+	$settings = unserialize($f);
+	$max_uploads = $settings->num_uploads;
+}
+else
+	$max_uploads = 5;
+	
 ?><!DOCTYPE html>
 <html>
 	<head>

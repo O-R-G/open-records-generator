@@ -69,6 +69,9 @@
 				<span class="action">
 					<a href="<? echo $admin_path."link/".$uu->urls(); ?>">LINK... </a>
 				</span>
+				<span class="action">
+					<a href="<? echo $admin_path."copy/".$uu->urls(); ?>">COPY... </a>
+				</span>
 			</div>
 		</div>
 	</div>

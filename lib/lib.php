@@ -35,6 +35,12 @@ function m_url($m)
 	return $media_path.m_pad($m['id']).".".$m['type'];
 }
 
+function m_root($m)
+{
+	global $media_root;
+	return $media_root.m_pad($m['id']).".".$m['type'];
+}
+
 // this has not been tested
 function resize($src, $dest, $scale)
 {

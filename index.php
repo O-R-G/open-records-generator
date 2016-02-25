@@ -7,13 +7,6 @@ require_once("views/head.php");
 // else is for backwards compatibility (maybe not necessary?)
 if($view)
 	$view_path = "views/".$view.".php";
-else
-{
-	$uri = explode('/', $_SERVER['REQUEST_URI']);
-	$view_path = "views/";
-	$view_path.= $uri[2] ? $uri[2]: "cover";
-	$view_path.= ".php";
-}
 
 try {
 	if(!file_exists($view_path))

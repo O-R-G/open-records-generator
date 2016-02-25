@@ -11,6 +11,16 @@ require_once($config_dir."request.php");
 $user = $_SERVER['REMOTE_USER'];
 $db = db_connect($user);
 
+// this function determines which part of the url contains
+// object-specific information and which part is just 
+// incidental to the location of the o-r-g on the server
+// it compares the request uri, eg:
+// /PATH/open-records-generator/browse/parent/child
+// to the script (which should be index, at
+// /PATH/open-records-generator/index.php
+// and thus parses out the important bits, in this case:
+// the $view, 'browse'
+// and the object path: ['parent', 'child']
 function url_array()
 {
 	global $view;
@@ -24,10 +34,12 @@ function url_array()
 	}
 	
 	$view = array_shift($u);
+	// if no view is selected, show the cover page
 	$view = $view ? $view : "cover";
 	
 	return $u;
 }
+
 $urls = url_array();
 
 $oo = new Objects();

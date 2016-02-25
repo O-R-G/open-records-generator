@@ -13,15 +13,6 @@ class URL extends URL_Base
 	{
 		global $oo;
 		
-		// backwards compatibility
-		// maybe not necessary?
-		if(!isset($urls))
-		{
-			$urls = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
-			$base = array_slice($urls, 0, 3); // == ["admin", [view]]
-			$urls = array_slice($urls, 3);
-		}
-		
 		try 
 		{
 			$ids = $oo->urls_to_ids($urls);

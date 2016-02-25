@@ -1,5 +1,6 @@
 <?
 $vars = array("name1", "deck", "body", "notes",  "url", "rank", "begin", "end");
+
 $kvars = array();
 $kvars["name1"] = "text";
 $kvars["deck"] = "textarea";
@@ -8,7 +9,7 @@ $kvars["notes"] = "textarea";
 $kvars["begin"] = "datetime-local";
 $kvars["end"] = "datetime-local";
 $kvars["url"] = "text";
-$kvars["rank"] = "number";
+$kvars["rank"] = "text";
 
 $var_labels = array();
 $var_labels["name1"] = "Name";
@@ -108,7 +109,7 @@ if ($rr->action != "update" && $uu->id)
 						{
 						?><input name='<? echo $var; ?>' 
 								type='<? echo $kvars[$var]; ?>'
-								value='<? echo $item[$var]; ?>'><?
+								value='<? echo htmlspecialchars($item[$var], ENT_QUOTES); ?>'><?
 						}
 					?></div><?
 					}

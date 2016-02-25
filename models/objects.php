@@ -47,7 +47,7 @@ class Objects extends Model
 	// return the children of object with id $o
 	public function children($o)
 	{
-		$fields = array("*", "objects.id AS id");
+		$fields = array("objects.*");
 		$tables = array("objects", "wires");
 		$where	= array("wires.fromid = '".$o."'",
 						"wires.active = 1",
@@ -60,7 +60,9 @@ class Objects extends Model
 	// returns: the ids of all children of object with id $o
 	public function children_ids($o)
 	{
-		$fields = array("objects.id AS id");
+		$fields = array("objects.id AS id",
+						"objects.rank",
+						"objects.name1");
 		$tables = array("objects", "wires");
 		$where	= array("wires.fromid = '".$o."'",
 						"wires.active = 1",
@@ -77,7 +79,7 @@ class Objects extends Model
 	
 	public function children_ids_nav($o)
 	{
-		$fields = array("objects.id AS id");
+		$fields = array("objects.*");
 		$tables = array("objects", "wires");
 		$where	= array("wires.fromid = '".$o."'",
 						"wires.active = 1",
@@ -120,7 +122,8 @@ class Objects extends Model
 		$objects = array();
 		for($i = 0; $i < count($u); $i++)
 		{
-			$fields = array("objects.id");
+			$fields = array("objects.id",
+							"objects.name1");
 			$tables = array("objects", "wires");
 			$where 	= array("wires.fromid = '".$fromid."'",
 							"wires.toid = objects.id",
@@ -282,11 +285,18 @@ class Objects extends Model
 	// returns:
 	// if end($ids) is a leaf (has no siblings), then return the siblings with the
 	// tree
-	public function nav($ids, $root=0)
+	public function nav($ids, $root_id=0)
 	{
 		$nav = array();
-		$top = $this->children_ids_nav($root);
 		$pass = true;
+		
+		$top = $this->children_ids_nav($root_id);
+		$root_index = array_search($root_id, $ids);
+		if($root_index === FALSE)
+			$root_index = 0;
+		else
+			$root_index++;
+		
 		foreach($top as $t)
 		{
 			$o = $this->get($t);
@@ -295,7 +305,7 @@ class Objects extends Model
 			$url = implode("/", $urls);			
 			$nav[] = array('depth'=>$d, 'o'=>$o, 'url'=>$url);
 			
-			if($pass && $t == $ids[$root])
+			if($pass && $t == $ids[$root_index])
 			{
 				$pass = false; // short-circuit if statement
 
@@ -308,7 +318,7 @@ class Objects extends Model
 				array_shift($ids);
 				
 				// show direct ancestors (and self, if children)
-				foreach($ids as $id)
+				foreach(array_slice($ids, $root_index) as $id)
 				{
 					$d++;
 					$o = $this->get($id);
@@ -339,6 +349,12 @@ class Objects extends Model
 		return array('type'=>$type, 'id'=>$id,'o'=>$o,'depth'=>$d,'url'=>$url);
 	}
 	
+	public function nav_test($ids, $root=0)
+	{
+		$top = $this->children_ids($root);
+		
+	}
+	
 	// takes: an array of ids
 	// returns: an array of arrays corresponding to a 
 	// very specific traversal of the tree
@@ -346,23 +362,31 @@ class Objects extends Model
 	// all 'parents' w/r/t to the array of ids are returned
 	// if the last node in ids has children, children are also returned
 	// if not, siblings are returned
-	public function nav_clean($ids)
+	public function nav_clean($ids, $root=0)
 	{
 		$records = array();
-		$top = $this->children_ids(0);
+		$top = $this->children_ids($root);
 		$pass = true;
+		$root_i = array_search($root, $ids);
+		if($root_i === FALSE)
+			$root_i = 0;
+		else
+			$root_i++;
+		
 		foreach($top as $t_id)
 		{
 			$d = 1;
-			$urls = array();
+			
+			// urls to be appended to the beginning of each menu item
+			$urls = array("de");
 			// if this top-level object is an ancestor of the current obj		
-			if($pass && $t_id == $ids[0])
+			if($pass && $t_id == $ids[$root_i])
 			{
 				$pass = false; // short-circuit if-statement
 				$s_id = array_pop($ids);
 				
 				// parents
-				foreach($ids as $p_id)
+				foreach(array_slice($ids, $root_i) as $p_id)
 					$records[] = $this->nav_helper("parent", $p_id, $d++, $urls);
 				
 				$kids = $this->children_ids($s_id);

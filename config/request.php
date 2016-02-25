@@ -29,6 +29,8 @@ class Request
 	public $ranks;
 	public $deletes;
 	
+	public $uploads;
+	
 	function __construct()
 	{
 		$this->page = basename($_SERVER['PHP_SELF'], ".php");
@@ -37,7 +39,8 @@ class Request
 		$vars = array(	'name1', 'deck', 'body', 'notes', 'begin', 'end', 'url', 'rank',
 						'medias', 'types', 'captions', 'ranks', 'deletes',
 						'submit', 'action',
-						'wires_toid');
+						'wires_toid',
+						'uploads');
 
 		foreach($vars as $v)	
 			$this->$v = $_POST[$v];

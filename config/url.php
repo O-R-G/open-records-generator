@@ -9,13 +9,18 @@ class URL extends URL_Base
 	// if no object selected, 
 	// $this->urls, $this->url, and $this->ids are not set
 	// $this->id is 0
-	function __construct()
+	function __construct($urls=null)
 	{
 		global $oo;
 		
-		$urls = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
-		$base = array_slice($urls, 0, 3); // == ["admin", [view]]
-		$urls = array_slice($urls, 3);
+		// backwards compatibility
+		// maybe not necessary?
+		if(!isset($urls))
+		{
+			$urls = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
+			$base = array_slice($urls, 0, 3); // == ["admin", [view]]
+			$urls = array_slice($urls, 3);
+		}
 		
 		try 
 		{

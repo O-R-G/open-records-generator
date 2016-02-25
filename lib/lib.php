@@ -4,7 +4,8 @@
 // THIS NEEDS TO BE TESTED
 function slug($name = "untitled")
 {
-	$pattern = '/(\A\W+|\W+\z)/';
+	// $pattern = '/(\A\W+|\W+\z)/';
+	$pattern = '/(\A\P{L}+|\P{L}+\z)/u';
 	$replace = '';
 	$tmp = preg_replace($pattern, $replace, $name);
 	
@@ -15,9 +16,12 @@ function slug($name = "untitled")
 	
 	// replace trailing hyphens
 	$pattern = '/[^-\w]+/';
+	$pattern = '/[^-\p{L}]+/u';
 	$replace = '';
 	$tmp = preg_replace($pattern, $replace, $tmp);
-	return strtolower($tmp);
+	
+	$tmp = strtolower($tmp);
+	return urlencode($tmp);
 }
 
 // why do i need two of these? 

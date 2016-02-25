@@ -3,10 +3,6 @@
 $config_dir = __DIR__."/../config/";
 require_once($config_dir."config.php");
 
-// futile attempt to delete the trailing slash right here
-// if(substr($_SERVER['REQUEST_URI'], -1) == '/')
-// 	header("Location: ".rtrim($host, '/').rtrim($_SERVER['REQUEST_URI'], '/'));
-
 // specific to this 'app'
 require_once($config_dir."url.php");
 require_once($config_dir."request.php");
@@ -15,10 +11,29 @@ require_once($config_dir."request.php");
 $user = $_SERVER['REMOTE_USER'];
 $db = db_connect($user);
 
+function url_array()
+{
+	global $view;
+	$s = explode('/', rtrim($_SERVER['SCRIPT_NAME'], '/'));
+	$u = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
+	
+	while($s[0] == $u[0])
+	{
+		array_shift($s);
+		array_shift($u);
+	}
+	
+	$view = array_shift($u);
+	$view = $view ? $view : "cover";
+	
+	return $u;
+}
+$urls = url_array();
+
 $oo = new Objects();
 $mm = new Media();
 $ww = new Wires();
-$uu = new URL();
+$uu = new URL($urls);
 $rr = new Request();
 
 $js_back = "javascript:history.back();";

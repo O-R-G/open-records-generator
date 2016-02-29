@@ -5,7 +5,7 @@
 function slug($name = "untitled")
 {
 	// $pattern = '/(\A\W+|\W+\z)/';
-	$pattern = '/(\A\P{L}+|\P{L}+\z)/u';
+	$pattern = '/(\A[^\p{L}\p{N}]+|[^\p{L}\p{N}]+\z)/u';
 	$replace = '';
 	$tmp = preg_replace($pattern, $replace, $name);
 	
@@ -16,9 +16,10 @@ function slug($name = "untitled")
 	
 	// replace trailing hyphens
 	$pattern = '/[^-\w]+/';
-	$pattern = '/[^-\p{L}]+/u';
+	// $pattern = '/[^-\p{L}\p{N}]+/u';
+	$pattern = '/[-]+\z/u';
 	$replace = '';
-	$tmp = preg_replace($pattern, $replace, $tmp);
+	// $tmp = preg_replace($pattern, $replace, $tmp);
 	
 	$tmp = strtolower($tmp);
 	return urlencode($tmp);

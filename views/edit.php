@@ -313,8 +313,11 @@ else
 		// should change this url to reflect updated url
 		$urls = array_slice($uu->urls, 0, count($uu->urls)-1);
 		$u = implode("/", $urls);
-		$u = $admin_path."browse/".$u."/".$new['url'];
-		?><p><a href="<? echo $u; ?>"><?php echo $new['name1']; ?></a></p><?
+		$url = $admin_path."browse/";
+		if(!empty($u))
+			$url.= $u."/";
+		$url.= $new['url'];
+		?><p><a href="<? echo $url; ?>"><?php echo $new['name1']; ?></a></p><?
 	// Job well done?
 	if($updated)
 	{

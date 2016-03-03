@@ -3,26 +3,59 @@
 
 // THIS NEEDS TO BE TESTED
 function slug($name = "untitled")
-{
-	// $pattern = '/(\A\W+|\W+\z)/';
+{	
+	// replace non-alphanumerics at the beginning and end of the 
+	// string with nothing
 	$pattern = '/(\A[^\p{L}\p{N}]+|[^\p{L}\p{N}]+\z)/u';
 	$replace = '';
 	$tmp = preg_replace($pattern, $replace, $name);
 	
-	// replace whitespace with hyphens
-	$pattern = '/\s+/';
+	// replace all non-alphanumerics with hyphens
+	$pattern = '/[^\p{L}\p{N}]+/u';
 	$replace = '-';
 	$tmp = preg_replace($pattern, $replace, $tmp);
 	
-	// replace trailing hyphens
-	$pattern = '/[^-\w]+/';
-	// $pattern = '/[^-\p{L}\p{N}]+/u';
-	$pattern = '/[-]+\z/u';
-	$replace = '';
-	// $tmp = preg_replace($pattern, $replace, $tmp);
+	// make string url lowercase (in a unicode-safe way)
+	$tmp = mb_convert_case($tmp, MB_CASE_LOWER, "UTF-8");
+
+	// make url safe
+	$tmp = urlencode($tmp);
 	
-	$tmp = strtolower($tmp);
-	return urlencode($tmp);
+	return $tmp;
+}
+
+// return a string of random characters [a-z, 0-9]
+// of length $len
+function rand_str($len=4)
+{
+	$chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+	$max = strlen($chars)-1;
+	$s = "";
+	for($i = 0; $i < $len; $i++)
+	{
+		$c = substr($chars, rand(0, $max), 1);
+		$s.= $c;
+	}
+	return $s;
+}
+
+// for our purposes, $alt is assumed to be the id of the object
+// this url is meant to reference
+function valid_url($u, $alt, $excludes)
+{
+	// array_search returns the position (index) of $u in 
+	// $excludes, or false if not present in the array.
+	// therefore, strict compare to false
+	if(empty($u) || array_search($u, $excludes) !== false)
+	{
+		$url = $alt;
+		while(array_search($url, $excludes) !== false)
+			$url = rand_str();
+	}
+	else
+		$url = $u;
+	
+	return $url;
 }
 
 // why do i need two of these? 
@@ -56,37 +89,7 @@ function resize($src, $dest, $scale)
 	$si->save($dest);
 }
 
-// for use on add.php
-// return false if process fails
-// (siblings must not have same url slug as object)
-// return id of new object on success
-function insert_object(&$a, $siblings)
-{
-	global $oo;
-	global $dt_fmt;
-	
-	if(!$a['name1'])
-		$a['name1'] = 'untitled';
 
-	if($a['url'])
-		$a['url'] = slug($a['url']);
-	else
-		$a['url'] = slug($a['name1']);
-	
-	foreach($siblings as $s_id)
-		if($a['url'] == $oo->get($s_id)['url'])
-			return false;
-			
-	foreach($a as $key => $value)
-	{
-		if($value)
-			$a[$key] = "'".$value."'";
-		else
-			$a[$key] = "null";
-	}
-
-	return $oo->insert($a);
-}
 
 function md2html($md)
 {
@@ -110,11 +113,6 @@ function html2md($html)
 	exec($p."html2text.py ".$p.$f, $md);
 	unlink($p.$f);
 	return implode("\n", $md);
-}
-
-// for use on edit.php
-function update_object()
-{
 }
 
 function process_media($toid)

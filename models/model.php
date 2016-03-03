@@ -7,6 +7,8 @@
 */
 class Model
 {
+	const MYSQL_DATE_FMT = "Y-m-d H:i:s";
+	
 	// takes: $id of database entry
 	// returns: associative array of database entry or NULL
 	public static function get($id)
@@ -68,7 +70,7 @@ class Model
 	public static function insert($arr)
 	{
 		global $db;
-		$dt = date("Y-m-d H:i:s");
+		$dt = date(self::MYSQL_DATE_FMT);
 		$arr["created"] = "'".$dt."'";
 		$arr["modified"] = "'".$dt."'";
 		$keys = implode(", ", array_keys($arr));
@@ -88,6 +90,8 @@ class Model
 	public static function update($id, $arr)
 	{
 		global $db;
+		$dt = date(self::MYSQL_DATE_FMT);
+		$arr["modified"] = "'".$dt."'";
 		foreach($arr as $key => $value)
 			$pairs[] = $key."=".$value;
 		$z = implode(", ", $pairs);
@@ -108,7 +112,7 @@ class Model
 	
 		$sql = "UPDATE ".static::table_name." 
 				SET active = '0',
-					modified = '".date("Y-m-d H:i:s")."'
+					modified = '".date(self::MYSQL_DATE_FMT)."'
 				WHERE id = '$id'";
 		
 		if($db->query($sql) === TRUE)

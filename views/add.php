@@ -10,10 +10,10 @@ $var_info["input-type"]["name1"] = "text";
 $var_info["input-type"]["deck"] = "textarea";
 $var_info["input-type"]["body"] = "textarea";
 $var_info["input-type"]["notes"] = "textarea";
-$var_info["input-type"]["begin"] = "datetime-local";
-$var_info["input-type"]["end"] = "datetime-local";
+$var_info["input-type"]["begin"] = "text";
+$var_info["input-type"]["end"] = "text";
 $var_info["input-type"]["url"] = "text";
-$var_info["input-type"]["rank"] = "number";
+$var_info["input-type"]["rank"] = "text";
 
 $var_info["label"] = array();
 $var_info["label"]["name1"] = "Name";
@@ -25,7 +25,66 @@ $var_info["label"]["end"] = "End";
 $var_info["label"]["url"] = "URL Slug";
 $var_info["label"]["rank"] = "Rank";
 
-$dt_fmt = "Y-m-d H:i:s";
+// for use on add.php
+// return false if process fails
+// (siblings must not have same url slug as object)
+// return id of new object on success
+function insert_object(&$new, $siblings)
+{
+	global $oo;
+	
+	// set default name if no name given
+	if(!$new['name1'])
+		$new['name1'] = 'untitled';
+
+	// slug-ify url
+	if($new['url'])
+		$new['url'] = slug($new['url']);
+	
+	if(empty($new['url']))
+		$new['url'] = slug($new['name1']);
+	
+	// make sure url doesn't clash with urls of siblings
+	$s_urls = array();
+	foreach($siblings as $s_id)
+		$s_urls[] = $oo->get($s_id)['url'];
+
+	// deal with dates
+	if(!empty($new['begin']))
+	{
+		$dt = strtotime($new['begin']);
+		$new['begin'] = date($oo::MYSQL_DATE_FMT, $dt);
+	}
+	
+	if(!empty($new['end']))
+	{
+		$dt = strtotime($new['end']);
+		$new['end'] = date($oo::MYSQL_DATE_FMT, $dt);
+	}
+	
+	// make mysql happy with nulls and such	
+	foreach($new as $key => $value)
+	{
+		if($value)
+			$new[$key] = "'".$value."'";
+		else
+			$new[$key] = "null";
+	}
+	
+	$id = $oo->insert($new);
+	
+	// need to strip out the quotes that were added to appease sql
+	$u = str_replace("'", "", $new['url']);
+	$url = valid_url($u, strval($id), $s_urls);
+	if($url != $u)
+	{
+		$new['url'] = "'".$url."'";
+		$oo->update($id, $new);
+	}
+	
+	return $id;
+}
+
 ?><div id="body-container">
 	<div id="body" class="centre"><?
 	// TODO: this code is duplicated in 

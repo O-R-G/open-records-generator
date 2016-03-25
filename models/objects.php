@@ -179,6 +179,24 @@ class Objects extends Model
 		return array_unique($ancestors);
 	}
 	
+	public function ancestors_single($root, $o)
+	{
+		$all = $this->traverse($root);
+		$ancestors = array();
+		$a = array();
+		for($i = 0; $i < count($all); $i++)
+		{
+			if(end($all[$i]) == $o)
+			{
+				$d = count($all[$i]);
+				$ancestors = array_slice($a, 0, $d-1);
+			}
+			$d = count($all[$i]);
+			$a[$d-1] = end($all[$i]);
+		}
+		return $ancestors;
+	}
+	
 	// returns: the ids of all descedants of object with id $o
 	// children, grandchildren, etc
 	public function descendants($o)

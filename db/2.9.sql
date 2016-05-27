@@ -50,9 +50,9 @@ CREATE TABLE `objects` (
   `end` datetime default NULL,
   `date` datetime default NULL,
   `head` tinytext,
-  `deck` blob,
-  `body` blob,
-  `notes` blob,
+  `deck` mediumblob,
+  `body` mediumblob,
+  `notes` mediumblob,
   PRIMARY KEY  (`id`)
 );
 

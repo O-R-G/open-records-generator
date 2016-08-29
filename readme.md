@@ -1,7 +1,7 @@
 # OPEN RECORDS GENERATOR
-Version 3 
+Version 3.1
 O-R-G inc.  
-Last updated 19 January 2016
+Last updated 29 August 2016
 
 ## INSTRUCTIONS
 

@@ -1,5 +1,5 @@
 # site-specific configuration files
-.htaccess
+# .htaccess
 .htpasswd
 config.php
 settings.store

@@ -54,6 +54,7 @@ class Objects extends Model
 						"wires.toid = objects.id",
 						"objects.active = '1'");
 		$order 	= array("objects.rank", "objects.name1");
+
 		return $this->get_all($fields, $tables, $where, $order);
 	}
 	

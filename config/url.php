@@ -13,12 +13,17 @@ class URL extends URL_Base
 	{
 		global $oo;
 		
+        // decode all urls to catch utf-8 characters
+        foreach ($urls as &$thisurl) {
+            $thisurl = urldecode($thisurl);
+        }
+
 		try 
 		{
 			$ids = $oo->urls_to_ids($urls);
 		}
 		// check that the object that this URL refers to exists
-		// FIX THIS CODE
+ 		// FIX THIS CODE (balks at writing before header)   
 		catch(Exception $e)
 		{
 			$urls = array_slice($urls, 0, $e->getMessage());

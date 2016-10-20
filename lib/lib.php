@@ -1,7 +1,10 @@
 <?
 /* miscellaneous functions */
 
-// THIS NEEDS TO BE TESTED
+// slug() NEEDS TO BE TESTED
+// urlencode() & urldecode() is the issue
+// should force it to not include any unicode characters
+
 function slug($name = "untitled")
 {	
 	// replace non-alphanumerics at the beginning and end of the 

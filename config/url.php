@@ -12,7 +12,7 @@ class URL extends URL_Base
 	function __construct($urls=null)
 	{
 		global $oo;
-		
+	
         // decode all urls to catch utf-8 characters
         foreach ($urls as &$thisurl) {
             $thisurl = urldecode($thisurl);

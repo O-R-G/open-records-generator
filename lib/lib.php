@@ -1,10 +1,6 @@
 <?
 /* miscellaneous functions */
 
-// slug() NEEDS TO BE TESTED
-// urlencode() & urldecode() is the issue
-// should force it to not include any unicode characters
-
 function slug($name = "untitled")
 {	
 	// replace non-alphanumerics at the beginning and end of the 
@@ -20,6 +16,11 @@ function slug($name = "untitled")
 	
 	// make string url lowercase (in a unicode-safe way)
 	$tmp = mb_convert_case($tmp, MB_CASE_LOWER, "UTF-8");
+
+	// transliterate utf-8 characters to plain ascii
+	setlocale(LC_ALL, 'de_DE');	// german 
+	// setlocale(LC_ALL, 'en_GB');	// english
+	$tmp = iconv('UTF-8', 'ASCII//TRANSLIT', $tmp);
 
 	// make url safe
 	$tmp = urlencode($tmp);

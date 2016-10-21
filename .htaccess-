@@ -1,4 +1,4 @@
-AuthUserFile /absolute/path/to/.htpasswd
+AuthUserFile /kunden/98668_22767/rp-hosting/20082/20084/km-2015/.htpasswd
 AuthName "OPEN-RECORDS-GENERATOR"
 AuthType Basic
 Require valid-user

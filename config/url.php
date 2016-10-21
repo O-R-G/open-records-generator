@@ -13,11 +13,6 @@ class URL extends URL_Base
 	{
 		global $oo;
 	
-        // decode all urls to catch utf-8 characters
-        foreach ($urls as &$thisurl) {
-            $thisurl = urldecode($thisurl);
-        }
-
 		try 
 		{
 			$ids = $oo->urls_to_ids($urls);
@@ -31,6 +26,14 @@ class URL extends URL_Base
 			$loc = $host.implode("/".$base)."/".implode("/", $urls);
 			header("Location: ".$loc);
 		}
+
+        // decode all urls to catch utf-8 characters
+        // do this after checking to see if url maps to an object
+        // as the encoded url slug is what is written to the database
+        foreach ($urls as &$thisurl) {
+            $thisurl = urldecode($thisurl);
+        }
+
 		$id = $ids[count($ids)-1];
 		if(!$id)
 			$id = 0;

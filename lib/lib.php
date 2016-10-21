@@ -18,9 +18,10 @@ function slug($name = "untitled")
 	$tmp = mb_convert_case($tmp, MB_CASE_LOWER, "UTF-8");
 
 	// transliterate utf-8 characters to plain ascii
-	setlocale(LC_ALL, 'de_DE');	// german 
-	// setlocale(LC_ALL, 'en_GB');	// english
-	$tmp = iconv('UTF-8', 'ASCII//TRANSLIT', $tmp);
+    // this is a workaround for kunstverein-muenchen
+    // because of locale server settings
+	// setlocale(LC_COLLATE, 'de_DE');	// german 
+	// $tmp = iconv('UTF-8', 'ASCII//TRANSLIT', $tmp);
 
 	// make url safe
 	$tmp = urlencode($tmp);

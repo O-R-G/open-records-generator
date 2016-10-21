@@ -1,3 +1,4 @@
 # site-specific configuration files
 .htaccess
 config.php
+settings.store

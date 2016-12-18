@@ -53,7 +53,7 @@ class Objects extends Model
 						"wires.active = 1",
 						"wires.toid = objects.id",
 						"objects.active = '1'");
-		$order 	= array("objects.rank", "objects.name1", "objects.begin", "objects.end");
+		$order 	= array("objects.rank", "objects.begin", "objects.end", "objects.name1");
 
 		return $this->get_all($fields, $tables, $where, $order);
 	}
@@ -69,8 +69,8 @@ class Objects extends Model
 						"wires.active = 1",
 						"wires.toid = objects.id",
 						"objects.active = '1'");
-		$order 	= array("objects.rank", "objects.name1", "objects.begin", "objects.end");
-		$res = $this->get_all($fields, $tables, $where, $order);
+        $order 	= array("objects.rank", "objects.begin", "objects.end", "objects.name1");
+        $res = $this->get_all($fields, $tables, $where, $order);
 		$ids = array();
 		foreach($res as $r)
 			$ids[] = $r['id'];
@@ -87,7 +87,7 @@ class Objects extends Model
 						"wires.toid = objects.id",
 						"objects.active = '1'",
 						"objects.name1 not like '.%'");
-		$order 	= array("objects.rank", "objects.name1", "objects.begin", "objects.end");
+        $order 	= array("objects.rank", "objects.begin", "objects.end", "objects.name1");
 		$res = $this->get_all($fields, $tables, $where, $order);
 		$ids = array();
 		foreach($res as $r)
@@ -131,8 +131,7 @@ class Objects extends Model
 							"objects.url = '".$u[$i]."'",
 							"wires.active = '1'",
 							"objects.active = '1'");
-			$order 	= array("objects.name1", "objects.rank", "objects.begin", "objects.end");
-
+            $order 	= array("objects.rank", "objects.begin", "objects.end", "objects.name1");
 			$tmp = $this->get_all($fields, $tables, $where, $order);
 			$fromid = $tmp[0]['id'];
 			if(!$fromid)

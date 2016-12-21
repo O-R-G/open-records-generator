@@ -55,7 +55,7 @@ class Objects extends Model
 						"objects.active = '1'");
 		$order 	= array("objects.rank", "objects.begin", "objects.end", "objects.name1");
 
-		return $this->get_all($fields, $tables, $where, $order, $descending);
+		return $this->get_all($fields, $tables, $where, $order);
 	}
 	
 	// returns: the ids of all children of object with id $o
@@ -70,7 +70,7 @@ class Objects extends Model
 						"wires.toid = objects.id",
 						"objects.active = '1'");
         $order 	= array("objects.rank", "objects.begin", "objects.end", "objects.name1");
-        $res = $this->get_all($fields, $tables, $where, $order, $descending);
+        $res = $this->get_all($fields, $tables, $where, $order);
 		$ids = array();
 		foreach($res as $r)
 			$ids[] = $r['id'];
@@ -78,7 +78,7 @@ class Objects extends Model
 		return $ids;
 	}
 	
-	public function children_ids_nav($o, $descending = FALSE)
+	public function children_ids_nav($o)
 	{
 		$fields = array("objects.*");
 		$tables = array("objects", "wires");
@@ -88,7 +88,7 @@ class Objects extends Model
 						"objects.active = '1'",
 						"objects.name1 not like '.%'");
         $order 	= array("objects.rank", "objects.begin", "objects.end", "objects.name1");
-		$res = $this->get_all($fields, $tables, $where, $order, $limit, $descending);
+		$res = $this->get_all($fields, $tables, $where, $order, $limit);
 		$ids = array();
 		foreach($res as $r)
 			$ids[] = $r['id'];
@@ -304,7 +304,7 @@ class Objects extends Model
 	// returns:
 	// if end($ids) is a leaf (has no siblings), then return the siblings with the
 	// tree
-	public function nav($ids, $root_id=0, $descending = FALSE)
+	public function nav($ids, $root_id=0)
 	{
 		$nav = array();
 		$pass = true;
@@ -328,10 +328,10 @@ class Objects extends Model
 			{
 				$pass = false; // short-circuit if statement
 
-				$kids = $this->children_ids_nav(end($ids), $descending);
+				$kids = $this->children_ids_nav(end($ids));
 				if(empty($kids) && count($ids) > 1)
 				{
-					$kids = $this->children_ids_nav($ids[count($ids)-2], $descending);
+					$kids = $this->children_ids_nav($ids[count($ids)-2]);
 					array_pop($ids); // leaf is included in siblings
 				}
 				array_shift($ids);

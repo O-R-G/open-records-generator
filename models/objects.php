@@ -78,7 +78,7 @@ class Objects extends Model
 		return $ids;
 	}
 	
-	public function children_ids_nav($o)
+	public function children_ids_nav($o, $descending = FALSE)
 	{
 		$fields = array("objects.*");
 		$tables = array("objects", "wires");
@@ -88,7 +88,7 @@ class Objects extends Model
 						"objects.active = '1'",
 						"objects.name1 not like '.%'");
         $order 	= array("objects.rank", "objects.begin", "objects.end", "objects.name1");
-		$res = $this->get_all($fields, $tables, $where, $order);
+		$res = $this->get_all($fields, $tables, $where, $order, $limit, $descending);
 		$ids = array();
 		foreach($res as $r)
 			$ids[] = $r['id'];
@@ -303,7 +303,7 @@ class Objects extends Model
 	// returns:
 	// if end($ids) is a leaf (has no siblings), then return the siblings with the
 	// tree
-	public function nav($ids, $root_id=0)
+	public function nav($ids, $root_id=0, $descending = FALSE)
 	{
 		$nav = array();
 		$pass = true;
@@ -327,10 +327,10 @@ class Objects extends Model
 			{
 				$pass = false; // short-circuit if statement
 
-				$kids = $this->children_ids_nav(end($ids));
+				$kids = $this->children_ids_nav(end($ids), $descending);
 				if(empty($kids) && count($ids) > 1)
 				{
-					$kids = $this->children_ids_nav($ids[count($ids)-2]);
+					$kids = $this->children_ids_nav($ids[count($ids)-2], $descending);
 					array_pop($ids); // leaf is included in siblings
 				}
 				array_shift($ids);

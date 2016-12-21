@@ -55,7 +55,7 @@ class Objects extends Model
 						"objects.active = '1'");
 		$order 	= array("objects.rank", "objects.begin", "objects.end", "objects.name1");
 
-		return $this->get_all($fields, $tables, $where, $order);
+		return $this->get_all($fields, $tables, $where, $order, $descending);
 	}
 	
 	// returns: the ids of all children of object with id $o
@@ -70,7 +70,7 @@ class Objects extends Model
 						"wires.toid = objects.id",
 						"objects.active = '1'");
         $order 	= array("objects.rank", "objects.begin", "objects.end", "objects.name1");
-        $res = $this->get_all($fields, $tables, $where, $order);
+        $res = $this->get_all($fields, $tables, $where, $order, $descending);
 		$ids = array();
 		foreach($res as $r)
 			$ids[] = $r['id'];
@@ -95,6 +95,7 @@ class Objects extends Model
 
 		return $ids;
 	}
+
 	public function siblings($o)
 	{
 		$all = $this->traverse(0);

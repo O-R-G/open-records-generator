@@ -37,7 +37,7 @@ class Model
 									$where = array(), 
 									$order = array(),
 									$limit = '',
-                                    $descending = TRUE, 
+									$descending = FALSE,
 									$distinct = TRUE)
 	{
 		global $db;
@@ -52,9 +52,8 @@ class Model
 			$sql .= "ORDER BY " . implode(", ", $order) . " ";
 		if (!empty($limit))
 			$sql .= "LIMIT " . $limit;
-		if($descending)
-			$sql .= " DESC";
-
+                if ($descending)
+                        $sql .= " DESC";
 		$res = $db->query($sql);
 		if(!$res)
 			throw new Exception($db->error);

@@ -114,7 +114,7 @@ if ($rr->action != "update" && $uu->id)
 	// add associations to media arrays:
 	// $medias[$i]["file"] is url of media file
 	// $medias[$i]["display"] is url of display file (diff for pdfs)
-	// $medias[$i]["type"] is type of media (jpg, gif, pdf, mp4)
+	// $medias[$i]["type"] is type of media (jpg, gif, pdf, mp4, mp3)
 	for($i = 0; $i < $num_medias; $i++)
 	{
 		$m_padded = "".m_pad($medias[$i]['id']);
@@ -123,6 +123,8 @@ if ($rr->action != "update" && $uu->id)
 			$medias[$i]["display"] = $admin_path."media/pdf.png";
 		else if ($medias[$i]["type"] == "mp4")
 			$medias[$i]["display"] = $admin_path."media/mp4.png";
+		else if ($medias[$i]["type"] == "mp3")
+			$medias[$i]["display"] = $admin_path."media/mp3.png";
 		else
 			$medias[$i]["display"] = $medias[$i]["file"];
 	}

@@ -126,6 +126,20 @@ a:hover {
 	margin: 15px 0;
 }
 
+.field-name {
+    display: inline-block;
+}
+
+.editable {
+    font-family: -apple-system, sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 16px;
+    padding: 4px;
+    background-color: #FFF;
+}
+
 /* form elements */
 textarea,
 input[type="text"] {
@@ -177,6 +191,19 @@ select {
 /* utility classes */
 .preview {
 	max-width: 100%;
+}
+
+.dontdisplay {
+    display: none;
+}
+
+.hide {
+    visibility: hidden;
+}
+
+.right {
+    position: absolute;
+    right: 16px;
 }
 
 @media screen and (max-device-width: 568px) {

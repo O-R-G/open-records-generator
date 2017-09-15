@@ -149,10 +149,78 @@ if ($rr->action != "update" && $uu->id)
 					<div><?
 						if($var_info["input-type"][$var] == "textarea")
 						{
-						?><textarea name='<? echo $var; ?>' class='large'><?
-							if($item[$var])
-								echo $item[$var];
-						?></textarea><?
+
+                        // ** start experimental minimal wysiwig toolbar **
+                       
+                        ?><script>
+                        function link(name) {
+                            var linkURL = prompt('Enter a URL:', 'http://');
+                            document.execCommand('createlink', false, linkURL);
+                        }
+                        function edit(name) {
+                            var edit = document.getElementById(name + '-edit');
+                            var bold = document.getElementById(name + '-bold');
+                            var italic = document.getElementById(name + '-italic');
+                            var link = document.getElementById(name + '-link');
+                            var htmltxt = document.getElementById(name + '-htmltxt');
+                            var editable = document.getElementById(name + '-editable');
+                            var textarea = document.getElementById(name + '-textarea');
+                            if (editable.contentEditable == 'true') {
+                                editable.contentEditable = 'false';
+                                bold.style.visibility = 'hidden';
+                                italic.style.visibility = 'hidden';
+                                link.style.visibility = 'hidden';
+                                htmltxt.style.visibility = 'hidden';
+                                editable.style.backgroundColor = '#FFF';
+                                edit.innerHTML='edit...';
+                                html = editable.innerHTML;      
+                                textarea.textContent = html;    // update textarea for form submit
+                            } else {
+                                editable.contentEditable = 'true';
+                                bold.style.visibility = 'visible';
+                                italic.style.visibility = 'visible';
+                                link.style.visibility = 'visible';
+                                htmltxt.style.visibility = 'visible';
+                                editable.style.backgroundColor = '#FFF';
+                                edit.innerHTML='done.';
+                            }
+                        }
+                        function showhtml(name) {
+                            var htmltxt = document.getElementById(name + '-htmltxt');
+                            var editable = document.getElementById(name + '-editable');
+                            var textarea = document.getElementById(name + '-textarea');
+                            if (textarea.style.display == 'block') {
+                                textarea.style.display = 'none';
+                                editable.style.display = 'block';
+                                htmltxt.innerHTML='html';
+                                html = textarea.textContent;
+                                editable.innerHTML = html;    // update editable 
+                            } else {
+                                textarea.style.display = 'block';
+                                editable.style.display = 'none';
+                                htmltxt.innerHTML='text';
+                            }
+                        }
+                        </script>
+
+                        <a id="<? echo $var; ?>-edit" class='right' href="#null" onclick="edit('<? echo $var; ?>');">edit...</a>
+                        <a id="<? echo $var; ?>-bold" class='hide' href="#null" onclick="document.execCommand('bold',false,null);">bold</a>
+                        <a id="<? echo $var; ?>-italic" class='hide' href="#null" onclick="document.execCommand('italic',false,null);">italic</a>
+                        <a id="<? echo $var; ?>-link" class='hide' href="#null" onclick="link('<? echo $var; ?>');">link</a>
+                        <a id="<? echo $var; ?>-htmltxt" class='hide' href="#null" onclick="showhtml('<? echo $var; ?>');">html</a>
+                        
+                        <div name='<? echo $var; ?>' class='large editable' contenteditable='false' id='<? echo $var; ?>-editable'><?
+                            if($item[$var])
+                                echo $item[$var];
+                        ?></div>
+
+                        <textarea name='<? echo $var; ?>' class='large dontdisplay' id='<? echo $var; ?>-textarea'><?
+                            if($item[$var])
+                                echo $item[$var];
+                        ?></textarea><?
+
+                        // ** end minimal wysiwig toolbar **
+
 						}
 						elseif($var == "url")
 						{

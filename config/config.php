@@ -11,8 +11,20 @@ $root = $_SERVER["DOCUMENT_ROOT"]."/";
 $admin_path = $host . "open-records-generator/";
 $admin_root = $root . "open-records-generator/";
 
-$media_path = $host . "media/"; // don't forget to set permissions on this folder
-$media_root = $root . "media/";
+// AWS Bucket Environental Variables
+$bucket_id = getenv("BUCKETEER_BUCKET_NAME");
+$bucket_region = getenv("BUCKETEER_AWS_REGION");
+$bucket_key = getenv("BUCKETEER_AWS_ACCESS_KEY_ID");
+$bucket_secret = getenv("BUCKETEER_AWS_SECRET_ACCESS_KEY");
+
+if ($bucket_id) {
+	$media_path = "https://" . $bucket_id . ".s3.amazonaws.com/public/";
+	$media_root = $media_path; // is this ok?
+} else {
+	// Regular Storage Environmental Variable
+	$media_path = $host . "media/"; // don't forget to set permissions on this folder
+	$media_root = $root . "media/";
+}
 
 $models_root = $admin_root . "models/";
 
@@ -30,6 +42,11 @@ $m_pad = 5;
 $resize = false;
 $resize_scale = 65;
 $resize_root = $media_root . "hi/";
+
+// Media DB Increment/Decrement amount
+// SEE THIS: https://stackoverflow.com/questions/14078288/heroku-mysql-auto-increment
+$m_db_incr = 10; // If using Heroku / ClearDB
+// $m_db_incr = 1; // All Else
 
 // namespace stuff, for markdown parser
 set_include_path($lib_root);
@@ -50,7 +67,7 @@ function db_connect($remote_user)
 	// Read Only MySQL URL String
 	$readOnlyURLString = getenv("CLEARDB_DATABASE_URL");
 
-	if (!$adminURLString) {
+	if ($adminURLString) {
 		// IF YOU ARE USING ENVIRONMENTAL VARIABLES (you should)
 		$urlAdmin = parse_url($adminURLString);
 		$host = $urlAdmin["host"];

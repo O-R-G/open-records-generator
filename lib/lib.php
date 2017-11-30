@@ -1,4 +1,5 @@
 <?
+require('/app/vendor/autoload.php');
 /* miscellaneous functions */
 
 function slug($name = "untitled")

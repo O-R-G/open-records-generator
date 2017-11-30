@@ -157,7 +157,7 @@ function process_media($toid)
 				$m_name = $_FILES["uploads"]["name"][$key];
 				$m_type = strtolower(end(explode(".", $m_name)));
 				$m_rows += 10;
-				$m_file = m_pad($m_rows).".".$m_type;
+				$m_file = m_pad($m_rows)."wt".".".$m_type;
 
 				$m_dest = $resize ? $resize_root : $media_root;
 				$m_dest.= $m_file;

@@ -1,5 +1,5 @@
 <?
-$autoload = __DIR__."/../vendor/autoload.php";
+$autoload = "/app/open-records-generator/vendor/autoload.php";
 require($autoload);
 /* miscellaneous functions */
 

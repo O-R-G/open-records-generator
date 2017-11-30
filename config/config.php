@@ -47,7 +47,7 @@ function db_connect($remote_user)
 
 	// IF YOU ARE USING ENVIRONMENTAL VARIABLES (you should)
 	// Admin MySQL URL string
-	$urlAdmin = parse_url(getenv("CLEARDB_DATABASE_ADMIN_URL"));
+	$urlAdmin = parse_url(getenv("CLEARDB_DATABASE_URL"));
 	$host = $urlAdmin["host"];
 	$dbse = substr($urlAdmin["path"], 1);
 
@@ -55,7 +55,7 @@ function db_connect($remote_user)
 	$creds['rw']['db_pass'] = $urlAdmin["pass"];
 
 	// Read Only MySQL URL String
-	$urlReadOnly = parse_url(getenv("CLEARDB_DATABASE_ADMIN_URL"));
+	$urlReadOnly = parse_url(getenv("CLEARDB_DATABASE_URL"));
 	$creds['r']['db_user'] = $urlReadOnly["user"];
 	$creds['r']['db_pass'] = $urlReadOnly["pass"];
 

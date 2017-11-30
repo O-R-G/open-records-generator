@@ -138,18 +138,6 @@ function process_media($toid)
 	global $bucket_key;
 	global $bucket_secret;
 
-	$s3 = NULL;
-	if ($bucket_id) {
-		$s3 = new Aws\S3\S3Client([
-	    'version'     => 'latest',
-	    'region'      => $bucket_region,
-	    'credentials' => [
-	        'key'    => $bucket_key,
-	        'secret' => $bucket_secret
-	    ]
-		]);
-	}
-
 	$m_rows = $mm->num_rows();
 	$m_old = $m_rows;
 	foreach($_FILES["uploads"]["error"] as $key => $error)
@@ -157,6 +145,14 @@ function process_media($toid)
 		if($error == UPLOAD_ERR_OK)
 		{
 			if ($bucket_id) {
+			$s3 = new Aws\S3\S3Client([
+			    'version'     => 'latest',
+			    'region'      => $bucket_region,
+			    'credentials' => [
+			        'key'    => $bucket_key,
+			        'secret' => $bucket_secret
+			    ]
+				]);
 				$tmp_name = $_FILES["uploads"]["tmp_name"][$key];
 				$m_name = $_FILES["uploads"]["name"][$key];
 				$m_type = strtolower(end(explode(".", $m_name)));

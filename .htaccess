@@ -1,11 +1,11 @@
-AuthUserFile /Library/WebServer/Documents/.htpasswd
+AuthUserFile /app/.htpasswd
 AuthName "OPEN-RECORDS-GENERATOR"
 AuthType Basic
 Require valid-user
-# 
+#
 Options +FollowSymLinks -Indexes
 IndexIgnore */*
- 
+
 # Turn on the RewriteEngine
 RewriteEngine On
 # RewriteOptions Inherit
@@ -19,7 +19,3 @@ RewriteRule ^ %1 [L,R=301]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^.*$ index.php
-
-# change upload limit
-php_value upload_max_filesize 40M
-php_value post_max_size 42M

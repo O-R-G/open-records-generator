@@ -138,7 +138,7 @@ function process_media($toid)
 	global $bucket_key;
 	global $bucket_secret;
 
-	$m_rows = $mm->num_rows();
+	$m_rows = $mm->insert_id;
 	$m_old = $m_rows;
 	foreach($_FILES["uploads"]["error"] as $key => $error)
 	{
@@ -156,7 +156,7 @@ function process_media($toid)
 				$tmp_name = $_FILES["uploads"]["tmp_name"][$key];
 				$m_name = $_FILES["uploads"]["name"][$key];
 				$m_type = strtolower(end(explode(".", $m_name)));
-				$m_rows += 10;
+				$m_rows += $m_db_incr;
 				$m_file = m_pad($m_rows)."wt".".".$m_type;
 
 				$m_dest = $resize ? $resize_root : $media_root;
@@ -175,7 +175,7 @@ function process_media($toid)
 					$m_arr["caption"] = "'".$rr->captions[$key+count($rr->medias)]."'";
 					$mm->insert($m_arr);
 				} catch (Exception $e) {
-					$m_rows -= 10;
+					$m_rows -= $m_db_incr;
 				}
 			} else {
 				$tmp_name = $_FILES["uploads"]["tmp_name"][$key];

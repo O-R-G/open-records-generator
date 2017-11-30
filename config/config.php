@@ -2,7 +2,7 @@
 date_default_timezone_set('America/New_York');
 
 // database settings
-$db_name = "OPEN-RECORDS-GENERATOR";
+$db_name = "ica";
 
 // $host = "http://o-r-g.com/";
 $host = "http://".$_SERVER["HTTP_HOST"]."/";
@@ -44,30 +44,45 @@ function db_connect($remote_user)
 {
 	$users = array();
 	$creds = array();
-	
-	// full access
-	$creds['full']['db_user'] = "reinfurt_42";
-	$creds['full']['db_pass'] = "vNDEC89e";
-	
-	// read / write access 
-	// (can't create / drop tables)
-	$creds['rw']['db_user'] = "reinfurt_42_w";
-	$creds['rw']['db_pass'] = "Rh5JrwEP";
-	
-	// read-only access
-	$creds['r']['db_user'] = "reinfurt_42_r";
-	$creds['r']['db_pass'] = "8hPxYMS9";
-	
-	// users -- should this be changed to a txt / csv file?
-	$users["dfw"] = $creds['rw'];
+
+	// IF YOU ARE USING ENVIRONMENTAL VARIABLES (you should)
+	// Admin MySQL URL string
+	$urlAdmin = parse_url(getenv("CLEARDB_DATABASE_ADMIN_URL"));
+	$host = $urlAdmin["host"];
+	$dbse = substr($urlAdmin["path"], 1);
+
+	$creds['rw']['db_user'] = $urlAdmin["user"];
+	$creds['rw']['db_pass'] = $urlAdmin["pass"];
+
+	// Read Only MySQL URL String
+	$urlReadOnly = parse_url(getenv("CLEARDB_DATABASE_ADMIN_URL"));
+	$creds['r']['db_user'] = $urlReadOnly["user"];
+	$creds['r']['db_pass'] = $urlReadOnly["pass"];
+
+
+	// IF YOU ARE NOT USING ENVIRONMENTAL VARIABLES
+	// $host = "db153.pair.com";
+	// $dbse = "reinfurt_onrungo";
+	// // full access
+	// $creds['full']['db_user'] = "reinfurt_42";
+	// $creds['full']['db_pass'] = "vNDEC89e";
+  //
+	// // read / write access
+	// // (can't create / drop tables)
+	// $creds['rw']['db_user'] = "reinfurt_42_w";
+	// $creds['rw']['db_pass'] = "Rh5JrwEP";
+  //
+	// // read-only access
+	// $creds['r']['db_user'] = "reinfurt_42_r";
+	// $creds['r']['db_pass'] = "8hPxYMS9";
+
+	// users
 	$users["main"] = $creds['rw'];
 	$users["guest"] = $creds['r'];
-	
-	$host = "db153.pair.com";
-	$dbse = "reinfurt_onrungo";
+
 	$user = $users[$remote_user]['db_user'];
 	$pass = $users[$remote_user]['db_pass'];
-	
+
 	$db = new mysqli($host, $user, $pass, $dbse);
 	if($db->connect_errno)
 		echo "Failed to connect to MySQL: " . $db->connect_error;

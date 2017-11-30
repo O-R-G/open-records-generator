@@ -1,5 +1,6 @@
 <?
-require('../vendor/autoload.php');
+$autoload = __DIR__."/../vendor/autoload.php";
+require($autoload);
 /* miscellaneous functions */
 
 function slug($name = "untitled")

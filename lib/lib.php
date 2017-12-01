@@ -144,6 +144,12 @@ function process_media($toid)
 	{
 		if($error == UPLOAD_ERR_OK)
 		{
+			// add to db's image list
+			$m_arr["type"] = "'".$m_type."'";
+			$m_arr["object"] = "'".$toid."'";
+			$m_arr["caption"] = "'".$rr->captions[$key+count($rr->medias)]."'";
+			$insert_id = $mm->insert($m_arr);
+
 			$tmp_name = $_FILES["uploads"]["tmp_name"][$key];
 			$m_name = $_FILES["uploads"]["name"][$key];
 			$m_type = strtolower(end(explode(".", $m_name)));
@@ -152,12 +158,6 @@ function process_media($toid)
 
 			$m_dest = $resize ? $resize_root : $media_root;
 			$m_dest.= $m_file;
-
-			// add to db's image list
-			$m_arr["type"] = "'".$m_type."'";
-			$m_arr["object"] = "'".$toid."'";
-			$m_arr["caption"] = "'".$rr->captions[$key+count($rr->medias)]."'";
-			$insert_id = $mm->insert($m_arr);
 
 			if ($bucket_id) {
 				$s3 = new Aws\S3\S3Client([

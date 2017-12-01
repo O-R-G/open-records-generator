@@ -138,14 +138,29 @@ function process_media($toid)
 	global $bucket_key;
 	global $bucket_secret;
 
-	$m_rows = $mm->insert_id;
+	$m_rows = $mm->num_rows();
 	$m_old = $m_rows;
 	foreach($_FILES["uploads"]["error"] as $key => $error)
 	{
 		if($error == UPLOAD_ERR_OK)
 		{
+			$tmp_name = $_FILES["uploads"]["tmp_name"][$key];
+			$m_name = $_FILES["uploads"]["name"][$key];
+			$m_type = strtolower(end(explode(".", $m_name)));
+			$m_rows++;
+			$m_file = m_pad($insert_id).".".$m_type;
+
+			$m_dest = $resize ? $resize_root : $media_root;
+			$m_dest.= $m_file;
+
+			// add to db's image list
+			$m_arr["type"] = "'".$m_type."'";
+			$m_arr["object"] = "'".$toid."'";
+			$m_arr["caption"] = "'".$rr->captions[$key+count($rr->medias)]."'";
+			$insert_id = $mm->insert($m_arr);
+
 			if ($bucket_id) {
-			$s3 = new Aws\S3\S3Client([
+				$s3 = new Aws\S3\S3Client([
 			    'version'     => 'latest',
 			    'region'      => $bucket_region,
 			    'credentials' => [
@@ -153,14 +168,6 @@ function process_media($toid)
 			        'secret' => $bucket_secret
 			    ]
 				]);
-				$tmp_name = $_FILES["uploads"]["tmp_name"][$key];
-				$m_name = $_FILES["uploads"]["name"][$key];
-				$m_type = strtolower(end(explode(".", $m_name)));
-				$m_rows += $m_db_incr;
-				$m_file = m_pad($m_rows)."wt".".".$m_type;
-
-				$m_dest = $resize ? $resize_root : $media_root;
-				$m_dest.= $m_file;
 
 				try {
 					$upload = $s3->putObject(array(
@@ -169,24 +176,12 @@ function process_media($toid)
 						'SourceFile' => $tmp_name
 					));
 
-					// add to db's image list
-					$m_arr["type"] = "'".$m_type."'";
-					$m_arr["object"] = "'".$toid."'";
-					$m_arr["caption"] = "'".$rr->captions[$key+count($rr->medias)]."'";
-					$mm->insert($m_arr);
 				} catch (Exception $e) {
-					$m_rows -= $m_db_incr;
+					// $m_rows -= $m_db_incr;
+					$m_rows--;
+					$mm->deactivate($insert_id);
 				}
 			} else {
-				$tmp_name = $_FILES["uploads"]["tmp_name"][$key];
-				$m_name = $_FILES["uploads"]["name"][$key];
-				$m_type = strtolower(end(explode(".", $m_name)));
-				$m_rows += $m_db_incr;
-				$m_file = m_pad().".".$m_type;
-
-				$m_dest = $resize ? $resize_root : $media_root;
-				$m_dest.= $m_file;
-
 				if(move_uploaded_file($tmp_name, $m_dest))
 				{
 					if($resize)
@@ -199,7 +194,9 @@ function process_media($toid)
 					$mm->insert($m_arr);
 				}
 				else
-					$m_rows -= $m_db_incr;
+					// $m_rows -= $m_db_incr;
+					$m_rows--;
+					$mm->deactivate($insert_id);
 			}
 		}
 	}

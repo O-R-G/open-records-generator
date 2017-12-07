@@ -2,5 +2,4 @@
 #.htaccess
 #config.php
 settings.store
-composer.lock
 vendor/

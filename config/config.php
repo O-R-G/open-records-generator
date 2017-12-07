@@ -59,6 +59,9 @@ spl_autoload_register(function ($class) {
 
 // connect to database (called in head.php)
 function db_connect($remote_user) {
+	global $adminURLString;
+	global $readOnlyURLString;
+
 	$users = array();
 	$creds = array();
 
@@ -77,20 +80,20 @@ function db_connect($remote_user) {
 
 	} else {
 			// IF YOU ARE NOT USING ENVIRONMENTAL VARIABLES
-			$host = "db153.pair.com";
-			$dbse = "reinfurt_onrungo";
+			$host = "localhost";
+			$dbse = "main";
 			// full access
-			$creds['full']['db_user'] = "reinfurt_42";
-			$creds['full']['db_pass'] = "vNDEC89e";
+			$creds['full']['db_user'] = "username";
+			$creds['full']['db_pass'] = "password";
 
 			// read / write access
 			// (can't create / drop tables)
-			$creds['rw']['db_user'] = "reinfurt_42_w";
-			$creds['rw']['db_pass'] = "Rh5JrwEP";
+			$creds['rw']['db_user'] = "username_w";
+			$creds['rw']['db_pass'] = "password";
 
 			// read-only access
-			$creds['r']['db_user'] = "reinfurt_42_r";
-			$creds['r']['db_pass'] = "8hPxYMS9";
+			$creds['r']['db_user'] = "username";
+			$creds['r']['db_pass'] = "password";
 	}
 
 	// users

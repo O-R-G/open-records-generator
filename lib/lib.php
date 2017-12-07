@@ -130,7 +130,6 @@ function process_media($toid)
 	global $resize_root;
 	global $resize_scale;
 	global $media_root;
-	global $m_db_incr;
 
 	// AWS Information
 	global $bucket_id;
@@ -147,7 +146,7 @@ function process_media($toid)
 			$tmp_name = $_FILES["uploads"]["tmp_name"][$key];
 			$m_name = $_FILES["uploads"]["name"][$key];
 			$m_type = strtolower(end(explode(".", $m_name)));
-			
+
 			// add to db's image list
 			$m_arr["type"] = "'".$m_type."'";
 			$m_arr["object"] = "'".$toid."'";
@@ -177,7 +176,6 @@ function process_media($toid)
 					));
 
 				} catch (Exception $e) {
-					// $m_rows -= $m_db_incr;
 					$m_rows--;
 					$mm->deactivate($insert_id);
 				}
@@ -186,17 +184,11 @@ function process_media($toid)
 				{
 					if($resize)
 						resize($m_dest, $media_root.$m_file, $resize_scale);
-
-					// add to db's image list
-					$m_arr["type"] = "'".$m_type."'";
-					$m_arr["object"] = "'".$toid."'";
-					$m_arr["caption"] = "'".$rr->captions[$key+count($rr->medias)]."'";
-					$mm->insert($m_arr);
 				}
-				else
-					// $m_rows -= $m_db_incr;
+				else {
 					$m_rows--;
 					$mm->deactivate($insert_id);
+				}
 			}
 		}
 	}

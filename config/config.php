@@ -3,7 +3,7 @@ date_default_timezone_set('America/New_York');
 
 // database settings
 $db_name = getenv("DATABASE_NAME");
-$db_name = $db_name ? $dbname : "open-records-generator";
+$db_name = $db_name ? $db_name : "open-records-generator";
 
 // $host = "http://o-r-g.com/";
 $host = "http://".$_SERVER["HTTP_HOST"]."/";

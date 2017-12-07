@@ -1,6 +1,7 @@
 <?
 $vendor_dir = __DIR__."/../vendor/";
 require_once($vendor_dir."autoload.php");
+
 /* miscellaneous functions */
 
 function slug($name = "untitled")

@@ -43,11 +43,6 @@ $resize = false;
 $resize_scale = 65;
 $resize_root = $media_root . "hi/";
 
-// Media DB Increment/Decrement amount
-// SEE THIS: https://stackoverflow.com/questions/14078288/heroku-mysql-auto-increment
-$m_db_incr = 10; // If using Heroku / ClearDB
-// $m_db_incr = 1; // All Else
-
 // namespace stuff, for markdown parser
 set_include_path($lib_root);
 spl_autoload_register(function ($class) {

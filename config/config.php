@@ -6,7 +6,8 @@ $db_name = getenv("DATABASE_NAME");
 $db_name = $db_name ? $db_name : "open-records-generator";
 
 // $host = "http://o-r-g.com/";
-$host = "http://".$_SERVER["HTTP_HOST"]."/";
+$protocol = isset($_SERVER["HTTPS"]) ? 'https' : 'http';
+$host = $protocol."://".$_SERVER["HTTP_HOST"]."/";
 $root = $_SERVER["DOCUMENT_ROOT"]."/";
 
 $admin_path = $host . "open-records-generator/";

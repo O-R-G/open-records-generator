@@ -2,7 +2,8 @@
 date_default_timezone_set('America/New_York');
 
 // database settings
-$db_name = "ica";
+$db_name = getenv("DATABASE_NAME");
+$db_name = $db_name ? $dbname : "open-records-generator";
 
 // $host = "http://o-r-g.com/";
 $host = "http://".$_SERVER["HTTP_HOST"]."/";
@@ -10,6 +11,11 @@ $root = $_SERVER["DOCUMENT_ROOT"]."/";
 
 $admin_path = $host . "open-records-generator/";
 $admin_root = $root . "open-records-generator/";
+
+// Admin MySQL URL Environental Variable
+$adminURLString = getenv("CLEARDB_DATABASE_URL");
+// Read Only MySQL URL Environental Variable
+$readOnlyURLString = getenv("CLEARDB_DATABASE_URL");
 
 // AWS Bucket Environental Variables
 $bucket_id = getenv("BUCKETEER_BUCKET_NAME");
@@ -52,15 +58,9 @@ spl_autoload_register(function ($class) {
 });
 
 // connect to database (called in head.php)
-function db_connect($remote_user)
-{
+function db_connect($remote_user) {
 	$users = array();
 	$creds = array();
-
-	// Admin MySQL URL string
-	$adminURLString = getenv("CLEARDB_DATABASE_URL");
-	// Read Only MySQL URL String
-	$readOnlyURLString = getenv("CLEARDB_DATABASE_URL");
 
 	if ($adminURLString) {
 		// IF YOU ARE USING ENVIRONMENTAL VARIABLES (you should)

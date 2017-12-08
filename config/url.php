@@ -16,19 +16,18 @@ class URL extends URL_Base {
 	function __construct($urls=null) {
 
 		global $oo;
+        
+		if (!$urls) {
+            		// get script url and request url
+           	 	$script = explode('/', rtrim($_SERVER['SCRIPT_NAME'], '/'));    
+            		$urls = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
 
-        if (!$urls) {
-            // get script url and request url
-            $script = explode('/', rtrim($_SERVER['SCRIPT_NAME'], '/'));    
-            $urls = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
-
-            // compare and shift until they diverge
-            while($script[0] == $urls[0]) {
-                array_shift($script);
-                array_shift($urls);
-            }
-        }
-        print_r($urls);
+            		// compare and shift until they diverge
+            		while($script[0] == $urls[0]) {
+		                array_shift($script);
+                		array_shift($urls);
+            		}
+        	}
 
 		// check that the object that this URL refers to exists
 		try {

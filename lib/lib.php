@@ -1,7 +1,4 @@
 <?
-$vendor_dir = __DIR__."/../vendor/";
-require_once($vendor_dir."autoload.php");
-
 /* miscellaneous functions */
 
 function slug($name = "untitled")
@@ -132,12 +129,6 @@ function process_media($toid)
 	global $resize_scale;
 	global $media_root;
 
-	// AWS Information
-	global $bucket_id;
-	global $bucket_region;
-	global $bucket_key;
-	global $bucket_secret;
-
 	$m_rows = $mm->num_rows();
 	$m_old = $m_rows;
 	foreach($_FILES["uploads"]["error"] as $key => $error)
@@ -159,37 +150,13 @@ function process_media($toid)
 			$m_dest = $resize ? $resize_root : $media_root;
 			$m_dest.= $m_file;
 
-			if ($bucket_id) {
-				$s3 = new Aws\S3\S3Client([
-			    'version'     => 'latest',
-			    'region'      => $bucket_region,
-			    'credentials' => [
-			        'key'    => $bucket_key,
-			        'secret' => $bucket_secret
-			    ]
-				]);
-
-				try {
-					$upload = $s3->putObject(array(
-						'Bucket' => $bucket_id,
-						'Key' => 'public/' . $m_file,
-						'SourceFile' => $tmp_name
-					));
-
-				} catch (Exception $e) {
-					$m_rows--;
-					$mm->deactivate($insert_id);
-				}
-			} else {
-				if(move_uploaded_file($tmp_name, $m_dest))
-				{
-					if($resize)
-						resize($m_dest, $media_root.$m_file, $resize_scale);
-				}
-				else {
-					$m_rows--;
-					$mm->deactivate($insert_id);
-				}
+			if(move_uploaded_file($tmp_name, $m_dest)) {
+				if($resize)
+					resize($m_dest, $media_root.$m_file, $resize_scale);
+			}
+			else {
+				$m_rows--;
+				$mm->deactivate($insert_id);
 			}
 		}
 	}

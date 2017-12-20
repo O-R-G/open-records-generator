@@ -17,20 +17,9 @@ $adminURLString = getenv("CLEARDB_DATABASE_URL");
 // Read Only MySQL URL Environental Variable
 $readOnlyURLString = getenv("CLEARDB_DATABASE_URL");
 
-// AWS Bucket Environental Variables
-$bucket_id = getenv("BUCKETEER_BUCKET_NAME");
-$bucket_region = getenv("BUCKETEER_AWS_REGION");
-$bucket_key = getenv("BUCKETEER_AWS_ACCESS_KEY_ID");
-$bucket_secret = getenv("BUCKETEER_AWS_SECRET_ACCESS_KEY");
-
-if ($bucket_id) {
-	$media_path = "https://" . $bucket_id . ".s3.amazonaws.com/public/";
-	$media_root = $media_path; // is this ok?
-} else {
-	// Regular Storage Environmental Variable
-	$media_path = $host . "media/"; // don't forget to set permissions on this folder
-	$media_root = $root . "media/";
-}
+// Regular Storage Environmental Variable
+$media_path = $host . "media/"; // don't forget to set permissions on this folder
+$media_root = $root . "media/";
 
 $models_root = $admin_root . "models/";
 

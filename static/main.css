@@ -14,10 +14,10 @@ html {
 	font-family: "Menlo", monospace;
 	font-size: 12px;
 	line-height: 16px;
-	
+
 	/* safari can't handle fonts */
 	-webkit-font-smoothing: subpixel-antialiased;
-	
+
 	color: #000;
 	background-color: #bbb;
 }
@@ -39,10 +39,10 @@ p:last-of-type {
 /* links + colours */
 
 span.action {
-	padding: 0px 5px;	
+	padding: 0px 5px;
 }
 
-a:link, 
+a:link,
 a:visited,
 a:active {
 	text-decoration: none;
@@ -176,7 +176,31 @@ textarea.small {
 	height: 2em;
 }
 
-img, 
+.imagebox {
+	height: 5em;
+	background-color: gray;
+	overflow-y: hidden;
+	overflow-x: scroll;
+
+	display: flex;
+	flex-direction: row;
+}
+
+.image-container {
+	height: 100%;
+	padding-left: 5px;
+}
+
+.image-container:last-child {
+	padding-right: 5px;
+}
+
+.image-container > img {
+	height: 100%;
+	width: auto;
+}
+
+img,
 textarea,
 input[type="text"],
 input[type="number"],

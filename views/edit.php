@@ -30,67 +30,67 @@ $var_info["label"]["rank"] = "Rank";
 function update_object(&$old, &$new, $siblings, $vars)
 {
 	global $oo;
-	
+
 	// set default name if no name given
 	if(!$new['name1'])
 		$new['name1'] = "untitled";
-	
+
 	// add a sort of url break statement for urls that are already in existence
 	// (and potentially violate our new rules?)
 	$url_updated = urldecode($old['url']) != $new['url'];
-	
+
 	if($url_updated)
 	{
 		// slug-ify url
 		if($new['url'])
 			$new['url'] = slug($new['url']);
-	
-		// if the slugified url is empty, 
+
+		// if the slugified url is empty,
 		// or the original url field is empty,
 		// slugify the name of the object
 		if(empty($new['url']))
 			$new['url'] = slug($new['name1']);
-	
+
 		// make sure url doesn't clash with urls of siblings
-	
+
 		$s_urls = array();
 		foreach($siblings as $s_id)
 			$s_urls[] = $oo->get($s_id)['url'];
-	
+
 		$new['url'] = valid_url($new['url'], strval($old['id']), $s_urls);
-	}	
+	}
 	// deal with dates
 	if(!empty($new['begin']))
 	{
 		$dt = strtotime($new['begin']);
 		$new['begin'] = date($oo::MYSQL_DATE_FMT, $dt);
 	}
-	
+
 	if(!empty($new['end']))
 	{
 		$dt = strtotime($new['end']);
 		$new['end'] = date($oo::MYSQL_DATE_FMT, $dt);
 	}
-	
+
 	// check for differences
 	$arr = array();
 	foreach($vars as $v)
 		if($old[$v] != $new[$v])
 			$arr[$v] = $new[$v] ?  "'".$new[$v]."'" : "null";
-	
+
 	$updated = false;
 	if(!empty($arr))
 	{
 		$updated = $oo->update($old['id'], $arr);
 	}
-	
+
 	return $updated;
 }
 
 ?><div id="body-container">
 	<div id="body"><?
-	// TODO: this code is duplicated in 
-	// + add.php 
+	// TODO: this code is duplicated in
+	// + add.php
 	// + browse.php
 	// + edit.php
 	// + link.php
@@ -110,7 +110,7 @@ if ($rr->action != "update" && $uu->id)
 	// get existing image data
 	$medias = $oo->media($uu->id);
 	$num_medias = count($medias);
-	
+
 	// add associations to media arrays:
 	// $medias[$i]["file"] is url of media file
 	// $medias[$i]["display"] is url of display file (diff for pdfs)
@@ -128,7 +128,7 @@ if ($rr->action != "update" && $uu->id)
 		else
 			$medias[$i]["display"] = $medias[$i]["file"];
 	}
-	
+
 	$form_url = $admin_path."edit/".$uu->urls();
 // object contents
 ?><div id="form-container">
@@ -137,8 +137,8 @@ if ($rr->action != "update" && $uu->id)
 		</div>
 		<form
 			method="post"
-			enctype="multipart/form-data" 
-			action="<? echo $form_url; ?>" 
+			enctype="multipart/form-data"
+			action="<? echo $form_url; ?>"
 		>
 			<div class="form"><?php
 				// show object data
@@ -151,17 +151,74 @@ if ($rr->action != "update" && $uu->id)
 						{
 
                         // ** start experimental minimal wysiwig toolbar **
-                       
+
                         ?><script>
                         function link(name) {
                             var linkURL = prompt('Enter a URL:', 'http://');
-                            document.execCommand('createlink', false, linkURL);
+														if (linkURL === null || linkURL === "") {
+															return;
+														}
+
+														document.execCommand('createlink', false, linkURL);
                         }
+												function image(name) {
+													var imagebox = document.getElementById(name + '-imagebox');
+													// toggle image box
+													if (imagebox.style.display !== 'flex') {
+														imagebox.style.display = 'flex';
+
+														if (imagebox.firstChild) {
+															return;
+														}
+
+														var existingImages = document.getElementsByClassName('existing-image');
+														var imgs = [];
+
+														for (var i = 0; i < existingImages.length; i++) {
+															var images = existingImages[i].getElementsByTagName('img');
+															for (var j = 0; j < images.length; j++) {
+																// check if pdf placeholder
+																if (images[j].src.indexOf('pdf.png') === -1)
+																	imgs.push(images[j].src);
+															}
+														}
+
+														for (var i = 0; i < imgs.length; i++) {
+															var imgsrc = imgs[i];
+
+															var image = document.createElement('img');
+															image.setAttribute('src', imgsrc);
+
+															// check if video placeholder
+															if (image.naturalHeight > 10) {
+																var container = document.createElement('div');
+																container.setAttribute('class','image-container');
+																container.appendChild(image);
+																imagebox.appendChild(container);
+
+																container.onclick = (function() {
+																	// closure for variable issue
+																	var imgSource = imgsrc;
+																	return function() {
+																		imagebox.style.display = 'none';
+																		document.getElementById(name + '-editable').focus();
+																		document.execCommand('insertImage', 0, imgSource);
+																	}
+																})();
+															}
+														}
+													} else {
+														imagebox.style.display = 'none';
+													}
+												}
+
                         function edit(name) {
                             var edit = document.getElementById(name + '-edit');
                             var bold = document.getElementById(name + '-bold');
                             var italic = document.getElementById(name + '-italic');
                             var link = document.getElementById(name + '-link');
+														var image = document.getElementById(name + '-image');
+														var imagebox = document.getElementById(name + '-imagebox');
                             var htmltxt = document.getElementById(name + '-htmltxt');
                             var editable = document.getElementById(name + '-editable');
                             var textarea = document.getElementById(name + '-textarea');
@@ -170,22 +227,36 @@ if ($rr->action != "update" && $uu->id)
                                 bold.style.visibility = 'hidden';
                                 italic.style.visibility = 'hidden';
                                 link.style.visibility = 'hidden';
+																image.style.visibility = 'hidden';
+																imagebox.style.display = 'none';
                                 htmltxt.style.visibility = 'hidden';
                                 editable.style.backgroundColor = '#FFF';
                                 edit.innerHTML='edit...';
-                                html = editable.innerHTML;      
-                                textarea.textContent = html;    // update textarea for form submit
+
+																if (textarea.style.display != 'block') {
+																	var html = editable.innerHTML;
+	                                textarea.value = html;    // update textarea for form submit
+																} else {
+																	togglehtml(name);
+																}
                             } else {
                                 editable.contentEditable = 'true';
                                 bold.style.visibility = 'visible';
                                 italic.style.visibility = 'visible';
                                 link.style.visibility = 'visible';
+																image.style.visibility = 'visible';
+																// imagebox.style.visibility = 'visible';
                                 htmltxt.style.visibility = 'visible';
                                 editable.style.backgroundColor = '#FFF';
                                 edit.innerHTML='done.';
                             }
                         }
-                        function showhtml(name) {
+                        function togglehtml(name) {
+														var bold = document.getElementById(name + '-bold');
+														var italic = document.getElementById(name + '-italic');
+														var link = document.getElementById(name + '-link');
+														var image = document.getElementById(name + '-image');
+														var imagebox = document.getElementById(name + '-imagebox');
                             var htmltxt = document.getElementById(name + '-htmltxt');
                             var editable = document.getElementById(name + '-editable');
                             var textarea = document.getElementById(name + '-textarea');
@@ -193,22 +264,43 @@ if ($rr->action != "update" && $uu->id)
                                 textarea.style.display = 'none';
                                 editable.style.display = 'block';
                                 htmltxt.innerHTML='html';
-                                html = textarea.textContent;
-                                editable.innerHTML = html;    // update editable 
+
+																bold.style.visibility = 'visible';
+                                italic.style.visibility = 'visible';
+                                link.style.visibility = 'visible';
+																image.style.visibility = 'visible';
+																// imagebox.style.display = 'block';
+
+																var html = textarea.value;
+                                editable.innerHTML = html;    // update editable
                             } else {
                                 textarea.style.display = 'block';
                                 editable.style.display = 'none';
                                 htmltxt.innerHTML='text';
+
+																bold.style.visibility = 'hidden';
+                                italic.style.visibility = 'hidden';
+                                link.style.visibility = 'hidden';
+																image.style.visibility = 'hidden';
+																imagebox.style.display = 'none';
+
+																var html = editable.innerHTML;
+																textarea.value = html;    // update textarea for form submit
                             }
                         }
+
                         </script>
 
-                        <a id="<? echo $var; ?>-edit" class='right' href="#null" onclick="edit('<? echo $var; ?>');">edit...</a>
+												<div class="right">
+													<a id="<? echo $var; ?>-htmltxt" class='hide' href="#null" onclick="togglehtml('<? echo $var; ?>');" style="margin-right:6px;">html</a>
+													<a id="<? echo $var; ?>-edit" class='' href="#null" onclick="edit('<? echo $var; ?>');">edit...</a>
+												</div>
                         <a id="<? echo $var; ?>-bold" class='hide' href="#null" onclick="document.execCommand('bold',false,null);">bold</a>
                         <a id="<? echo $var; ?>-italic" class='hide' href="#null" onclick="document.execCommand('italic',false,null);">italic</a>
                         <a id="<? echo $var; ?>-link" class='hide' href="#null" onclick="link('<? echo $var; ?>');">link</a>
-                        <a id="<? echo $var; ?>-htmltxt" class='hide' href="#null" onclick="showhtml('<? echo $var; ?>');">html</a>
-                        
+												<a id="<? echo $var; ?>-image" class='hide' href="#null" onclick="image('<? echo $var; ?>');">image</a>
+
+												<div id="<? echo $var; ?>-imagebox" class='imagebox dontdisplay'></div>
                         <div name='<? echo $var; ?>' class='large editable' contenteditable='false' id='<? echo $var; ?>-editable'><?
                             if($item[$var])
                                 echo $item[$var];
@@ -217,21 +309,22 @@ if ($rr->action != "update" && $uu->id)
                         <textarea name='<? echo $var; ?>' class='large dontdisplay' id='<? echo $var; ?>-textarea'><?
                             if($item[$var])
                                 echo $item[$var];
-                        ?></textarea><?
+                        ?></textarea>
+												<?
 
                         // ** end minimal wysiwig toolbar **
 
 						}
 						elseif($var == "url")
 						{
-						?><input name='<? echo $var; ?>' 
+						?><input name='<? echo $var; ?>'
 								type='<? echo $var_info["input-type"][$var]; ?>'
 								value='<? echo urldecode($item[$var]); ?>'
 						><?
 						}
 						else
 						{
-						?><input name='<? echo $var; ?>' 
+						?><input name='<? echo $var; ?>'
 								type='<? echo $var_info["input-type"][$var]; ?>'
 								value='<? echo htmlspecialchars($item[$var], ENT_QUOTES); ?>'
 						><?
@@ -259,14 +352,14 @@ if ($rr->action != "update" && $uu->id)
 						{
 							if($j == $medias[$i]["rank"])
 							{
-							?><option selected value="<? echo $j; ?>"><? 
-								echo $j; 
+							?><option selected value="<? echo $j; ?>"><?
+								echo $j;
 							?></option><?php
 							}
 							else
 							{
-							?><option value="<? echo $j; ?>"><? 
-								echo $j; 
+							?><option value="<? echo $j; ?>"><?
+								echo $j;
 							?></option><?php
 							}
 						}
@@ -277,12 +370,12 @@ if ($rr->action != "update" && $uu->id)
 							name="deletes[<? echo $i; ?>]"
 						>
 					delete image</label>
-					<input 
+					<input
 						type="hidden"
 						name="medias[<? echo $i; ?>]"
 						value="<? echo $medias[$i]['id']; ?>"
 					>
-					<input 
+					<input
 						type="hidden"
 						name="types[<? echo $i; ?>]"
 						value="<? echo $medias[$i]['type']; ?>"
@@ -308,16 +401,16 @@ if ($rr->action != "update" && $uu->id)
 						type='hidden'
 						name='action'
 						value='update'
-					>	
-					<input 
-						type='button' 
-						name='cancel' 
-						value='Cancel' 
-						onClick="<? echo $js_back; ?>" 
 					>
-					<input 
+					<input
+						type='button'
+						name='cancel'
+						value='Cancel'
+						onClick="<? echo $js_back; ?>"
+					>
+					<input
 						type='submit'
-						name='submit'  
+						name='submit'
 						value='Update Object'
 					>
 				</div>
@@ -328,7 +421,7 @@ if ($rr->action != "update" && $uu->id)
 }
 // THIS CODE NEEDS TO BE FACTORED OUT SO HARD
 // basically the same as what is happening in add.php
-else 
+else
 {
 	$new = array();
 	// objects
@@ -339,13 +432,13 @@ else
 	}
 	$siblings = $oo->siblings($uu->id);
 	$updated = update_object($item, $new, $siblings, $vars);
-	
+
 	// process new media
 	$updated = (process_media($uu->id) || $updated);
-	
+
 	// delete media
-	// check to see if $rr->deletes exists (isset) 
-	// because if checkbox is unchecked that variable "doesn't exist" 
+	// check to see if $rr->deletes exists (isset)
+	// because if checkbox is unchecked that variable "doesn't exist"
 	// although the expected behaviour is for it to exist but be null.
 	if(isset($rr->deletes))
 	{
@@ -357,12 +450,12 @@ else
 		}
 	}
 
-	// update caption, weight, rank  
+	// update caption, weight, rank
 	$num_captions = sizeof($rr->captions);
 	if (sizeof($rr->medias) < $num_captions)
 		$num_captions = sizeof($rr->medias);
 
-	for ($i = 0; $i < $num_captions; $i++) 
+	for ($i = 0; $i < $num_captions; $i++)
 	{
 		unset($m_arr);
 		$m_id = $rr->medias[$i];
@@ -400,6 +493,6 @@ else
 	?><p>Nothing was edited, therefore update not required.</p><?
 	}
 	?></div><?
-} 
+}
 ?></div>
 </div>

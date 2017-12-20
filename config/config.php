@@ -2,15 +2,22 @@
 date_default_timezone_set('America/New_York');
 
 // database settings
-$db_name = "OPEN-RECORDS-GENERATOR";
+$db_name = getenv("DATABASE_NAME");
+$db_name = $db_name ? $db_name : "open-records-generator";
 
 // $host = "http://o-r-g.com/";
-$host = "http://".$_SERVER["HTTP_HOST"]."/";
+$host = "//".$_SERVER["HTTP_HOST"]."/";
 $root = $_SERVER["DOCUMENT_ROOT"]."/";
 
 $admin_path = $host . "open-records-generator/";
 $admin_root = $root . "open-records-generator/";
 
+// Admin MySQL URL Environental Variable
+$adminURLString = getenv("MYSQL_RW_DATABASE_URL");
+// Read Only MySQL URL Environental Variable
+$readOnlyURLString = getenv("MYSQL_R_DATABASE_URL");
+
+// Regular Storage Environmental Variable
 $media_path = $host . "media/"; // don't forget to set permissions on this folder
 $media_root = $root . "media/";
 
@@ -40,34 +47,51 @@ spl_autoload_register(function ($class) {
 });
 
 // connect to database (called in head.php)
-function db_connect($remote_user)
-{
+function db_connect($remote_user) {
+	global $adminURLString;
+	global $readOnlyURLString;
+
 	$users = array();
 	$creds = array();
-	
-	// full access
-	$creds['full']['db_user'] = "reinfurt_42";
-	$creds['full']['db_pass'] = "vNDEC89e";
-	
-	// read / write access 
-	// (can't create / drop tables)
-	$creds['rw']['db_user'] = "reinfurt_42_w";
-	$creds['rw']['db_pass'] = "Rh5JrwEP";
-	
-	// read-only access
-	$creds['r']['db_user'] = "reinfurt_42_r";
-	$creds['r']['db_pass'] = "8hPxYMS9";
-	
-	// users -- should this be changed to a txt / csv file?
-	$users["dfw"] = $creds['rw'];
+
+	if ($adminURLString) {
+		// IF YOU ARE USING ENVIRONMENTAL VARIABLES (you should)
+		$urlAdmin = parse_url($adminURLString);
+		$host = $urlAdmin["host"];
+		$dbse = substr($urlAdmin["path"], 1);
+
+		$creds['rw']['db_user'] = $urlAdmin["user"];
+		$creds['rw']['db_pass'] = $urlAdmin["pass"];
+
+		$urlReadOnly = parse_url($readOnlyURLString);
+		$creds['r']['db_user'] = $urlReadOnly["user"];
+		$creds['r']['db_pass'] = $urlReadOnly["pass"];
+
+	} else {
+		// IF YOU ARE NOT USING ENVIRONMENTAL VARIABLES
+		$host = "localhost";
+		$dbse = "main";
+		// full access
+		$creds['full']['db_user'] = "username";
+		$creds['full']['db_pass'] = "password";
+
+		// read / write access
+		// (can't create / drop tables)
+		$creds['rw']['db_user'] = "username_w";
+		$creds['rw']['db_pass'] = "password";
+
+		// read-only access
+		$creds['r']['db_user'] = "username";
+		$creds['r']['db_pass'] = "password";
+	}
+
+	// users
 	$users["main"] = $creds['rw'];
 	$users["guest"] = $creds['r'];
-	
-	$host = "db153.pair.com";
-	$dbse = "reinfurt_onrungo";
+
 	$user = $users[$remote_user]['db_user'];
 	$pass = $users[$remote_user]['db_pass'];
-	
+
 	$db = new mysqli($host, $user, $pass, $dbse);
 	if($db->connect_errno)
 		echo "Failed to connect to MySQL: " . $db->connect_error;

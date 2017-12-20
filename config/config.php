@@ -13,9 +13,9 @@ $admin_path = $host . "open-records-generator/";
 $admin_root = $root . "open-records-generator/";
 
 // Admin MySQL URL Environental Variable
-$adminURLString = getenv("CLEARDB_DATABASE_URL");
+$adminURLString = getenv("MYSQL_RW_DATABASE_URL");
 // Read Only MySQL URL Environental Variable
-$readOnlyURLString = getenv("CLEARDB_DATABASE_URL");
+$readOnlyURLString = getenv("MYSQL_R_DATABASE_URL");
 
 // Regular Storage Environmental Variable
 $media_path = $host . "media/"; // don't forget to set permissions on this folder

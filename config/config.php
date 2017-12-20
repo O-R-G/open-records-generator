@@ -68,21 +68,21 @@ function db_connect($remote_user) {
 		$creds['r']['db_pass'] = $urlReadOnly["pass"];
 
 	} else {
-			// IF YOU ARE NOT USING ENVIRONMENTAL VARIABLES
-			$host = "localhost";
-			$dbse = "main";
-			// full access
-			$creds['full']['db_user'] = "username";
-			$creds['full']['db_pass'] = "password";
+		// IF YOU ARE NOT USING ENVIRONMENTAL VARIABLES
+		$host = "localhost";
+		$dbse = "main";
+		// full access
+		$creds['full']['db_user'] = "username";
+		$creds['full']['db_pass'] = "password";
 
-			// read / write access
-			// (can't create / drop tables)
-			$creds['rw']['db_user'] = "username_w";
-			$creds['rw']['db_pass'] = "password";
+		// read / write access
+		// (can't create / drop tables)
+		$creds['rw']['db_user'] = "username_w";
+		$creds['rw']['db_pass'] = "password";
 
-			// read-only access
-			$creds['r']['db_user'] = "username";
-			$creds['r']['db_pass'] = "password";
+		// read-only access
+		$creds['r']['db_user'] = "username";
+		$creds['r']['db_pass'] = "password";
 	}
 
 	// users

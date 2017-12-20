@@ -2,30 +2,30 @@
 /* miscellaneous functions */
 
 function slug($name = "untitled")
-{	
-	// replace non-alphanumerics at the beginning and end of the 
+{
+	// replace non-alphanumerics at the beginning and end of the
 	// string with nothing
 	$pattern = '/(\A[^\p{L}\p{N}]+|[^\p{L}\p{N}]+\z)/u';
 	$replace = '';
 	$tmp = preg_replace($pattern, $replace, $name);
-	
+
 	// replace all non-alphanumerics with hyphens
 	$pattern = '/[^\p{L}\p{N}]+/u';
 	$replace = '-';
 	$tmp = preg_replace($pattern, $replace, $tmp);
-	
+
 	// make string url lowercase (in a unicode-safe way)
 	$tmp = mb_convert_case($tmp, MB_CASE_LOWER, "UTF-8");
 
 	// transliterate utf-8 characters to plain ascii
     // this is a workaround for kunstverein-muenchen
     // because of locale server settings
-	// setlocale(LC_COLLATE, 'de_DE');	// german 
+	// setlocale(LC_COLLATE, 'de_DE');	// german
 	// $tmp = iconv('UTF-8', 'ASCII//TRANSLIT', $tmp);
 
 	// make url safe
 	$tmp = urlencode($tmp);
-	
+
 	return $tmp;
 }
 
@@ -48,7 +48,7 @@ function rand_str($len=4)
 // this url is meant to reference
 function valid_url($u, $alt, $excludes)
 {
-	// array_search returns the position (index) of $u in 
+	// array_search returns the position (index) of $u in
 	// $excludes, or false if not present in the array.
 	// therefore, strict compare to false
 	if(empty($u) || array_search($u, $excludes) !== false)
@@ -59,11 +59,11 @@ function valid_url($u, $alt, $excludes)
 	}
 	else
 		$url = $u;
-	
+
 	return $url;
 }
 
-// why do i need two of these? 
+// why do i need two of these?
 // which would be better to keep? probably the second one.
 // maybe the variables should be passed instead of called on globally
 function m_pad($m)
@@ -128,7 +128,7 @@ function process_media($toid)
 	global $resize_root;
 	global $resize_scale;
 	global $media_root;
-	
+
 	$m_rows = $mm->num_rows();
 	$m_old = $m_rows;
 	foreach($_FILES["uploads"]["error"] as $key => $error)
@@ -138,24 +138,26 @@ function process_media($toid)
 			$tmp_name = $_FILES["uploads"]["tmp_name"][$key];
 			$m_name = $_FILES["uploads"]["name"][$key];
 			$m_type = strtolower(end(explode(".", $m_name)));
-			$m_file = m_pad(++$m_rows).".".$m_type;
-			
+
+			// add to db's image list
+			$m_arr["type"] = "'".$m_type."'";
+			$m_arr["object"] = "'".$toid."'";
+			$m_arr["caption"] = "'".$rr->captions[$key+count($rr->medias)]."'";
+			$insert_id = $mm->insert($m_arr);
+			$m_rows++;
+
+			$m_file = m_pad($insert_id).".".$m_type;
 			$m_dest = $resize ? $resize_root : $media_root;
 			$m_dest.= $m_file;
-			
-			if(move_uploaded_file($tmp_name, $m_dest))
-			{
+
+			if(move_uploaded_file($tmp_name, $m_dest)) {
 				if($resize)
 					resize($m_dest, $media_root.$m_file, $resize_scale);
-				
-				// add to db's image list
-				$m_arr["type"] = "'".$m_type."'";
-				$m_arr["object"] = "'".$toid."'";
-				$m_arr["caption"] = "'".$rr->captions[$key+count($rr->medias)]."'";
-				$mm->insert($m_arr);
 			}
-			else
+			else {
 				$m_rows--;
+				$mm->deactivate($insert_id);
+			}
 		}
 	}
 	return $m_old < $m_rows;

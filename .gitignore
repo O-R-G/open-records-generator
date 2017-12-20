@@ -1,4 +1,5 @@
 # site-specific configuration files
-.htaccess
-config.php
+#.htaccess
+#config.php
 settings.store
+vendor/

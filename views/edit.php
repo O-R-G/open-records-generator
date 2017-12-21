@@ -207,8 +207,16 @@ if ($rr->action != "update" && $uu->id)
 						imagecontainer.style.display = 'none';
 					}
 				}
-
-				function edit(name) {
+				function showToolBar(name) {
+					hideToolBars();
+					var tb = document.getElementById(name + '-toolbar');
+					tb.style.display = 'block';
+				}
+				function hideToolBars() {
+					var tbs = document.getElementsByClassName('toolbar');
+					Array.prototype.forEach.call(tbs, function(tb) { tb.style.display = 'none'});
+				}
+				function commit(name) {
 					var editable = document.getElementById(name + '-editable');
 					var textarea = document.getElementById(name + '-textarea');
 					if (textarea.style.display != 'block') {
@@ -270,23 +278,24 @@ if ($rr->action != "update" && $uu->id)
 
                         ?>
 
-												<a id="<? echo $var; ?>-htmltxt" class='right' href="#null" onclick="togglehtml('<? echo $var; ?>');">html</a>
-                        <a id="<? echo $var; ?>-bold" class='' href="#null" onclick="document.execCommand('bold',false,null);">bold</a>
-                        <a id="<? echo $var; ?>-italic" class='' href="#null" onclick="document.execCommand('italic',false,null);">italic</a>
-                        <a id="<? echo $var; ?>-link" class='' href="#null" onclick="link('<? echo $var; ?>');">link</a>
-												<a id="<? echo $var; ?>-image" class='' href="#null" onclick="image('<? echo $var; ?>');">image</a>
-
+												<div id="<?echo $var;?>-toolbar" class="toolbar dontdisplay">
+													<a id="<? echo $var; ?>-htmltxt" class='right' href="#null" onclick="togglehtml('<? echo $var; ?>');">html</a>
+													<a id="<? echo $var; ?>-bold" class='' href="#null" onclick="document.execCommand('bold',false,null);">bold</a>
+	                        <a id="<? echo $var; ?>-italic" class='' href="#null" onclick="document.execCommand('italic',false,null);">italic</a>
+	                        <a id="<? echo $var; ?>-link" class='' href="#null" onclick="link('<? echo $var; ?>');">link</a>
+													<a id="<? echo $var; ?>-image" class='' href="#null" onclick="image('<? echo $var; ?>');">image</a>
+												</div>
 												<div id="<?echo $var; ?>-imagecontainer" class='dontdisplay' style="background-color: #999;">
 													<span style="color: white;">insert an image...</span>
 													<div id="<? echo $var; ?>-imagebox" class='imagebox'></div>
 												</div>
 
-												<div name='<? echo $var; ?>' class='large editable' contenteditable='true' id='<? echo $var; ?>-editable' onblur="edit('<? echo $var; ?>');"><?
+												<div name='<? echo $var; ?>' class='large editable' contenteditable='true' id='<? echo $var; ?>-editable' onclick="showToolBar('<? echo $var; ?>');" onblur="commit('<? echo $var; ?>');"><?
                             if($item[$var])
                                 echo $item[$var];
                         ?></div>
 
-                        <textarea name='<? echo $var; ?>' class='large dontdisplay' id='<? echo $var; ?>-textarea' onblur="edit('<? echo $var; ?>');"><?
+                        <textarea name='<? echo $var; ?>' class='large dontdisplay' id='<? echo $var; ?>-textarea' onclick="showToolBar('<? echo $var; ?>');" onblur="commit('<? echo $var; ?>');"><?
                             if($item[$var])
                                 echo $item[$var];
                         ?></textarea>
@@ -307,6 +316,7 @@ if ($rr->action != "update" && $uu->id)
 						?><input name='<? echo $var; ?>'
 								type='<? echo $var_info["input-type"][$var]; ?>'
 								value='<? echo urldecode($item[$var]); ?>'
+								onclick="hideToolBars();"
 						><?
 						}
 						else
@@ -314,6 +324,7 @@ if ($rr->action != "update" && $uu->id)
 						?><input name='<? echo $var; ?>'
 								type='<? echo $var_info["input-type"][$var]; ?>'
 								value='<? echo htmlspecialchars($item[$var], ENT_QUOTES); ?>'
+								onclick="hideToolBars();"
 						><?
 						}
 					?></div>
@@ -330,7 +341,7 @@ if ($rr->action != "update" && $uu->id)
 							<img src="<? echo $medias[$i]['display']; ?>">
 						</a>
 					</div>
-					<textarea name="captions[]"><?
+					<textarea name="captions[]" onclick="hideToolBars();"><?
 						echo $medias[$i]["caption"];
 					?></textarea>
 					<span>rank</span>

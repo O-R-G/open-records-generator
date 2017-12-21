@@ -140,7 +140,123 @@ if ($rr->action != "update" && $uu->id)
 			enctype="multipart/form-data"
 			action="<? echo $form_url; ?>"
 		>
-			<div class="form"><?php
+			<div class="form">
+				<script>
+				function link(name) {
+						var linkURL = prompt('Enter a URL:', 'http://');
+						if (linkURL === null || linkURL === "") {
+							return;
+						}
+
+						document.execCommand('createlink', false, linkURL);
+				}
+				function resignImageContainer(name) {
+					var imagecontainer = document.getElementById(name + '-imagecontainer');
+					if (imagecontainer.style.display === 'block') {
+						imagecontainer.style.display = 'none';
+					}
+				}
+				function image(name) {
+					var imagecontainer = document.getElementById(name + '-imagecontainer');
+					var imagebox = document.getElementById(name + '-imagebox');
+					// toggle image box
+					if (imagecontainer.style.display !== 'block') {
+						imagecontainer.style.display = 'block';
+
+						if (imagebox.firstChild) {
+							return;
+						}
+
+						var existingImages = document.getElementsByClassName('existing-image');
+						var imgs = [];
+
+						for (var i = 0; i < existingImages.length; i++) {
+							var images = existingImages[i].getElementsByTagName('img');
+							for (var j = 0; j < images.length; j++) {
+								// check if pdf placeholder
+								if (images[j].src.indexOf('pdf.png') === -1)
+									imgs.push(images[j].src);
+							}
+						}
+
+						for (var i = 0; i < imgs.length; i++) {
+							var imgsrc = imgs[i];
+
+							var image = document.createElement('img');
+							image.setAttribute('src', imgsrc);
+
+							// check if video placeholder
+							if (image.naturalHeight > 10) {
+								var container = document.createElement('div');
+								container.setAttribute('class','image-container');
+								container.appendChild(image);
+								imagebox.appendChild(container);
+
+								container.onclick = (function() {
+									// closure for variable issue
+									var imgSource = imgsrc;
+									return function() {
+										imagecontainer.style.display = 'none';
+										document.getElementById(name + '-editable').focus();
+										document.execCommand('insertImage', 0, imgSource);
+									}
+								})();
+							}
+						}
+					} else {
+						imagecontainer.style.display = 'none';
+					}
+				}
+
+				function edit(name) {
+					var editable = document.getElementById(name + '-editable');
+					var textarea = document.getElementById(name + '-textarea');
+					if (textarea.style.display != 'block') {
+						var html = editable.innerHTML;
+						textarea.value = html;    // update textarea for form submit
+					} else {
+						togglehtml(name);
+					}
+				}
+				function togglehtml(name) {
+					var bold = document.getElementById(name + '-bold');
+					var italic = document.getElementById(name + '-italic');
+					var link = document.getElementById(name + '-link');
+					var image = document.getElementById(name + '-image');
+					var imagecontainer = document.getElementById(name + '-imagecontainer');
+					var htmltxt = document.getElementById(name + '-htmltxt');
+					var editable = document.getElementById(name + '-editable');
+					var textarea = document.getElementById(name + '-textarea');
+
+					if (textarea.style.display == 'block') {
+						textarea.style.display = 'none';
+						editable.style.display = 'block';
+						htmltxt.innerHTML='html';
+
+						bold.style.visibility = 'visible';
+						italic.style.visibility = 'visible';
+						link.style.visibility = 'visible';
+						image.style.visibility = 'visible';
+
+						var html = textarea.value;
+						editable.innerHTML = html;    // update editable
+					} else {
+						textarea.style.display = 'block';
+						editable.style.display = 'none';
+						htmltxt.innerHTML='done.';
+
+						bold.style.visibility = 'hidden';
+						italic.style.visibility = 'hidden';
+						link.style.visibility = 'hidden';
+						image.style.visibility = 'hidden';
+						imagecontainer.style.display = 'none';
+
+						var html = editable.innerHTML;
+						textarea.value = html;    // update textarea for form submit
+					}
+				}
+				</script>
+				<?php
 				// show object data
 				foreach($vars as $var)
 				{
@@ -152,164 +268,35 @@ if ($rr->action != "update" && $uu->id)
 
                         // ** start experimental minimal wysiwig toolbar **
 
-                        ?><script>
-                        function link(name) {
-                            var linkURL = prompt('Enter a URL:', 'http://');
-														if (linkURL === null || linkURL === "") {
-															return;
-														}
+                        ?>
 
-														document.execCommand('createlink', false, linkURL);
-                        }
-												function image(name) {
-													var imagebox = document.getElementById(name + '-imagebox');
-													// toggle image box
-													if (imagebox.style.display !== 'flex') {
-														imagebox.style.display = 'flex';
+												<a id="<? echo $var; ?>-htmltxt" class='right' href="#null" onclick="togglehtml('<? echo $var; ?>');">html</a>
+                        <a id="<? echo $var; ?>-bold" class='' href="#null" onclick="document.execCommand('bold',false,null);">bold</a>
+                        <a id="<? echo $var; ?>-italic" class='' href="#null" onclick="document.execCommand('italic',false,null);">italic</a>
+                        <a id="<? echo $var; ?>-link" class='' href="#null" onclick="link('<? echo $var; ?>');">link</a>
+												<a id="<? echo $var; ?>-image" class='' href="#null" onclick="image('<? echo $var; ?>');">image</a>
 
-														if (imagebox.firstChild) {
-															return;
-														}
-
-														var existingImages = document.getElementsByClassName('existing-image');
-														var imgs = [];
-
-														for (var i = 0; i < existingImages.length; i++) {
-															var images = existingImages[i].getElementsByTagName('img');
-															for (var j = 0; j < images.length; j++) {
-																// check if pdf placeholder
-																if (images[j].src.indexOf('pdf.png') === -1)
-																	imgs.push(images[j].src);
-															}
-														}
-
-														for (var i = 0; i < imgs.length; i++) {
-															var imgsrc = imgs[i];
-
-															var image = document.createElement('img');
-															image.setAttribute('src', imgsrc);
-
-															// check if video placeholder
-															if (image.naturalHeight > 10) {
-																var container = document.createElement('div');
-																container.setAttribute('class','image-container');
-																container.appendChild(image);
-																imagebox.appendChild(container);
-
-																container.onclick = (function() {
-																	// closure for variable issue
-																	var imgSource = imgsrc;
-																	return function() {
-																		imagebox.style.display = 'none';
-																		document.getElementById(name + '-editable').focus();
-																		document.execCommand('insertImage', 0, imgSource);
-																	}
-																})();
-															}
-														}
-													} else {
-														imagebox.style.display = 'none';
-													}
-												}
-
-                        function edit(name) {
-                            var edit = document.getElementById(name + '-edit');
-                            var bold = document.getElementById(name + '-bold');
-                            var italic = document.getElementById(name + '-italic');
-                            var link = document.getElementById(name + '-link');
-														var image = document.getElementById(name + '-image');
-														var imagebox = document.getElementById(name + '-imagebox');
-                            var htmltxt = document.getElementById(name + '-htmltxt');
-                            var editable = document.getElementById(name + '-editable');
-                            var textarea = document.getElementById(name + '-textarea');
-                            if (editable.contentEditable == 'true') {
-                                editable.contentEditable = 'false';
-                                bold.style.visibility = 'hidden';
-                                italic.style.visibility = 'hidden';
-                                link.style.visibility = 'hidden';
-																image.style.visibility = 'hidden';
-																imagebox.style.display = 'none';
-                                htmltxt.style.visibility = 'hidden';
-                                editable.style.backgroundColor = '#FFF';
-                                edit.innerHTML='edit...';
-
-																if (textarea.style.display != 'block') {
-																	var html = editable.innerHTML;
-	                                textarea.value = html;    // update textarea for form submit
-																} else {
-																	togglehtml(name);
-																}
-                            } else {
-                                editable.contentEditable = 'true';
-                                bold.style.visibility = 'visible';
-                                italic.style.visibility = 'visible';
-                                link.style.visibility = 'visible';
-																image.style.visibility = 'visible';
-																// imagebox.style.visibility = 'visible';
-                                htmltxt.style.visibility = 'visible';
-                                editable.style.backgroundColor = '#FFF';
-                                edit.innerHTML='done.';
-                            }
-                        }
-                        function togglehtml(name) {
-														var bold = document.getElementById(name + '-bold');
-														var italic = document.getElementById(name + '-italic');
-														var link = document.getElementById(name + '-link');
-														var image = document.getElementById(name + '-image');
-														var imagebox = document.getElementById(name + '-imagebox');
-                            var htmltxt = document.getElementById(name + '-htmltxt');
-                            var editable = document.getElementById(name + '-editable');
-                            var textarea = document.getElementById(name + '-textarea');
-                            if (textarea.style.display == 'block') {
-                                textarea.style.display = 'none';
-                                editable.style.display = 'block';
-                                htmltxt.innerHTML='html';
-
-																bold.style.visibility = 'visible';
-                                italic.style.visibility = 'visible';
-                                link.style.visibility = 'visible';
-																image.style.visibility = 'visible';
-																// imagebox.style.display = 'block';
-
-																var html = textarea.value;
-                                editable.innerHTML = html;    // update editable
-                            } else {
-                                textarea.style.display = 'block';
-                                editable.style.display = 'none';
-                                htmltxt.innerHTML='text';
-
-																bold.style.visibility = 'hidden';
-                                italic.style.visibility = 'hidden';
-                                link.style.visibility = 'hidden';
-																image.style.visibility = 'hidden';
-																imagebox.style.display = 'none';
-
-																var html = editable.innerHTML;
-																textarea.value = html;    // update textarea for form submit
-                            }
-                        }
-
-                        </script>
-
-												<div class="right">
-													<a id="<? echo $var; ?>-htmltxt" class='hide' href="#null" onclick="togglehtml('<? echo $var; ?>');" style="margin-right:6px;">html</a>
-													<a id="<? echo $var; ?>-edit" class='' href="#null" onclick="edit('<? echo $var; ?>');">edit...</a>
+												<div id="<?echo $var; ?>-imagecontainer" class='dontdisplay' style="background-color: #999;">
+													<span style="color: white;">insert an image...</span>
+													<div id="<? echo $var; ?>-imagebox" class='imagebox'></div>
 												</div>
-                        <a id="<? echo $var; ?>-bold" class='hide' href="#null" onclick="document.execCommand('bold',false,null);">bold</a>
-                        <a id="<? echo $var; ?>-italic" class='hide' href="#null" onclick="document.execCommand('italic',false,null);">italic</a>
-                        <a id="<? echo $var; ?>-link" class='hide' href="#null" onclick="link('<? echo $var; ?>');">link</a>
-												<a id="<? echo $var; ?>-image" class='hide' href="#null" onclick="image('<? echo $var; ?>');">image</a>
 
-												<div id="<? echo $var; ?>-imagebox" class='imagebox dontdisplay'></div>
-                        <div name='<? echo $var; ?>' class='large editable' contenteditable='false' id='<? echo $var; ?>-editable'><?
+												<div name='<? echo $var; ?>' class='large editable' contenteditable='true' id='<? echo $var; ?>-editable' onblur="edit('<? echo $var; ?>');"><?
                             if($item[$var])
                                 echo $item[$var];
                         ?></div>
 
-                        <textarea name='<? echo $var; ?>' class='large dontdisplay' id='<? echo $var; ?>-textarea'><?
+                        <textarea name='<? echo $var; ?>' class='large dontdisplay' id='<? echo $var; ?>-textarea' onblur="edit('<? echo $var; ?>');"><?
                             if($item[$var])
                                 echo $item[$var];
                         ?></textarea>
+
+												<script>
+													document.getElementById('<?echo $var;?>-htmltxt').addEventListener('click', function(e) {resignImageContainer('<?echo $var;?>');}, false);
+													document.getElementById('<?echo $var;?>-bold').addEventListener('click', function(e) {resignImageContainer('<?echo $var;?>');}, false);
+													document.getElementById('<?echo $var;?>-italic').addEventListener('click', function(e) {resignImageContainer('<?echo $var;?>');}, false);
+													document.getElementById('<?echo $var;?>-link').addEventListener('click', function(e) {resignImageContainer('<?echo $var;?>');}, false);
+												</script>
 												<?
 
                         // ** end minimal wysiwig toolbar **

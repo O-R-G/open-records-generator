@@ -178,7 +178,7 @@ textarea.small {
 
 .imagebox {
 	height: 5em;
-	background-color: gray;
+	background-color: #999;
 	overflow-y: hidden;
 	overflow-x: scroll;
 
@@ -187,12 +187,18 @@ textarea.small {
 }
 
 .image-container {
+	cursor: pointer;
 	height: 100%;
-	padding-left: 5px;
+	margin-left: 5px;
 }
 
-.image-container:last-child {
-	padding-right: 5px;
+.image-container:hover,
+.image-container:active {
+	opacity: 0.5;
+}
+
+.image-container:first-of-type {
+	margin-left: 0px;
 }
 
 .image-container > img {

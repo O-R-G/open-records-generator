@@ -167,17 +167,15 @@ if ($rr->action != "update" && $uu->id)
 							return;
 						}
 
-						var existingImages = document.getElementsByClassName('existing-image');
-						var imgs = [];
-
-						for (var i = 0; i < existingImages.length; i++) {
-							var images = existingImages[i].getElementsByTagName('img');
-							for (var j = 0; j < images.length; j++) {
-								// check if pdf placeholder
-								if (images[j].src.indexOf('pdf.png') === -1)
-									imgs.push(images[j].src);
+						var imgs = <?
+							$mediaLinks = [];
+							for($i = 0; $i < $num_medias; $i++) {
+								if ($medias[$i]["type"] != "pdf" && $medias[$i]["type"] != "mp4" && $medias[$i]["type"] != "mp3") {
+									$mediaLinks[] = $medias[$i]['display'];
+								}
 							}
-						}
+							echo '["' . implode('", "', $mediaLinks) . '"]'
+							?>;
 
 						for (var i = 0; i < imgs.length; i++) {
 							var imgsrc = imgs[i];
@@ -215,6 +213,9 @@ if ($rr->action != "update" && $uu->id)
 				function hideToolBars() {
 					var tbs = document.getElementsByClassName('toolbar');
 					Array.prototype.forEach.call(tbs, function(tb) { tb.style.display = 'none'});
+
+					var ics = document.getElementsByClassName('imagecontainer');
+					Array.prototype.forEach.call(ics, function(ic) { ic.style.display = 'none'});
 				}
 
 				function commitAll() {
@@ -322,10 +323,10 @@ if ($rr->action != "update" && $uu->id)
 	                        <a id="<? echo $var; ?>-italic" class='' href="#null" onclick="document.execCommand('italic',false,null);">italic</a>
 	                        <a id="<? echo $var; ?>-link" class='' href="#null" onclick="link('<? echo $var; ?>');">link</a>
 													<a id="<? echo $var; ?>-image" class='' href="#null" onclick="image('<? echo $var; ?>');">image</a>
-												</div>
-												<div id="<?echo $var; ?>-imagecontainer" class='dontdisplay' style="background-color: #999;">
-													<span style="color: white;">insert an image...</span>
-													<div id="<? echo $var; ?>-imagebox" class='imagebox'></div>
+													<div id="<?echo $var; ?>-imagecontainer" class='imagecontainer dontdisplay' style="background-color: #999;">
+														<span style="color: white;">insert an image...</span>
+														<div id="<? echo $var; ?>-imagebox" class='imagebox'></div>
+													</div>
 												</div>
 
 												<div name='<? echo $var; ?>' class='large editable' contenteditable='true' id='<? echo $var; ?>-editable' onclick="showToolBar('<? echo $var; ?>');"><?

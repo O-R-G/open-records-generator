@@ -336,7 +336,7 @@ if ($rr->action != "update" && $uu->id)
 
                         <textarea name='<? echo $var; ?>' class='large dontdisplay' id='<? echo $var; ?>-textarea' onclick="showToolBar('<? echo $var; ?>');" onblur="resethtml('<? echo $var; ?>')"><?
                             if($item[$var])
-                                echo nl2br($item[$var]);
+                                echo $item[$var];
                         ?></textarea>
 
 												<script>

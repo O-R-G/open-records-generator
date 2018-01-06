@@ -293,46 +293,13 @@ if ($rr->action != "update" && $uu->id)
 					imagecontainer.style.display = 'none';
 
 					var html = editable.innerHTML;
-					textarea.value = html;    // update textarea for form submit
+					textarea.value = pretty(html);    // update textarea for form submit
 				}
 
-				// function togglehtml(name) {
-				// 	var bold = document.getElementById(name + '-bold');
-				// 	var italic = document.getElementById(name + '-italic');
-				// 	var link = document.getElementById(name + '-link');
-				// 	var image = document.getElementById(name + '-image');
-				// 	var imagecontainer = document.getElementById(name + '-imagecontainer');
-				// 	var htmltxt = document.getElementById(name + '-htmltxt');
-				// 	var editable = document.getElementById(name + '-editable');
-				// 	var textarea = document.getElementById(name + '-textarea');
-        //
-				// 	if (textarea.style.display == 'block') {
-				// 		textarea.style.display = 'none';
-				// 		editable.style.display = 'block';
-				// 		htmltxt.innerHTML='html';
-        //
-				// 		bold.style.visibility = 'visible';
-				// 		italic.style.visibility = 'visible';
-				// 		link.style.visibility = 'visible';
-				// 		image.style.visibility = 'visible';
-        //
-				// 		var html = textarea.value;
-				// 		editable.innerHTML = html;    // update editable
-				// 	} else {
-				// 		textarea.style.display = 'block';
-				// 		editable.style.display = 'none';
-				// 		htmltxt.innerHTML='done.';
-        //
-				// 		bold.style.visibility = 'hidden';
-				// 		italic.style.visibility = 'hidden';
-				// 		link.style.visibility = 'hidden';
-				// 		image.style.visibility = 'hidden';
-				// 		imagecontainer.style.display = 'none';
-        //
-				// 		var html = editable.innerHTML;
-				// 		textarea.value = html;    // update textarea for form submit
-				// 	}
-				// }
+				// pretifies html (barely) by adding a new line after a </div>
+				function pretty(str) {
+			    return (str + '').replace(/<\/div>(?!\n)/g, '</div>\n\n');
+				}
 				</script>
 				<?php
 				// show object data
@@ -368,7 +335,7 @@ if ($rr->action != "update" && $uu->id)
 
                         <textarea name='<? echo $var; ?>' class='large dontdisplay' id='<? echo $var; ?>-textarea' onclick="showToolBar('<? echo $var; ?>');" onblur="resethtml('<? echo $var; ?>')"><?
                             if($item[$var])
-                                echo $item[$var];
+                                echo nl2br($item[$var]);
                         ?></textarea>
 
 												<script>

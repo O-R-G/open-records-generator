@@ -216,6 +216,22 @@ if ($rr->action != "update" && $uu->id)
 					var tbs = document.getElementsByClassName('toolbar');
 					Array.prototype.forEach.call(tbs, function(tb) { tb.style.display = 'none'});
 				}
+
+				function commitAll() {
+					var names = <?
+						$textnames = [];
+						foreach($vars as $var) {
+							if($var_info["input-type"][$var] == "textarea") {
+								$textnames[] = $var;
+							}
+						}
+						echo '["' . implode('", "', $textnames) . '"]'
+						?>;
+
+					for (var i = 0; i < names.length; i++) {
+						commit(names[i]);
+					}
+				}
 				function commit(name) {
 					var editable = document.getElementById(name + '-editable');
 					var textarea = document.getElementById(name + '-textarea');
@@ -223,46 +239,100 @@ if ($rr->action != "update" && $uu->id)
 						var html = editable.innerHTML;
 						textarea.value = html;    // update textarea for form submit
 					} else {
-						togglehtml(name);
+						var html = textarea.value;
+						editable.innerHTML = html;    // update editable
 					}
 				}
-				function togglehtml(name) {
+
+				function resethtml(name) {
 					var bold = document.getElementById(name + '-bold');
 					var italic = document.getElementById(name + '-italic');
 					var link = document.getElementById(name + '-link');
 					var image = document.getElementById(name + '-image');
 					var imagecontainer = document.getElementById(name + '-imagecontainer');
-					var htmltxt = document.getElementById(name + '-htmltxt');
+					var html = document.getElementById(name + '-html');
+					var txt = document.getElementById(name + '-txt');
 					var editable = document.getElementById(name + '-editable');
 					var textarea = document.getElementById(name + '-textarea');
 
-					if (textarea.style.display == 'block') {
-						textarea.style.display = 'none';
-						editable.style.display = 'block';
-						htmltxt.innerHTML='html';
+					textarea.style.display = 'none';
+					editable.style.display = 'block';
 
-						bold.style.visibility = 'visible';
-						italic.style.visibility = 'visible';
-						link.style.visibility = 'visible';
-						image.style.visibility = 'visible';
+					html.style.display = 'block';
+					txt.style.display = 'none';
 
-						var html = textarea.value;
-						editable.innerHTML = html;    // update editable
-					} else {
-						textarea.style.display = 'block';
-						editable.style.display = 'none';
-						htmltxt.innerHTML='done.';
+					bold.style.visibility = 'visible';
+					italic.style.visibility = 'visible';
+					link.style.visibility = 'visible';
+					image.style.visibility = 'visible';
 
-						bold.style.visibility = 'hidden';
-						italic.style.visibility = 'hidden';
-						link.style.visibility = 'hidden';
-						image.style.visibility = 'hidden';
-						imagecontainer.style.display = 'none';
-
-						var html = editable.innerHTML;
-						textarea.value = html;    // update textarea for form submit
-					}
+					var html = textarea.value;
+					editable.innerHTML = html;    // update editable
 				}
+
+				function sethtml(name) {
+					var bold = document.getElementById(name + '-bold');
+					var italic = document.getElementById(name + '-italic');
+					var link = document.getElementById(name + '-link');
+					var image = document.getElementById(name + '-image');
+					var imagecontainer = document.getElementById(name + '-imagecontainer');
+					var html = document.getElementById(name + '-html');
+					var txt = document.getElementById(name + '-txt');
+					var editable = document.getElementById(name + '-editable');
+					var textarea = document.getElementById(name + '-textarea');
+
+					textarea.style.display = 'block';
+					editable.style.display = 'none';
+					html.style.display = 'none';
+					txt.style.display = 'block';
+
+					bold.style.visibility = 'hidden';
+					italic.style.visibility = 'hidden';
+					link.style.visibility = 'hidden';
+					image.style.visibility = 'hidden';
+					imagecontainer.style.display = 'none';
+
+					var html = editable.innerHTML;
+					textarea.value = html;    // update textarea for form submit
+				}
+
+				// function togglehtml(name) {
+				// 	var bold = document.getElementById(name + '-bold');
+				// 	var italic = document.getElementById(name + '-italic');
+				// 	var link = document.getElementById(name + '-link');
+				// 	var image = document.getElementById(name + '-image');
+				// 	var imagecontainer = document.getElementById(name + '-imagecontainer');
+				// 	var htmltxt = document.getElementById(name + '-htmltxt');
+				// 	var editable = document.getElementById(name + '-editable');
+				// 	var textarea = document.getElementById(name + '-textarea');
+        //
+				// 	if (textarea.style.display == 'block') {
+				// 		textarea.style.display = 'none';
+				// 		editable.style.display = 'block';
+				// 		htmltxt.innerHTML='html';
+        //
+				// 		bold.style.visibility = 'visible';
+				// 		italic.style.visibility = 'visible';
+				// 		link.style.visibility = 'visible';
+				// 		image.style.visibility = 'visible';
+        //
+				// 		var html = textarea.value;
+				// 		editable.innerHTML = html;    // update editable
+				// 	} else {
+				// 		textarea.style.display = 'block';
+				// 		editable.style.display = 'none';
+				// 		htmltxt.innerHTML='done.';
+        //
+				// 		bold.style.visibility = 'hidden';
+				// 		italic.style.visibility = 'hidden';
+				// 		link.style.visibility = 'hidden';
+				// 		image.style.visibility = 'hidden';
+				// 		imagecontainer.style.display = 'none';
+        //
+				// 		var html = editable.innerHTML;
+				// 		textarea.value = html;    // update textarea for form submit
+				// 	}
+				// }
 				</script>
 				<?php
 				// show object data
@@ -279,7 +349,8 @@ if ($rr->action != "update" && $uu->id)
                         ?>
 
 												<div id="<?echo $var;?>-toolbar" class="toolbar dontdisplay">
-													<a id="<? echo $var; ?>-htmltxt" class='right' href="#null" onclick="togglehtml('<? echo $var; ?>');">html</a>
+													<a id="<? echo $var; ?>-html" class='right' href="#null" onclick="sethtml('<? echo $var; ?>');">html</a>
+													<a id="<? echo $var; ?>-txt" class='right dontdisplay' href="#null" onclick="resethtml('<? echo $var; ?>');">done.</a>
 													<a id="<? echo $var; ?>-bold" class='' href="#null" onclick="document.execCommand('bold',false,null);">bold</a>
 	                        <a id="<? echo $var; ?>-italic" class='' href="#null" onclick="document.execCommand('italic',false,null);">italic</a>
 	                        <a id="<? echo $var; ?>-link" class='' href="#null" onclick="link('<? echo $var; ?>');">link</a>
@@ -290,18 +361,18 @@ if ($rr->action != "update" && $uu->id)
 													<div id="<? echo $var; ?>-imagebox" class='imagebox'></div>
 												</div>
 
-												<div name='<? echo $var; ?>' class='large editable' contenteditable='true' id='<? echo $var; ?>-editable' onclick="showToolBar('<? echo $var; ?>');" onblur="commit('<? echo $var; ?>');"><?
+												<div name='<? echo $var; ?>' class='large editable' contenteditable='true' id='<? echo $var; ?>-editable' onclick="showToolBar('<? echo $var; ?>');"><?
                             if($item[$var])
                                 echo $item[$var];
                         ?></div>
 
-                        <textarea name='<? echo $var; ?>' class='large dontdisplay' id='<? echo $var; ?>-textarea' onclick="showToolBar('<? echo $var; ?>');" onblur="commit('<? echo $var; ?>');"><?
+                        <textarea name='<? echo $var; ?>' class='large dontdisplay' id='<? echo $var; ?>-textarea' onclick="showToolBar('<? echo $var; ?>');" onblur="resethtml('<? echo $var; ?>')"><?
                             if($item[$var])
                                 echo $item[$var];
                         ?></textarea>
 
 												<script>
-													document.getElementById('<?echo $var;?>-htmltxt').addEventListener('click', function(e) {resignImageContainer('<?echo $var;?>');}, false);
+													document.getElementById('<?echo $var;?>-html').addEventListener('click', function(e) {resignImageContainer('<?echo $var;?>');}, false);
 													document.getElementById('<?echo $var;?>-bold').addEventListener('click', function(e) {resignImageContainer('<?echo $var;?>');}, false);
 													document.getElementById('<?echo $var;?>-italic').addEventListener('click', function(e) {resignImageContainer('<?echo $var;?>');}, false);
 													document.getElementById('<?echo $var;?>-link').addEventListener('click', function(e) {resignImageContainer('<?echo $var;?>');}, false);
@@ -410,6 +481,7 @@ if ($rr->action != "update" && $uu->id)
 						type='submit'
 						name='submit'
 						value='Update Object'
+						onclick='commitAll();'
 					>
 				</div>
 			</div>

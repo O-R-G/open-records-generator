@@ -176,6 +176,11 @@ textarea.small {
 	height: 2em;
 }
 
+.toolbar {
+	background-color: #ececec;
+	width: 484px;
+}
+
 .imagebox {
 	height: 5em;
 	background-color: #999;

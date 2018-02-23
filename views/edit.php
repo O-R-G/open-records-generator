@@ -142,6 +142,8 @@ if ($rr->action != "update" && $uu->id)
 		>
 			<div class="form">
 				<script>
+				var active = '';
+
 				function link(name) {
 						var linkURL = prompt('Enter a URL:', 'http://');
 						if (linkURL === null || linkURL === "") {
@@ -157,7 +159,7 @@ if ($rr->action != "update" && $uu->id)
 					document.getElementById(name + '-italic').addEventListener('click', function(e) {resignImageContainer(name);}, false);
 					document.getElementById(name + '-link').addEventListener('click', function(e) {resignImageContainer(name);}, false);
 				}
-				
+
 				function resignImageContainer(name) {
 					var imagecontainer = document.getElementById(name + '-imagecontainer');
 					if (imagecontainer.style.display === 'block') {
@@ -177,11 +179,13 @@ if ($rr->action != "update" && $uu->id)
 
 				function showToolBar(name) {
 					hideToolBars();
+					active = name;
 					var tb = document.getElementById(name + '-toolbar');
 					tb.style.display = 'block';
 				}
 
 				function hideToolBars() {
+					active = '';
 					var tbs = document.getElementsByClassName('toolbar');
 					Array.prototype.forEach.call(tbs, function(tb) { tb.style.display = 'none'});
 
@@ -240,7 +244,6 @@ if ($rr->action != "update" && $uu->id)
 
 					var html = textarea.value;
 					editable.innerHTML = html;    // update editable
-					// editable.focus();
 				}
 
 				function sethtml(name) {
@@ -267,10 +270,10 @@ if ($rr->action != "update" && $uu->id)
 
 					var html = editable.innerHTML;
 					textarea.value = pretty(html);    // update textarea for form submit
-					// textarea.focus();
+					window.scrollBy(0, textarea.getBoundingClientRect().top); // scroll to the top of the textarea
 				}
 
-				function resetViews(name) {
+				function resetViews() {
 					var names = <?
 						$textnames = [];
 						foreach($vars as $var) {
@@ -282,8 +285,25 @@ if ($rr->action != "update" && $uu->id)
 						?>;
 
 					for (var i = 0; i < names.length; i++) {
-						if (!(name && name === names[i]))
+						if (names[i] !== active)
 							showrich(names[i]);
+					}
+				}
+
+				window.onscroll = function() {
+					if (active !== '') {
+						var tb = document.getElementById(active + '-toolbar');
+						var editable = document.getElementById(active + '-editable');
+						if (tb && tb.style.display == 'block') {
+							// console.log(tb.height);
+							 if (editable.getBoundingClientRect().top - tb.offsetHeight < 0 && editable.getBoundingClientRect().bottom > 0) {
+								 tb.style.position = 'fixed';
+								 tb.style.top = 0;
+							 } else {
+								 tb.style.position = '';
+								 tb.style.top = '';
+							 }
+						}
 					}
 				}
 
@@ -342,7 +362,7 @@ if ($rr->action != "update" && $uu->id)
 													</div>
 												</div>
 
-												<div name='<? echo $var; ?>' class='large editable' contenteditable='true' id='<? echo $var; ?>-editable' onclick="showToolBar('<? echo $var; ?>'); resetViews('<? echo $var; ?>');" onblur="commit('<? echo $var; ?>');"><?
+												<div name='<? echo $var; ?>' class='large editable' contenteditable='true' id='<? echo $var; ?>-editable' onclick="showToolBar('<? echo $var; ?>'); resetViews();" onblur="commit('<? echo $var; ?>');"><?
                             if($item[$var])
                                 echo $item[$var];
                         ?></div>

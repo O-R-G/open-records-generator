@@ -176,8 +176,15 @@ textarea.small {
 	height: 2em;
 }
 
-.toolbar {
+#body > div:nth-child(odd) .toolbar {
+	background-color: #e3e3e3;
+}
+
+#body > div:nth-child(even) .toolbar {
 	background-color: #ececec;
+}
+
+.toolbar {
 	width: 484px;
 }
 

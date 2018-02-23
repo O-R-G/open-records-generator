@@ -162,49 +162,11 @@ if ($rr->action != "update" && $uu->id)
 					// toggle image box
 					if (imagecontainer.style.display !== 'block') {
 						imagecontainer.style.display = 'block';
-
-						if (imagebox.firstChild) {
-							return;
-						}
-
-						var imgs = <?
-							$mediaLinks = [];
-							for($i = 0; $i < $num_medias; $i++) {
-								if ($medias[$i]["type"] != "pdf" && $medias[$i]["type"] != "mp4" && $medias[$i]["type"] != "mp3") {
-									$mediaLinks[] = $medias[$i]['display'];
-								}
-							}
-							echo '["' . implode('", "', $mediaLinks) . '"]'
-							?>;
-
-						for (var i = 0; i < imgs.length; i++) {
-							var imgsrc = imgs[i];
-
-							var image = document.createElement('img');
-							image.setAttribute('src', imgsrc);
-
-							// check if video placeholder
-							if (image.naturalHeight > 10) {
-								var container = document.createElement('div');
-								container.setAttribute('class','image-container');
-								container.appendChild(image);
-								imagebox.appendChild(container);
-
-								container.onclick = (function() {
-									// closure for variable issue
-									var imgSource = imgsrc;
-									return function() {
-										imagecontainer.style.display = 'none';
-										document.getElementById(name + '-editable').focus();
-										document.execCommand('insertImage', 0, imgSource);
-									}
-								})();
-							}
-						}
 					} else {
 						imagecontainer.style.display = 'none';
 					}
 				}
+
 				function showToolBar(name) {
 					hideToolBars();
 					var tb = document.getElementById(name + '-toolbar');
@@ -325,7 +287,25 @@ if ($rr->action != "update" && $uu->id)
 													<a id="<? echo $var; ?>-image" class='' href="#null" onclick="image('<? echo $var; ?>');">image</a>
 													<div id="<?echo $var; ?>-imagecontainer" class='imagecontainer dontdisplay' style="background-color: #999;">
 														<span style="color: white;">insert an image...</span>
-														<div id="<? echo $var; ?>-imagebox" class='imagebox'></div>
+														<div id="<? echo $var; ?>-imagebox" class='imagebox'>
+															<?
+																for($i = 0; $i < $num_medias; $i++) {
+																	if ($medias[$i]["type"] != "pdf" && $medias[$i]["type"] != "mp4" && $medias[$i]["type"] != "mp3") {
+																		echo '<div class="image-container" id="'. m_pad($medias[$i]['id']) .'-'. $var .'"><img src="'. $medias[$i]['display'] .'"></div>';
+																		echo '<script>
+																		document.getElementById("'. m_pad($medias[$i]['id']) .'-'. $var .'").onclick = (function() {
+																			// closure for variable issue
+																			return function() {
+																				document.getElementById("'. $var .'-imagecontainer").style.display = "none";
+																				document.getElementById("'. $var .'-editable").focus();
+																				document.execCommand("insertImage", 0, "'. $medias[$i]['display'] .'");
+																			}
+																		})();
+																		</script>';
+																	}
+																}
+															?>;
+															</div>
 													</div>
 												</div>
 

@@ -357,7 +357,7 @@ if ($rr->action != "update" && $uu->id)
 																		</script>';
 																	}
 																}
-															?>;
+															?>
 															</div>
 													</div>
 												</div>

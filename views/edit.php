@@ -150,6 +150,14 @@ if ($rr->action != "update" && $uu->id)
 
 						document.execCommand('createlink', false, linkURL);
 				}
+
+				function addListeners(name) {
+					document.getElementById(name + '-html').addEventListener('click', function(e) {resignImageContainer(name);}, false);
+					document.getElementById(name + '-bold').addEventListener('click', function(e) {resignImageContainer(name);}, false);
+					document.getElementById(name + '-italic').addEventListener('click', function(e) {resignImageContainer(name);}, false);
+					document.getElementById(name + '-link').addEventListener('click', function(e) {resignImageContainer(name);}, false);
+				}
+				
 				function resignImageContainer(name) {
 					var imagecontainer = document.getElementById(name + '-imagecontainer');
 					if (imagecontainer.style.display === 'block') {
@@ -172,6 +180,7 @@ if ($rr->action != "update" && $uu->id)
 					var tb = document.getElementById(name + '-toolbar');
 					tb.style.display = 'block';
 				}
+
 				function hideToolBars() {
 					var tbs = document.getElementsByClassName('toolbar');
 					Array.prototype.forEach.call(tbs, function(tb) { tb.style.display = 'none'});
@@ -198,7 +207,7 @@ if ($rr->action != "update" && $uu->id)
 				function commit(name) {
 					var editable = document.getElementById(name + '-editable');
 					var textarea = document.getElementById(name + '-textarea');
-					if (textarea.style.display != 'block') {
+					if (textarea.style.display !== 'block') {
 						var html = editable.innerHTML;
 						textarea.value = html;    // update textarea for form submit
 					} else {
@@ -207,7 +216,7 @@ if ($rr->action != "update" && $uu->id)
 					}
 				}
 
-				function resethtml(name) {
+				function showrich(name) {
 					var bold = document.getElementById(name + '-bold');
 					var italic = document.getElementById(name + '-italic');
 					var link = document.getElementById(name + '-link');
@@ -231,6 +240,7 @@ if ($rr->action != "update" && $uu->id)
 
 					var html = textarea.value;
 					editable.innerHTML = html;    // update editable
+					// editable.focus();
 				}
 
 				function sethtml(name) {
@@ -257,12 +267,35 @@ if ($rr->action != "update" && $uu->id)
 
 					var html = editable.innerHTML;
 					textarea.value = pretty(html);    // update textarea for form submit
+					// textarea.focus();
+				}
+
+				function resetViews(name) {
+					var names = <?
+						$textnames = [];
+						foreach($vars as $var) {
+							if($var_info["input-type"][$var] == "textarea") {
+								$textnames[] = $var;
+							}
+						}
+						echo '["' . implode('", "', $textnames) . '"]'
+						?>;
+
+					for (var i = 0; i < names.length; i++) {
+						if (!(name && name === names[i]))
+							showrich(names[i]);
+					}
 				}
 
 				// pretifies html (barely) by adding a new line after a </div>
 				function pretty(str) {
 			    return (str + '').replace(/<\/div>(?!\n)/g, '</div>\n\n');
 				}
+
+				// add "autosave functionality" every 5 sec
+				setInterval(function() {
+					commitAll();
+				}, 5000);
 				</script>
 				<?php
 				// show object data
@@ -280,7 +313,7 @@ if ($rr->action != "update" && $uu->id)
 
 												<div id="<?echo $var;?>-toolbar" class="toolbar dontdisplay">
 													<a id="<? echo $var; ?>-html" class='right' href="#null" onclick="sethtml('<? echo $var; ?>');">html</a>
-													<a id="<? echo $var; ?>-txt" class='right dontdisplay' href="#null" onclick="resethtml('<? echo $var; ?>');">done.</a>
+													<a id="<? echo $var; ?>-txt" class='right dontdisplay' href="#null" onclick="showrich('<? echo $var; ?>');">done.</a>
 													<a id="<? echo $var; ?>-bold" class='' href="#null" onclick="document.execCommand('bold',false,null);">bold</a>
 	                        <a id="<? echo $var; ?>-italic" class='' href="#null" onclick="document.execCommand('italic',false,null);">italic</a>
 	                        <a id="<? echo $var; ?>-link" class='' href="#null" onclick="link('<? echo $var; ?>');">link</a>
@@ -309,21 +342,18 @@ if ($rr->action != "update" && $uu->id)
 													</div>
 												</div>
 
-												<div name='<? echo $var; ?>' class='large editable' contenteditable='true' id='<? echo $var; ?>-editable' onclick="showToolBar('<? echo $var; ?>');"><?
+												<div name='<? echo $var; ?>' class='large editable' contenteditable='true' id='<? echo $var; ?>-editable' onclick="showToolBar('<? echo $var; ?>'); resetViews('<? echo $var; ?>');" onblur="commit('<? echo $var; ?>');"><?
                             if($item[$var])
                                 echo $item[$var];
                         ?></div>
 
-                        <textarea name='<? echo $var; ?>' class='large dontdisplay' id='<? echo $var; ?>-textarea' onclick="showToolBar('<? echo $var; ?>');" onblur="resethtml('<? echo $var; ?>')"><?
+                        <textarea name='<? echo $var; ?>' class='large dontdisplay' id='<? echo $var; ?>-textarea' onclick="showToolBar('<? echo $var; ?>');" onblur="showrich('<? echo $var; ?>'); commit('<? echo $var; ?>');"><?
                             if($item[$var])
                                 echo $item[$var];
                         ?></textarea>
 
 												<script>
-													document.getElementById('<?echo $var;?>-html').addEventListener('click', function(e) {resignImageContainer('<?echo $var;?>');}, false);
-													document.getElementById('<?echo $var;?>-bold').addEventListener('click', function(e) {resignImageContainer('<?echo $var;?>');}, false);
-													document.getElementById('<?echo $var;?>-italic').addEventListener('click', function(e) {resignImageContainer('<?echo $var;?>');}, false);
-													document.getElementById('<?echo $var;?>-link').addEventListener('click', function(e) {resignImageContainer('<?echo $var;?>');}, false);
+													addListeners('<?echo $var; ?>');
 												</script>
 												<?
 
@@ -335,7 +365,7 @@ if ($rr->action != "update" && $uu->id)
 						?><input name='<? echo $var; ?>'
 								type='<? echo $var_info["input-type"][$var]; ?>'
 								value='<? echo urldecode($item[$var]); ?>'
-								onclick="hideToolBars();"
+								onclick="hideToolBars(); resetViews();"
 						><?
 						}
 						else
@@ -343,7 +373,7 @@ if ($rr->action != "update" && $uu->id)
 						?><input name='<? echo $var; ?>'
 								type='<? echo $var_info["input-type"][$var]; ?>'
 								value='<? echo htmlspecialchars($item[$var], ENT_QUOTES); ?>'
-								onclick="hideToolBars();"
+								onclick="hideToolBars(); resetViews();"
 						><?
 						}
 					?></div>
@@ -360,7 +390,7 @@ if ($rr->action != "update" && $uu->id)
 							<img src="<? echo $medias[$i]['display']; ?>">
 						</a>
 					</div>
-					<textarea name="captions[]" onclick="hideToolBars();"><?
+					<textarea name="captions[]" onclick="hideToolBars(); resetViews();"><?
 						echo $medias[$i]["caption"];
 					?></textarea>
 					<span>rank</span>

@@ -142,7 +142,6 @@ if ($rr->action != "update" && $uu->id)
 		>
 			<div class="form">
 				<script>
-				var active = '';
 
 				function link(name) {
 						var linkURL = prompt('Enter a URL:', 'http://');
@@ -179,13 +178,11 @@ if ($rr->action != "update" && $uu->id)
 
 				function showToolBar(name) {
 					hideToolBars();
-					active = name;
 					var tb = document.getElementById(name + '-toolbar');
 					tb.style.display = 'block';
 				}
 
 				function hideToolBars() {
-					active = '';
 					var tbs = document.getElementsByClassName('toolbar');
 					Array.prototype.forEach.call(tbs, function(tb) { tb.style.display = 'none'});
 
@@ -285,26 +282,9 @@ if ($rr->action != "update" && $uu->id)
 						?>;
 
 					for (var i = 0; i < names.length; i++) {
-						if (names[i] !== active)
+						if (!(name && name === names[i]))
 							showrich(names[i]);
-					}
-				}
-
-				window.onscroll = function() {
-					if (active !== '') {
-						var tb = document.getElementById(active + '-toolbar');
-						var editable = document.getElementById(active + '-editable');
-						if (tb && tb.style.display == 'block') {
-							// console.log(tb.height);
-							 if (editable.getBoundingClientRect().top - tb.offsetHeight < 0 && editable.getBoundingClientRect().bottom > 0) {
-								 tb.style.position = 'fixed';
-								 tb.style.top = 0;
-							 } else {
-								 tb.style.position = '';
-								 tb.style.top = '';
-							 }
 						}
-					}
 				}
 
 				// pretifies html (barely) by adding a new line after a </div>

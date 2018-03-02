@@ -185,7 +185,9 @@ textarea.small {
 }
 
 .toolbar {
-	width: 484px;
+	position: sticky;
+	position: -webkit-sticky;
+	top: 0px;
 }
 
 .imagebox {

@@ -270,7 +270,8 @@ if ($rr->action != "update" && $uu->id)
 					window.scrollBy(0, textarea.getBoundingClientRect().top); // scroll to the top of the textarea
 				}
 
-				function resetViews() {
+				function resetViews(name) {
+					commitAll();
 					var names = <?
 						$textnames = [];
 						foreach($vars as $var) {
@@ -293,9 +294,9 @@ if ($rr->action != "update" && $uu->id)
 				}
 
 				// add "autosave functionality" every 5 sec
-				setInterval(function() {
-					commitAll();
-				}, 5000);
+				// setInterval(function() {
+				// 	commitAll();
+				// }, 5000);
 				</script>
 				<?php
 				// show object data
@@ -342,12 +343,12 @@ if ($rr->action != "update" && $uu->id)
 													</div>
 												</div>
 
-												<div name='<? echo $var; ?>' class='large editable' contenteditable='true' id='<? echo $var; ?>-editable' onclick="showToolBar('<? echo $var; ?>'); resetViews();" onblur="commit('<? echo $var; ?>');"><?
+												<div name='<? echo $var; ?>' class='large editable' contenteditable='true' id='<? echo $var; ?>-editable' onclick="showToolBar('<? echo $var; ?>'); resetViews('<? echo $var; ?>');"><?
                             if($item[$var])
                                 echo $item[$var];
                         ?></div>
 
-                        <textarea name='<? echo $var; ?>' class='large dontdisplay' id='<? echo $var; ?>-textarea' onclick="showToolBar('<? echo $var; ?>');" onblur="showrich('<? echo $var; ?>'); commit('<? echo $var; ?>');"><?
+                        <textarea name='<? echo $var; ?>' class='large dontdisplay' id='<? echo $var; ?>-textarea' onclick="commit('<? echo $var; ?>'); showToolBar('<? echo $var; ?>');" onblur=""><?
                             if($item[$var])
                                 echo $item[$var];
                         ?></textarea>

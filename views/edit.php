@@ -228,6 +228,9 @@ if ($rr->action != "update" && $uu->id)
 					var editable = document.getElementById(name + '-editable');
 					var textarea = document.getElementById(name + '-textarea');
 
+					if (editable.style.display === 'block') {
+						return;
+					}
 					textarea.style.display = 'none';
 					editable.style.display = 'block';
 

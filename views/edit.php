@@ -215,7 +215,7 @@ if ($rr->action != "update" && $uu->id)
 						var html = textarea.value;
 						editable.innerHTML = html;    // update editable
 					}
-					console.log([name, editable.style.display, textarea.style.display]);
+					// console.log([name, editable.style.display, textarea.style.display]);
 				}
 
 				function showrich(name) {

@@ -208,13 +208,14 @@ if ($rr->action != "update" && $uu->id)
 				function commit(name) {
 					var editable = document.getElementById(name + '-editable');
 					var textarea = document.getElementById(name + '-textarea');
-					if (textarea.style.display !== 'block') {
+					if (editable.style.display === 'block') {
 						var html = editable.innerHTML;
 						textarea.value = html;    // update textarea for form submit
 					} else {
 						var html = textarea.value;
 						editable.innerHTML = html;    // update editable
 					}
+					console.log([name, editable.style.display, textarea.style.display]);
 				}
 
 				function showrich(name) {
@@ -228,9 +229,6 @@ if ($rr->action != "update" && $uu->id)
 					var editable = document.getElementById(name + '-editable');
 					var textarea = document.getElementById(name + '-textarea');
 
-					if (editable.style.display === 'block') {
-						return;
-					}
 					textarea.style.display = 'none';
 					editable.style.display = 'block';
 
@@ -259,6 +257,7 @@ if ($rr->action != "update" && $uu->id)
 
 					textarea.style.display = 'block';
 					editable.style.display = 'none';
+
 					html.style.display = 'none';
 					txt.style.display = 'block';
 
@@ -291,9 +290,9 @@ if ($rr->action != "update" && $uu->id)
 						}
 				}
 
-				// pretifies html (barely) by adding a new line after a </div>
+				// pretifies html (barely) by adding two new lines after a </div>
 				function pretty(str) {
-			    return (str + '').replace(/<\/div>(?!\n)/g, '</div>\n\n');
+			    return (str + '').replace(/(?<=<\/div>)(?!\n)/gi, '\n\n');
 				}
 
 				// add "autosave functionality" every 5 sec
@@ -346,12 +345,12 @@ if ($rr->action != "update" && $uu->id)
 													</div>
 												</div>
 
-												<div name='<? echo $var; ?>' class='large editable' contenteditable='true' id='<? echo $var; ?>-editable' onclick="showToolBar('<? echo $var; ?>'); resetViews('<? echo $var; ?>');"><?
+												<div name='<? echo $var; ?>' class='large editable' contenteditable='true' id='<? echo $var; ?>-editable' onclick="showToolBar('<? echo $var; ?>'); resetViews('<? echo $var; ?>');" style="display: block;"><?
                             if($item[$var])
                                 echo $item[$var];
                         ?></div>
 
-                        <textarea name='<? echo $var; ?>' class='large dontdisplay' id='<? echo $var; ?>-textarea' onclick="commit('<? echo $var; ?>'); showToolBar('<? echo $var; ?>');" onblur=""><?
+                        <textarea name='<? echo $var; ?>' class='large dontdisplay' id='<? echo $var; ?>-textarea' onclick="" onblur="" style="display: none;"><?
                             if($item[$var])
                                 echo $item[$var];
                         ?></textarea>

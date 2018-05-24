@@ -293,7 +293,8 @@ if ($rr->action != "update" && $uu->id)
 
 				// pretifies html (barely) by adding two new lines after a </div>
 				function pretty(str) {
-			    return (str + '').replace(/(?<=<\/div>)(?!\n)/gi, '\n\n');
+			        // return (str + '').replace(/(?<=<\/div>)(?!\n)/gi, '\n\n');
+                    return str;
 				}
 
 				// add "autosave functionality" every 5 sec

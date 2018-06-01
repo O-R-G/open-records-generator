@@ -57,13 +57,16 @@ if($uu->urls())
 							foreach($all_items as $i)
 							{
 								$m = end($i);
-								if(!in_array($m, $items))
+								/*
+                                if(!in_array($m, $items))
 									$m = 0; 
+                                */
 								$d = count($i); 
 								$t = "&nbsp;&nbsp;&nbsp;";
 							?><option value="<? echo $m; ?>"><?
 								for($j=1; $j < $d; $j++)
 									echo $t;
+echo $m;
 								if(!$m)
 									echo "(".$oo->name(end($i)).")";
 								else
@@ -104,7 +107,7 @@ if($uu->urls())
 		if($rr->wires_toid)
 		{
 			$wires_toid = addslashes($rr->wires_toid);
-			
+	
 			// duplicate object record
 			$sql = "INSERT INTO objects (created, modified, name1, url, notes, deck, body, begin, end, rank)
 			SELECT created, modified, name1, url, notes, deck, body, begin, end, rank
@@ -112,7 +115,18 @@ if($uu->urls())
 			WHERE id = '$wires_toid'";
 			$res = $db->query($sql);
 			$insert_id = $db->insert_id;
-			
+
+            // add '. * (copy)' to name1
+            // add '-copy' to url
+
+            $sql = "SELECT name1, url FROM objects WHERE id = '$wires_toid' AND active = 1";
+            $res = $db->query($sql);
+            $row = $res->fetch_assoc();
+            $name1 = "." . $row['name1'] . " (copy)";
+            $url = $row['url'] . "-(copy)";
+			$sql = "UPDATE objects SET name1 = '" . $name1 . "', url = '" . $url . "' WHERE id = " . $insert_id . "";
+            $res = $db->query($sql);
+
 			// duplicate media
 			// get media file attached to object being copied
 			$sql = "SELECT * from media where object = '$wires_toid' AND active = '1'";

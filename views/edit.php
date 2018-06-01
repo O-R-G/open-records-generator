@@ -118,6 +118,7 @@ if ($rr->action != "update" && $uu->id)
 	for($i = 0; $i < $num_medias; $i++)
 	{
 		$m_padded = "".m_pad($medias[$i]['id']);
+		$medias[$i]["fileNoPath"] = '/media/'.$m_padded.".".$medias[$i]["type"];
 		$medias[$i]["file"] = $media_path.$m_padded.".".$medias[$i]["type"];
 		if ($medias[$i]["type"] == "pdf")
 			$medias[$i]["display"] = $admin_path."media/pdf.png";
@@ -335,7 +336,7 @@ if ($rr->action != "update" && $uu->id)
 																			return function() {
 																				document.getElementById("'. $var .'-imagecontainer").style.display = "none";
 																				document.getElementById("'. $var .'-editable").focus();
-																				document.execCommand("insertImage", 0, "'. $medias[$i]['display'] .'");
+																				document.execCommand("insertImage", 0, "'. $medias[$i]['fileNoPath'] .'");
 																			}
 																		})();
 																		</script>';

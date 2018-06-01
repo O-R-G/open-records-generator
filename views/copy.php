@@ -66,7 +66,6 @@ if($uu->urls())
 							?><option value="<? echo $m; ?>"><?
 								for($j=1; $j < $d; $j++)
 									echo $t;
-echo $m;
 								if(!$m)
 									echo "(".$oo->name(end($i)).")";
 								else

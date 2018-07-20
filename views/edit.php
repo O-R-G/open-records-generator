@@ -136,11 +136,11 @@ if ($rr->action != "update" && $uu->id)
 		<div class="self">
 			<a href="<? echo $browse_url; ?>"><? echo $name; ?></a>
 		</div>
-		<form
+		<!-- <form
 			method="post"
 			enctype="multipart/form-data"
 			action="<? echo $form_url; ?>"
-		>
+		> -->
 			<div class="form">
 				<script>
 
@@ -352,7 +352,7 @@ if ($rr->action != "update" && $uu->id)
                                 echo $item[$var];
                         ?></div>
 
-                        <textarea name='<? echo $var; ?>' class='large dontdisplay' id='<? echo $var; ?>-textarea' onclick="" onblur="" style="display: none;"><?
+                        <textarea name='<? echo $var; ?>' class='large dontdisplay' id='<? echo $var; ?>-textarea' onclick="" onblur="" style="display: none;" form="edit-form"><?
                             if($item[$var])
                                 echo $item[$var];
                         ?></textarea>
@@ -371,6 +371,7 @@ if ($rr->action != "update" && $uu->id)
 								type='<? echo $var_info["input-type"][$var]; ?>'
 								value='<? echo urldecode($item[$var]); ?>'
 								onclick="hideToolBars(); resetViews();"
+								form="edit-form"
 						><?
 						}
 						else
@@ -379,6 +380,7 @@ if ($rr->action != "update" && $uu->id)
 								type='<? echo $var_info["input-type"][$var]; ?>'
 								value='<? echo htmlspecialchars($item[$var], ENT_QUOTES); ?>'
 								onclick="hideToolBars(); resetViews();"
+								form="edit-form"
 						><?
 						}
 					?></div>
@@ -395,11 +397,11 @@ if ($rr->action != "update" && $uu->id)
 							<img src="<? echo $medias[$i]['display']; ?>">
 						</a>
 					</div>
-					<textarea name="captions[]" onclick="hideToolBars(); resetViews();"><?
+					<textarea name="captions[]" onclick="hideToolBars(); resetViews();" form="edit-form"><?
 						echo $medias[$i]["caption"];
 					?></textarea>
 					<span>rank</span>
-					<select name="ranks[<? echo $i; ?>]"><?
+					<select name="ranks[<? echo $i; ?>]" form="edit-form"><?
 						for($j = 1; $j <= $num_medias; $j++)
 						{
 							if($j == $medias[$i]["rank"])
@@ -420,17 +422,20 @@ if ($rr->action != "update" && $uu->id)
 						<input
 							type="checkbox"
 							name="deletes[<? echo $i; ?>]"
+							form="edit-form"
 						>
 					delete image</label>
 					<input
 						type="hidden"
 						name="medias[<? echo $i; ?>]"
 						value="<? echo $medias[$i]['id']; ?>"
+						form="edit-form"
 					>
 					<input
 						type="hidden"
 						name="types[<? echo $i; ?>]"
 						value="<? echo $medias[$i]['type']; ?>"
+						form="edit-form"
 					>
 				</div><?php
 				}
@@ -441,7 +446,7 @@ if ($rr->action != "update" && $uu->id)
 				?><div class="image-upload">
 					<span class="field-name">Image <? echo $im; ?></span>
 					<span>
-						<input type="file" name="uploads[]">
+						<input type="file" name="uploads[]" form="edit-form">
 					</span>
 					<!--textarea name="captions[]"><?php
 							echo $medias[$i]["caption"];
@@ -453,21 +458,31 @@ if ($rr->action != "update" && $uu->id)
 						type='hidden'
 						name='action'
 						value='update'
+						form="edit-form"
 					>
 					<input
 						type='button'
 						name='cancel'
 						value='Cancel'
 						onClick="<? echo $js_back; ?>"
+						form="edit-form"
 					>
 					<input
 						type='submit'
 						name='submit'
 						value='Update Object'
 						onclick='commitAll();'
+						form="edit-form"
 					>
 				</div>
 			</div>
+		<!-- </form> -->
+		<form
+			method="post"
+			enctype="multipart/form-data"
+			action="<? echo $form_url; ?>"
+			id="edit-form"
+		>
 		</form>
 	</div>
 <?php

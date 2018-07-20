@@ -13,7 +13,7 @@ $user = $_SERVER['REMOTE_USER'] ? $_SERVER['REMOTE_USER'] : $_SERVER['REDIRECT_R
 $db = db_connect($user);
 
 // this function determines which part of the url contains
-// object-specific information and which part is just 
+// object-specific information and which part is just
 // incidental to the location of the o-r-g on the server
 // it compares the request uri, eg:
 // /PATH/open-records-generator/browse/parent/child
@@ -27,17 +27,29 @@ function url_array()
 	global $view;
 	$s = explode('/', rtrim($_SERVER['SCRIPT_NAME'], '/'));
 	$u = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
-	
+
 	while($s[0] == $u[0])
 	{
 		array_shift($s);
 		array_shift($u);
 	}
-	
+
 	$view = array_shift($u);
+
+	// check IE
+	preg_match('/MSIE (.*?);/', $_SERVER['HTTP_USER_AGENT'], $matches);
+	if(count($matches)<2){
+	  preg_match('/Trident\/\d{1,2}.\d{1,2}; rv:([0-9]*)/', $_SERVER['HTTP_USER_AGENT'], $matches);
+	}
+	if (count($matches)>1){
+		// Yup is IE
+		if ($view == "edit")
+			$view = "edit_no_wysiwyg";
+	}
+
 	// if no view is selected, show the cover page
 	$view = $view ? $view : "cover";
-	
+
 	return $u;
 }
 

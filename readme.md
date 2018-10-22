@@ -1,7 +1,7 @@
 # OPEN RECORDS GENERATOR
-Version 3.1
+Version 3.2.0
 O-R-G inc.  
-Last updated 29 August 2016
+Last updated 22 October 2018
 
 ## INSTRUCTIONS
 
@@ -17,13 +17,13 @@ To the right of the currently selected RECORD (in the currently selected RECORD 
 
 All objects can be selected, and then modified by clicking "EDIT..." Each time you select an object for editing you will be provided 5 empty slots of uploading additional images. Once the images are uploaded you can add captions or delete them. All fields in this RECORD are editable including the URL, DATE and RANK fields.
 
-### DELETE . . . 
+### DELETE . . .
 
-All objects can be deleted. Before deleting an object the OPEN-RECORDS-GENERATOR will ask you to confirm your choice. If the object you wish to delete contains child objects these will be deleted as well. In this case you will be provided with a specific warning before continuing. 
+All objects can be deleted. Before deleting an object the OPEN-RECORDS-GENERATOR will ask you to confirm your choice. If the object you wish to delete contains child objects these will be deleted as well. In this case you will be provided with a specific warning before continuing.
 
 ### ADD OBJECT . . .
 
-The OPEN-RECORDS-GENERATOR allows you to create and modify RECORDS within your database. A RECORD can contain text and images. Click "ADD OBJECT..." to create a new RECORD. You will see text fields and image upload options. All fields are optional, but if you do not give your object a name it will automatically be named "Untitled." In the date field you can enter a date in nearly any format and it will be converted to standard server time. For example, "02 Jan 06 6pm" and "January 2, 2006 18:00" will both become "2006-01-02 18:00:00." You can also use date commands like "today + 1 week." 
+The OPEN-RECORDS-GENERATOR allows you to create and modify RECORDS within your database. A RECORD can contain text and images. Click "ADD OBJECT..." to create a new RECORD. You will see text fields and image upload options. All fields are optional, but if you do not give your object a name it will automatically be named "Untitled." In the date field you can enter a date in nearly any format and it will be converted to standard server time. For example, "02 Jan 06 6pm" and "January 2, 2006 18:00" will both become "2006-01-02 18:00:00." You can also use date commands like "today + 1 week."
 
 ### LINK. . .
 
@@ -48,7 +48,7 @@ This button generates a live view of the website whose contents you are managing
    + `**bold**`
    + `[A hyperlink](http://www.example.com)`
 
-Full markdown syntax can be found [here](https://daringfireball.net/projects/markdown/syntax). 
+Full markdown syntax can be found [here](https://daringfireball.net/projects/markdown/syntax).
 
 ## VERSION HISTORY
 
@@ -58,7 +58,7 @@ Full markdown syntax can be found [here](https://daringfireball.net/projects/mar
 + 2.4 -- April 2011: incremental and register globals htaccess fix
 + 2.5 -- June 2011: incremental
 + 2.6 -- October 2011: sort by rank, image resizing (300 >> 72 dpi) using simpleImage extension, added LINK... function
-+ 2.7 -- June 2013:  fix register\_globals query string issue for php 5+ for servers with register\_globals set to off 
++ 2.7 -- June 2013:  fix register\_globals query string issue for php 5+ for servers with register\_globals set to off
 + 2.8 -- July 2013: add .htaccess and .htpasswd authentication, requires using .htpasswd to set user pass combination (use htpasswd -c /home/pwww/.htpasswd main to generate .htpwd file)
 + 2.9 -- March 2014: configure for running on localhost including date\_default\_timezone\_set('America/New\_York') config.php and systemDatabase.php. removed php auth completely, and works with .htaccess and .hpasswd only
   - 2.9.5 -- August 2014: add date begin field, add notes field

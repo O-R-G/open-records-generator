@@ -1,7 +1,7 @@
 <?
 // have to use root file path because of something called
-// fopen wrappers? 
-// see 'notes' on this page: 
+// fopen wrappers?
+// see 'notes' on this page:
 // http://php.net/manual/en/function.file-get-contents.php
 $license_file = $admin_root."static/gnu.txt";
 $license = file_get_contents($license_file);
@@ -10,8 +10,8 @@ $license = file_get_contents($license_file);
 		<div class="self-container">
 			<p>
 				Open Records Generator<br>
-				Version 2.9.5<br>
-				7 August 2014<br>
+				Version 3.2.0<br>
+				22 October 2018<br>
 				<a href="http://www.o-r-g.com/" target="_blank">O R G inc.</a>
 			</p>
 			<div class="license-container">

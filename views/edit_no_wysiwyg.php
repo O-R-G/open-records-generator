@@ -1,7 +1,7 @@
 <?
 $browse_url = $admin_path.'browse/'.$uu->urls();
 
-$vars = array("name1", "deck", "body", "notes",  "url", "rank", "begin", "end");
+$vars = array("name1", "deck", "body", "notes", "address1", "address2", "name2", "url", "rank", "begin", "end");
 
 $var_info = array();
 
@@ -15,6 +15,11 @@ $var_info["input-type"]["end"] = "text";
 $var_info["input-type"]["url"] = "text";
 $var_info["input-type"]["rank"] = "text";
 
+// custom
+$var_info["input-type"]["name2"] = "text";
+$var_info["input-type"]["address1"] = "text";
+$var_info["input-type"]["address2"] = "text";
+
 $var_info["label"] = array();
 $var_info["label"]["name1"] = "Name";
 $var_info["label"]["deck"] = "Synopsis";
@@ -24,6 +29,11 @@ $var_info["label"]["begin"] = "Begin";
 $var_info["label"]["end"] = "End";
 $var_info["label"]["url"] = "URL Slug";
 $var_info["label"]["rank"] = "Rank";
+
+// custom
+$var_info["label"]["name2"] = "PB ID";
+$var_info["label"]["address1"] = "Trailer";
+$var_info["label"]["address2"] = "Filmo";
 
 // return false if object not updated,
 // else, return true
@@ -149,7 +159,11 @@ if ($rr->action != "update" && $uu->id)
 					<div><?
 						if($var_info["input-type"][$var] == "textarea")
 						{
-						?><textarea name='<? echo $var; ?>' class='large'><?
+						?><textarea name='<? echo $var; ?>' class='large'
+							<?php if ($user == 'guest'): ?>
+								disabled = "disabled"
+							<?php endif; ?>
+							><?
 							if($item[$var])
 								echo $item[$var];
 						?></textarea><?
@@ -159,6 +173,9 @@ if ($rr->action != "update" && $uu->id)
 						?><input name='<? echo $var; ?>'
 								type='<? echo $var_info["input-type"][$var]; ?>'
 								value='<? echo urldecode($item[$var]); ?>'
+								<?php if ($user == 'guest'): ?>
+									disabled = "disabled"
+								<?php endif; ?>
 						><?
 						}
 						else
@@ -166,6 +183,9 @@ if ($rr->action != "update" && $uu->id)
 						?><input name='<? echo $var; ?>'
 								type='<? echo $var_info["input-type"][$var]; ?>'
 								value='<? echo htmlspecialchars($item[$var], ENT_QUOTES); ?>'
+								<?php if ($user == 'guest'): ?>
+									disabled = "disabled"
+								<?php endif; ?>
 						><?
 						}
 					?></div>
@@ -182,11 +202,19 @@ if ($rr->action != "update" && $uu->id)
 							<img src="<? echo $medias[$i]['display']; ?>">
 						</a>
 					</div>
-					<textarea name="captions[]"><?
+					<textarea name="captions[]"
+					<?php if ($user == 'guest'): ?>
+						disabled = "disabled"
+					<?php endif; ?>
+					><?
 						echo $medias[$i]["caption"];
 					?></textarea>
 					<span>rank</span>
-					<select name="ranks[<? echo $i; ?>]"><?
+					<select name="ranks[<? echo $i; ?>]"
+						<?php if ($user == 'guest'): ?>
+							disabled = "disabled"
+						<?php endif; ?>
+						><?
 						for($j = 1; $j <= $num_medias; $j++)
 						{
 							if($j == $medias[$i]["rank"])
@@ -207,6 +235,9 @@ if ($rr->action != "update" && $uu->id)
 						<input
 							type="checkbox"
 							name="deletes[<? echo $i; ?>]"
+							<?php if ($user == 'guest'): ?>
+								disabled = "disabled"
+							<?php endif; ?>
 						>
 					delete image</label>
 					<input
@@ -222,18 +253,20 @@ if ($rr->action != "update" && $uu->id)
 				</div><?php
 				}
 				// upload new images
-				for($j = 0; $j < $max_uploads; $j++)
-				{
-					$im = str_pad(++$i, 2, "0", STR_PAD_LEFT);
-				?><div class="image-upload">
-					<span class="field-name">Image <? echo $im; ?></span>
-					<span>
-						<input type="file" name="uploads[]">
-					</span>
-					<!--textarea name="captions[]"><?php
-							echo $medias[$i]["caption"];
-					?></textarea-->
-				</div><?php
+				if ($user != 'guest') {
+					for($j = 0; $j < $max_uploads; $j++)
+					{
+						$im = str_pad(++$i, 2, "0", STR_PAD_LEFT);
+					?><div class="image-upload">
+						<span class="field-name">Image <? echo $im; ?></span>
+						<span>
+							<input type="file" name="uploads[]">
+						</span>
+						<!--textarea name="captions[]"><?php
+								echo $medias[$i]["caption"];
+						?></textarea-->
+					</div><?php
+					}
 				} ?>
 				<div class="button-container">
 					<input
@@ -251,6 +284,9 @@ if ($rr->action != "update" && $uu->id)
 						type='submit'
 						name='submit'
 						value='Update Object'
+						<?php if ($user == 'guest'): ?>
+							disabled = "disabled"
+						<?php endif; ?>
 					>
 				</div>
 			</div>

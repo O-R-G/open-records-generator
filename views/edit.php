@@ -1,7 +1,7 @@
 <?
 $browse_url = $admin_path.'browse/'.$uu->urls();
 
-$vars = array("name1", "deck", "body", "notes",  "url", "rank", "begin", "end");
+$vars = array("name1", "deck", "body", "notes", "address1", "address2", "name2", "url", "rank", "begin", "end");
 
 $var_info = array();
 
@@ -15,6 +15,11 @@ $var_info["input-type"]["end"] = "text";
 $var_info["input-type"]["url"] = "text";
 $var_info["input-type"]["rank"] = "text";
 
+// custom
+$var_info["input-type"]["name2"] = "text";
+$var_info["input-type"]["address1"] = "text";
+$var_info["input-type"]["address2"] = "text";
+
 $var_info["label"] = array();
 $var_info["label"]["name1"] = "Name";
 $var_info["label"]["deck"] = "Synopsis";
@@ -24,6 +29,11 @@ $var_info["label"]["begin"] = "Begin";
 $var_info["label"]["end"] = "End";
 $var_info["label"]["url"] = "URL Slug";
 $var_info["label"]["rank"] = "Rank";
+
+// custom
+$var_info["label"]["name2"] = "PB ID";
+$var_info["label"]["address1"] = "Trailer";
+$var_info["label"]["address2"] = "Filmo";
 
 // return false if object not updated,
 // else, return true
@@ -317,8 +327,10 @@ if ($rr->action != "update" && $uu->id)
                         ?>
 
 												<div id="<?echo $var;?>-toolbar" class="toolbar dontdisplay">
-													<a id="<? echo $var; ?>-html" class='right' href="#null" onclick="sethtml('<? echo $var; ?>');">html</a>
-													<a id="<? echo $var; ?>-txt" class='right dontdisplay' href="#null" onclick="showrich('<? echo $var; ?>');">done.</a>
+													<?php if ($user == 'admin'): ?>
+														<a id="<? echo $var; ?>-html" class='right' href="#null" onclick="sethtml('<? echo $var; ?>');">html</a>
+														<a id="<? echo $var; ?>-txt" class='right dontdisplay' href="#null" onclick="showrich('<? echo $var; ?>');">done.</a>
+													<?php endif; ?>
 													<a id="<? echo $var; ?>-bold" class='' href="#null" onclick="document.execCommand('bold',false,null);">bold</a>
 	                        <a id="<? echo $var; ?>-italic" class='' href="#null" onclick="document.execCommand('italic',false,null);">italic</a>
 	                        <a id="<? echo $var; ?>-link" class='' href="#null" onclick="link('<? echo $var; ?>');">link</a>
@@ -347,7 +359,12 @@ if ($rr->action != "update" && $uu->id)
 													</div>
 												</div>
 
-												<div name='<? echo $var; ?>' class='large editable' contenteditable='true' id='<? echo $var; ?>-editable' onclick="showToolBar('<? echo $var; ?>'); resetViews('<? echo $var; ?>');" style="display: block;"><?
+												<?php if ($user == 'guest'): ?>
+													<div name='<? echo $var; ?>' class='large editable' contenteditable='false' id='<? echo $var; ?>-editable' onclick="" style="display: block;">
+												<?php else: ?>
+													<div name='<? echo $var; ?>' class='large editable' contenteditable='true' id='<? echo $var; ?>-editable' onclick="showToolBar('<? echo $var; ?>'); resetViews('<? echo $var; ?>');" style="display: block;">
+												<?php endif; ?>
+												<?
                             if($item[$var])
                                 echo $item[$var];
                         ?></div>
@@ -371,6 +388,9 @@ if ($rr->action != "update" && $uu->id)
 								type='<? echo $var_info["input-type"][$var]; ?>'
 								value='<? echo urldecode($item[$var]); ?>'
 								onclick="hideToolBars(); resetViews();"
+								<?php if ($user == 'guest'): ?>
+									disabled = "disabled"
+								<?php endif; ?>
 								form="edit-form"
 						><?
 						}
@@ -380,6 +400,9 @@ if ($rr->action != "update" && $uu->id)
 								type='<? echo $var_info["input-type"][$var]; ?>'
 								value='<? echo htmlspecialchars($item[$var], ENT_QUOTES); ?>'
 								onclick="hideToolBars(); resetViews();"
+								<?php if ($user == 'guest'): ?>
+									disabled = "disabled"
+								<?php endif; ?>
 								form="edit-form"
 						><?
 						}
@@ -397,11 +420,20 @@ if ($rr->action != "update" && $uu->id)
 							<img src="<? echo $medias[$i]['display']; ?>">
 						</a>
 					</div>
-					<textarea name="captions[]" onclick="hideToolBars(); resetViews();" form="edit-form"><?
+					<textarea name="captions[]" onclick="hideToolBars(); resetViews();" form="edit-form"
+						<?php if ($user == 'guest'): ?>
+							disabled = "disabled"
+						<?php endif; ?>
+					>
+					<?
 						echo $medias[$i]["caption"];
 					?></textarea>
 					<span>rank</span>
-					<select name="ranks[<? echo $i; ?>]" form="edit-form"><?
+					<select name="ranks[<? echo $i; ?>]" form="edit-form"
+						<?php if ($user == 'guest'): ?>
+							disabled = "disabled"
+						<?php endif; ?>
+						><?
 						for($j = 1; $j <= $num_medias; $j++)
 						{
 							if($j == $medias[$i]["rank"])
@@ -423,6 +455,9 @@ if ($rr->action != "update" && $uu->id)
 							type="checkbox"
 							name="deletes[<? echo $i; ?>]"
 							form="edit-form"
+							<?php if ($user == 'guest'): ?>
+								disabled = "disabled"
+							<?php endif; ?>
 						>
 					delete image</label>
 					<input
@@ -440,18 +475,20 @@ if ($rr->action != "update" && $uu->id)
 				</div><?php
 				}
 				// upload new images
-				for($j = 0; $j < $max_uploads; $j++)
-				{
-					$im = str_pad(++$i, 2, "0", STR_PAD_LEFT);
-				?><div class="image-upload">
-					<span class="field-name">Image <? echo $im; ?></span>
-					<span>
-						<input type="file" name="uploads[]" form="edit-form">
-					</span>
-					<!--textarea name="captions[]"><?php
-							echo $medias[$i]["caption"];
-					?></textarea-->
-				</div><?php
+				if ($user != 'guest') {
+					for($j = 0; $j < $max_uploads; $j++)
+					{
+						$im = str_pad(++$i, 2, "0", STR_PAD_LEFT);
+					?><div class="image-upload">
+						<span class="field-name">Image <? echo $im; ?></span>
+						<span>
+							<input type="file" name="uploads[]" form="edit-form">
+						</span>
+						<!--textarea name="captions[]"><?php
+								echo $medias[$i]["caption"];
+						?></textarea-->
+					</div><?php
+					}
 				} ?>
 				<div class="button-container">
 					<input
@@ -473,6 +510,9 @@ if ($rr->action != "update" && $uu->id)
 						value='Update Object'
 						onclick='commitAll();'
 						form="edit-form"
+						<?php if ($user == 'guest'): ?>
+							disabled = "disabled"
+						<?php endif; ?>
 					>
 				</div>
 			</div>

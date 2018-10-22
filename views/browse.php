@@ -1,8 +1,8 @@
 <div id="body-container">
 	<div id="body"><?
-	
-	// TODO: this code is duplicated in 
-	// + add.php 
+
+	// TODO: this code is duplicated in
+	// + add.php
 	// + browse.php
 	// + edit.php
 	// + link.php
@@ -17,7 +17,7 @@
 			<a href="<? echo $a_url; ?>"><? echo $ancestor["name1"]; ?></a>
 		</div><?
 	}
-		
+
 	// self
 	if($uu->id)
 	{
@@ -26,15 +26,21 @@
 		{
 			?><span id="object-name"><? echo $name; ?></span>
 			<span class="action">
-				<a href="<? echo $admin_path."edit/".$uu->urls(); ?>">EDIT... </a>
+				<?php if ($user != 'guest'): ?>
+					<a href="<? echo $admin_path."edit/".$uu->urls(); ?>">EDIT... </a>
+				<?php else: ?>
+					<a href="<? echo $admin_path."edit/".$uu->urls(); ?>">VIEW... </a>
+				<?php endif; ?>
 			</span>
-			<span class="action">
-				<a href="<? echo $admin_path."delete/".$uu->urls(); ?>">DELETE... </a>
-			</span><?
+			<?php if ($user != 'guest'): ?>
+				<span class="action">
+					<a href="<? echo $admin_path."delete/".$uu->urls(); ?>">DELETE... </a>
+				</span>
+			<?php endif; ?><?
 		}
 		?></div><?
 	}
-		// children		
+		// children
 		$children = $oo->children($uu->id);
 		$num_children = count($children);
 		?><div id="children"><?
@@ -48,14 +54,14 @@
 				$c = $children[$i];
 				$j = $i + 1;
 				$j_pad = str_pad($j, $pad, "0", STR_PAD_LEFT);
-			
+
 				// this is to avoid adding an extra slash
 				// in child urls of the root object
 				$url = $admin_path."browse/";
 				if($uu->urls())
 					$url.= $uu->urls()."/";
 				$url.= $c["url"];
-						
+
 				?><div class="child">
 					<span><? echo $j_pad; ?></span>
 					<a href="<? echo $url; ?>"><? echo $c["name1"]; ?></a>
@@ -63,15 +69,17 @@
 			}
 		}
 			?><div id="object-actions">
-				<span class="action">
-					<a href="<? echo $admin_path."add/".$uu->urls(); ?>">ADD OBJECT... </a>
-				</span>
-				<span class="action">
-					<a href="<? echo $admin_path."link/".$uu->urls(); ?>">LINK... </a>
-				</span>
-				<span class="action">
-					<a href="<? echo $admin_path."copy/".$uu->urls(); ?>">COPY... </a>
-				</span>
+				<?php if ($user != 'guest'): ?>
+					<span class="action">
+						<a href="<? echo $admin_path."add/".$uu->urls(); ?>">ADD OBJECT... </a>
+					</span>
+					<span class="action">
+						<a href="<? echo $admin_path."link/".$uu->urls(); ?>">LINK... </a>
+					</span>
+					<span class="action">
+						<a href="<? echo $admin_path."copy/".$uu->urls(); ?>">COPY... </a>
+					</span>
+					<?php endif; ?>
 			</div>
 		</div>
 	</div>

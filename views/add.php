@@ -1,7 +1,7 @@
 <?
 $browse_url = $admin_path.'browse/'.$uu->urls();
 
-$vars = array("name1", "deck", "body", "notes", "begin", "end", "url", "rank");
+$vars = array("name1", "deck", "body", "address1", "address2", "zip", "notes", "city", "state", "head", "name2", "url", "rank", "begin", "end");
 
 $var_info = array();
 
@@ -15,6 +15,16 @@ $var_info["input-type"]["end"] = "text";
 $var_info["input-type"]["url"] = "text";
 $var_info["input-type"]["rank"] = "text";
 
+// custom
+$var_info["input-type"]["head"] = "text";
+$var_info["input-type"]["name2"] = "text";
+$var_info["input-type"]["address1"] = "textarea";
+$var_info["input-type"]["address2"] = "textarea";
+$var_info["input-type"]["city"] = "text";
+$var_info["input-type"]["state"] = "textarea";
+$var_info["input-type"]["zip"] = "textarea";
+
+
 $var_info["label"] = array();
 $var_info["label"]["name1"] = "Name";
 $var_info["label"]["deck"] = "Synopsis";
@@ -25,6 +35,15 @@ $var_info["label"]["end"] = "End";
 $var_info["label"]["url"] = "URL Slug";
 $var_info["label"]["rank"] = "Rank";
 
+// custom
+$var_info["label"]["head"] = "Production Group";
+$var_info["label"]["name2"] = "PB ID / Booking URL";
+$var_info["label"]["address1"] = "Caption";
+$var_info["label"]["address2"] = "Credit";
+$var_info["label"]["city"] = "Trailer";
+$var_info["label"]["state"] = "Filmo";
+$var_info["label"]["zip"] = "Sponsor Logo";
+
 // for use on add.php
 // return false if process fails
 // (siblings must not have same url slug as object)
@@ -32,7 +51,7 @@ $var_info["label"]["rank"] = "Rank";
 function insert_object(&$new, $siblings)
 {
 	global $oo;
-	
+
 	// set default name if no name given
 	if(!$new['name1'])
 		$new['name1'] = 'untitled';
@@ -40,10 +59,10 @@ function insert_object(&$new, $siblings)
 	// slug-ify url
 	if($new['url'])
 		$new['url'] = slug($new['url']);
-	
+
 	if(empty($new['url']))
 		$new['url'] = slug($new['name1']);
-	
+
 	// make sure url doesn't clash with urls of siblings
 	$s_urls = array();
 	foreach($siblings as $s_id)
@@ -55,14 +74,14 @@ function insert_object(&$new, $siblings)
 		$dt = strtotime($new['begin']);
 		$new['begin'] = date($oo::MYSQL_DATE_FMT, $dt);
 	}
-	
+
 	if(!empty($new['end']))
 	{
 		$dt = strtotime($new['end']);
 		$new['end'] = date($oo::MYSQL_DATE_FMT, $dt);
 	}
-	
-	// make mysql happy with nulls and such	
+
+	// make mysql happy with nulls and such
 	foreach($new as $key => $value)
 	{
 		if($value)
@@ -70,9 +89,9 @@ function insert_object(&$new, $siblings)
 		else
 			$new[$key] = "null";
 	}
-	
+
 	$id = $oo->insert($new);
-	
+
 	// need to strip out the quotes that were added to appease sql
 	$u = str_replace("'", "", $new['url']);
 	$url = valid_url($u, strval($id), $s_urls);
@@ -81,14 +100,14 @@ function insert_object(&$new, $siblings)
 		$new['url'] = "'".$url."'";
 		$oo->update($id, $new);
 	}
-	
+
 	return $id;
 }
 
 ?><div id="body-container">
 	<div id="body" class="centre"><?
-	// TODO: this code is duplicated in 
-	// + add.php 
+	// TODO: this code is duplicated in
+	// + add.php
 	// + browse.php
 	// + edit.php
 	// + link.php
@@ -104,7 +123,7 @@ function insert_object(&$new, $siblings)
 		</div><?
 	}
 	// END TODO
-	
+
 		// this code is duplicated in:
 		// + link.php
 		// + add.php
@@ -113,19 +132,19 @@ function insert_object(&$new, $siblings)
 				<a href="<? echo $browse_url; ?>"><? echo $name; ?></a>
 			</div>
 		</div><?
-	
-		
+
+
 		// show form
-		if($rr->action != "add") 
+		if($rr->action != "add")
 		{
 			$form_url = $admin_path."add";
 			if($uu->urls())
 				$form_url.="/".$uu->urls();
 		?><div id="form-container">
 			<div class="self">You are adding a new object.</div>
-			<form 
-				enctype="multipart/form-data" 
-				action="<? echo $form_url; ?>" 
+			<form
+				enctype="multipart/form-data"
+				action="<? echo $form_url; ?>"
 				method="post"
 			>
 				<div class="form"><?
@@ -141,8 +160,8 @@ function insert_object(&$new, $siblings)
 						}
 						else
 						{
-						?><input 
-							name='<? echo $var; ?>' 
+						?><input
+							name='<? echo $var; ?>'
 							type='<? echo $var_info["input-type"][$var]; ?>'
 						><?
 						}
@@ -169,13 +188,13 @@ function insert_object(&$new, $siblings)
 					>
 					<input
 						type='button'
-						name='cancel' 
-						value='Cancel' 
+						name='cancel'
+						value='Cancel'
 						onClick="<? echo $js_back; ?>"
 					>
 					<input
-						type='submit' 
-						name='submit' 
+						type='submit'
+						name='submit'
 						value='Add Object'
 					>
 				</div>
@@ -203,6 +222,6 @@ function insert_object(&$new, $siblings)
 			{
 			?><div>Record not created, please <a href="<? echo $js_back; ?>">try again.</a></div><?
 			}
-		} 
+		}
 	?></div>
 </div>

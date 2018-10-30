@@ -21,6 +21,10 @@ class Request
 	public $end;
 	public $url;
 	public $rank;
+	public $head;
+	public $city;
+	public $state;
+	public $zip;
 
 	// link
 	public $wires_toid;
@@ -39,7 +43,7 @@ class Request
 		$this->page = basename($_SERVER['PHP_SELF'], ".php");
 
 		// post variables
-		$vars = array(	'name1', 'name2', 'address1', 'address2', 'deck', 'body', 'notes', 'begin', 'end', 'url', 'rank',
+		$vars = array(	'name1', 'name2', 'head', 'city', 'state', 'zip', 'address1', 'address2', 'deck', 'body', 'notes', 'begin', 'end', 'url', 'rank',
 						'medias', 'types', 'captions', 'ranks', 'deletes',
 						'submit', 'action',
 						'wires_toid',

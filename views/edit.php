@@ -22,7 +22,7 @@ $var_info["input-type"]["address1"] = "textarea";
 $var_info["input-type"]["address2"] = "textarea";
 $var_info["input-type"]["city"] = "text";
 $var_info["input-type"]["state"] = "textarea";
-$var_info["input-type"]["zip"] = "textarea";
+$var_info["input-type"]["zip"] = "text";
 
 
 $var_info["label"] = array();
@@ -42,7 +42,7 @@ $var_info["label"]["address1"] = "Caption";
 $var_info["label"]["address2"] = "Credit";
 $var_info["label"]["city"] = "Trailer";
 $var_info["label"]["state"] = "Filmo";
-$var_info["label"]["zip"] = "Sponsor Logo";
+$var_info["label"]["zip"] = "Sponsors";
 
 
 // return false if object not updated,
@@ -434,8 +434,7 @@ if ($rr->action != "update" && $uu->id)
 						<?php if ($user == 'guest'): ?>
 							disabled = "disabled"
 						<?php endif; ?>
-					>
-					<?
+					><?
 						echo $medias[$i]["caption"];
 					?></textarea>
 					<span>rank</span>

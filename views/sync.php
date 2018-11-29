@@ -112,6 +112,10 @@ function add_or_update_performance($performance) {
 
   $productionID = $performance["production_id"];
   $performanceID = $performance["performance_id"];
+
+	// use this because json feed uses older booking url
+	$booking_url = "https://ica.web.patronbase.co.uk/tickets?ProdID=$productionID&PerfID=$performanceID";
+
   $sql = "SELECT production_id, performance_id FROM patronbase WHERE production_id='$productionID' AND performance_id='$performanceID'";
 
   $res = $db->query($sql)->fetch_assoc();
@@ -119,7 +123,7 @@ function add_or_update_performance($performance) {
     // update
     $sql = "UPDATE patronbase SET ";
     $sql .= "venue='" . addslashes($performance["venue"]) . "', ";
-    $sql .= "booking_url='" . addslashes($performance["booking_url"]) . "', ";
+    $sql .= "booking_url='" . addslashes($booking_url) . "', ";
     $sql .= "date_time='" . addslashes(date($oo::MYSQL_DATE_FMT, strtotime($performance["date"]))) . "', ";
     $sql .= "duration='" . addslashes($performance["duration"]) . "', ";
     $sql .= "status_code='" . addslashes($performance["status_code"]) . "', ";
@@ -134,7 +138,7 @@ function add_or_update_performance($performance) {
     $sql .= "('" . addslashes($productionID) . "', ";
     $sql .= "'" . addslashes($performanceID) . "', ";
     $sql .= "'" . addslashes($performance["venue"]) . "', ";
-    $sql .= "'" . addslashes($performance["booking_url"]) . "', ";
+    $sql .= "'" . addslashes($booking_url) . "', ";
     $sql .= "'" . addslashes(date($oo::MYSQL_DATE_FMT, strtotime($performance["date"]))) . "', ";
     $sql .= "'" . addslashes($performance["duration"]) . "', ";
     $sql .= "'" . addslashes($performance["status_code"]) . "', ";

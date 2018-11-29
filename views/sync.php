@@ -35,6 +35,8 @@
 		{
       $endpoint = 'https://uk.patronbase.com/_ICA/API/v1/Productions/Feed';
       $headers = 'X-PatronBase-Api-Key:d73e6ac69f9ad58a2bced324d0c7e8f56d85e0b8';
+      $performanceAddCount = 0;
+      $performanceUpdateCount = 0;
 
       // get json from patronbase
       $json = getJSON($endpoint, $headers, false);
@@ -68,11 +70,16 @@
             "seats_left" => $performance->seatsleft
           );
 
-          add_or_update_performance($performanceObject);
+          $added = add_or_update_performance($performanceObject);
+
+          if ($added)
+            $performanceAddCount++;
+          else
+            $performanceUpdateCount++;
         }
       }
 
-      echo 'Synced.';
+      echo "Synced.<br /><br />Performances Added: $performanceAddCount<br />Performances Updated: $performanceUpdateCount";
 		}
 		?></div>
 	</div>
@@ -98,6 +105,7 @@ function add_or_update_production($production) {
 
 }
 
+// returns true if added or false ir updated
 function add_or_update_performance($performance) {
   global $db;
   global $oo;
@@ -119,6 +127,7 @@ function add_or_update_performance($performance) {
     $sql .= "WHERE production_id='$productionID' AND performance_id='$performanceID'";
 
     $update = $db->query($sql);
+    return false;
   } else {
     // insert
     $sql = "INSERT INTO patronbase (production_id, performance_id, venue, booking_url, date_time, duration, status_code, date_modified, date_created) VALUES ";
@@ -133,6 +142,7 @@ function add_or_update_performance($performance) {
     $sql .= "'" . addslashes(date($oo::MYSQL_DATE_FMT, strtotime("now"))) . "') ";
 
     $insert = $db->query($sql);
+    return true;
   }
 }
 

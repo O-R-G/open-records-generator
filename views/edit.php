@@ -1,7 +1,7 @@
 <?
 $browse_url = $admin_path.'browse/'.$uu->urls();
 
-$vars = array("name1", "deck", "body", "address1", "address2", "zip", "notes", "city", "state", "head", "name2", "url", "rank", "begin", "end");
+$vars = array("name1", "deck", "body", "address1", "address2", "zip", "notes", "city", "state", "head", "name2", "country", "phone", "url", "rank", "begin", "end");
 
 $var_info = array();
 
@@ -23,6 +23,8 @@ $var_info["input-type"]["address2"] = "textarea";
 $var_info["input-type"]["city"] = "text";
 $var_info["input-type"]["state"] = "textarea";
 $var_info["input-type"]["zip"] = "text";
+$var_info["input-type"]["country"] = "text";
+$var_info["input-type"]["phone"] = "text";
 
 
 $var_info["label"] = array();
@@ -37,12 +39,15 @@ $var_info["label"]["rank"] = "Rank";
 
 // custom
 $var_info["label"]["head"] = "Production Group";
-$var_info["label"]["name2"] = "PB ID / Booking URL";
+$var_info["label"]["name2"] = "Ticketing ID";
 $var_info["label"]["address1"] = "Caption";
 $var_info["label"]["address2"] = "Credit";
 $var_info["label"]["city"] = "Trailer";
 $var_info["label"]["state"] = "Filmo";
 $var_info["label"]["zip"] = "Sponsors";
+$var_info["label"]["country"] = "Booking URL";
+$var_info["label"]["phone"] = "Price Range";
+
 
 
 // return false if object not updated,

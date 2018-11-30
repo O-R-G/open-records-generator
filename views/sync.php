@@ -137,7 +137,7 @@ function add_or_update_production($production) {
 	$booking_url = "https://ica.web.patronbase.co.uk/tickets?ProdID=$pb_id";
 
 	// does this exist?
-	$sql = "SELECT name2 FROM objects WHERE name2='$pb_id'";
+	$sql = "SELECT name2 FROM objects WHERE name2='$pb_id' AND active=1";
 	$res = $db->query($sql)->fetch_assoc();
 
 	if (sizeof($res) > 0) {

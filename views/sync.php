@@ -35,8 +35,12 @@
 		{
       $endpoint = 'https://uk.patronbase.com/_ICA/API/v1/Productions/Feed';
       $headers = 'X-PatronBase-Api-Key:d73e6ac69f9ad58a2bced324d0c7e8f56d85e0b8';
-      $performanceAddCount = 0;
+
+			$performanceAddCount = 0;
       $performanceUpdateCount = 0;
+
+			$productionAddCount = 0;
+			$productionUpdateCount = 0;
 
       // get json from patronbase
       $json = getJSON($endpoint, $headers, false);
@@ -46,13 +50,22 @@
         // make production
         $productionObject = array(
           "name" => $production->name,
+					"category" => $production->category->name,
+					"department" => $production->department,
           "pb_id" => $production->id,
+					"booking_url" => $production->urls->bookonline,
           "prod_group" => $production->project,
           "begin_date" => $production->dates->from,
-          "end_date" => $production->dates->to
+          "end_date" => $production->dates->to,
+					"price_range" => $production->pricing->formatted
         );
 
-        add_or_update_production($productionObject);
+        $production_added = add_or_update_production($productionObject);
+
+				if ($production_added)
+					$productionAddCount++;
+				else
+					$productionUpdateCount++;
 
         // iterate through a production's performance
         foreach ($production->performances->details as $performance) {
@@ -70,16 +83,16 @@
             "seats_left" => $performance->seatsleft
           );
 
-          $added = add_or_update_performance($performanceObject);
+          $performance_added = add_or_update_performance($performanceObject);
 
-          if ($added)
+          if ($performance_added)
             $performanceAddCount++;
           else
             $performanceUpdateCount++;
         }
       }
 
-      echo "Synced.<br /><br />Performances Added: $performanceAddCount<br />Performances Updated: $performanceUpdateCount";
+      echo "Synced.<br /><br />Productions Added: $productionAddCount<br /><br />Performances Added: $performanceAddCount<br />Performances Updated: $performanceUpdateCount";
 		}
 		?></div>
 	</div>
@@ -99,10 +112,65 @@ function getJSON($endpoint, $headers='', $convertToArray = false) {
     return $json;
 }
 
-
+// returns true if added or false ir updated
 function add_or_update_production($production) {
-  // do nothing for now..
+	global $db;
+  global $oo;
+	global $ww;
 
+	// TODO: Find out exactly how this gets mapped...
+	if ($production["project"] == "ICA Live" || $production["project"] == "Art Night" || $production["project"] == "ICA Music") {
+		$root = "Live";
+	} else if ($production["category"] == "Films") {
+		$root = "Films";
+	} else {
+		$root = "Talks & Learning";
+	}
+
+	$roots = array(
+		"Films" => 17,
+		"Talks & Learning" => 18,
+		"Live" => 16
+	);
+
+	$pb_id = $production["pb_id"];
+	$booking_url = "https://ica.web.patronbase.co.uk/tickets?ProdID=$pb_id";
+
+	// does this exist?
+	$sql = "SELECT name2 FROM objects WHERE name2='$pb_id'";
+	$res = $db->query($sql)->fetch_assoc();
+
+	if (sizeof($res) > 0) {
+		// update
+		return false;
+	} else {
+		// create
+		$processed = array(
+			"name1" => '.' . $production["name"], // title - text
+			"name2" => $pb_id, // ticketing id
+			"country" => $booking_url, // booking url
+			"phone" => $production["price_range"],  // price range
+			"head" => $production["prod_group"], // production group
+			"begin" => date($oo::MYSQL_DATE_FMT, strtotime($production['begin_date'])), // begin date
+			"end" => date($oo::MYSQL_DATE_FMT, strtotime($production['end_date'])), // end date
+			"url" => slug($production["name"]), // slug!
+		);
+
+		foreach($processed as $key => $value)
+		{
+			if($value)
+				$processed[$key] = "'".addslashes($value)."'";
+			else
+				$processed[$key] = "null";
+		}
+
+		$event_id = $oo->insert($processed);
+
+		if ($event_id != 0)
+			$ww->create_wire($roots[$root], $event_id);
+
+		return true;
+	}
 }
 
 // returns true if added or false ir updated

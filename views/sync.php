@@ -149,7 +149,7 @@ function add_or_update_production($production) {
 			"name1" => '.' . $production["name"], // title - text
 			"name2" => $pb_id, // ticketing id
 			"country" => $booking_url, // booking url
-			"phone" => $production["price_range"],  // price range
+			// "phone" => $production["price_range"],  // price range // Stop pulling per request from Stuart and Michael
 			"head" => $production["prod_group"], // production group
 			"begin" => date($oo::MYSQL_DATE_FMT, strtotime($production['begin_date'])), // begin date
 			"end" => date($oo::MYSQL_DATE_FMT, strtotime($production['end_date'])), // end date

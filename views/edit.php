@@ -40,10 +40,10 @@ $var_info["label"]["rank"] = "Rank";
 // custom
 $var_info["label"]["head"] = "Production Group";
 $var_info["label"]["name2"] = "Ticketing ID";
-$var_info["label"]["address1"] = "Caption";
+$var_info["label"]["address1"] = "Bio";
 $var_info["label"]["address2"] = "Credit";
 $var_info["label"]["city"] = "Trailer";
-$var_info["label"]["state"] = "Filmo";
+$var_info["label"]["state"] = "Image Caption";
 $var_info["label"]["zip"] = "Sponsors";
 $var_info["label"]["country"] = "Booking URL";
 $var_info["label"]["phone"] = "Price Range";

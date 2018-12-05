@@ -45,6 +45,10 @@
       // get json from patronbase
       $json = getJSON($endpoint, $headers, false);
 
+			// delete existing where performance time > now
+			$sql_del = "DELETE FROM patronbase WHERE date_time > NOW()";
+			$res_del = $db->query($sql_del);
+
       // iterate through json productions
       foreach ($json->productions as $production) {
         // make production
@@ -85,14 +89,16 @@
 
           $performance_added = add_or_update_performance($performanceObject);
 
-          if ($performance_added)
-            $performanceAddCount++;
-          else
-            $performanceUpdateCount++;
+					$performanceUpdateCount++;
+          // if ($performance_added)
+          //   $performanceAddCount++;
+          // else
+          //   $performanceUpdateCount++;
         }
       }
 
-      echo "Synced.<br /><br />Productions Added: $productionAddCount<br /><br />Performances Added: $performanceAddCount<br />Performances Updated: $performanceUpdateCount";
+      // echo "Synced.<br /><br />Productions Added: $productionAddCount<br /><br />Performances Added: $performanceAddCount<br />Performances Updated: $performanceUpdateCount";
+			echo "Synced.<br /><br />Productions Added: $productionAddCount<br /><br />Performances Updated: $performanceUpdateCount";
 		}
 		?></div>
 	</div>

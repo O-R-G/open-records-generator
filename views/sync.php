@@ -140,7 +140,7 @@ function add_or_update_production($production) {
 	);
 
 	$pb_id = $production["pb_id"];
-	$booking_url = "https://ica.web.patronbase.co.uk/tickets?ProdID=$pb_id";
+	$booking_url = "https://ica.web.patronbase.co.uk/performances?ProdID=$pb_id";
 
 	// does this exist?
 	$sql = "SELECT name2 FROM objects WHERE name2='$pb_id' AND active=1";

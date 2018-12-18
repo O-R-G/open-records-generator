@@ -89,6 +89,10 @@ if(file_exists($settings_file))
 }
 else
 	$max_uploads = 5;
+
+if ($view == "logout")
+	header("HTTP/1.1 401 Unauthorized");
+
 ?><!DOCTYPE html>
 <html>
 	<head>

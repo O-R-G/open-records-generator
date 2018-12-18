@@ -1,6 +1,0 @@
-{
-  "require": {
-    "ext-mbstring": "*",
-    "aws/aws-sdk-php": "~3.0"
-  }
-}

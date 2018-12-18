@@ -2,29 +2,24 @@
 date_default_timezone_set('America/New_York');
 
 // database settings
-$db_name = "ica";
+$db_name = getenv("DATABASE_NAME");
+$db_name = $db_name ? $db_name : "open-records-generator";
 
 // $host = "http://o-r-g.com/";
-$host = "http://".$_SERVER["HTTP_HOST"]."/";
+$host = "//".$_SERVER["HTTP_HOST"]."/";
 $root = $_SERVER["DOCUMENT_ROOT"]."/";
 
 $admin_path = $host . "open-records-generator/";
 $admin_root = $root . "open-records-generator/";
 
-// AWS Bucket Environental Variables
-$bucket_id = getenv("BUCKETEER_BUCKET_NAME");
-$bucket_region = getenv("BUCKETEER_AWS_REGION");
-$bucket_key = getenv("BUCKETEER_AWS_ACCESS_KEY_ID");
-$bucket_secret = getenv("BUCKETEER_AWS_SECRET_ACCESS_KEY");
+// Admin MySQL URL Environental Variable
+$adminURLString = getenv("MYSQL_RW_DATABASE_URL");
+// Read Only MySQL URL Environental Variable
+$readOnlyURLString = getenv("MYSQL_R_DATABASE_URL");
 
-if ($bucket_id) {
-	$media_path = "https://" . $bucket_id . ".s3.amazonaws.com/public/";
-	$media_root = $media_path; // is this ok?
-} else {
-	// Regular Storage Environmental Variable
-	$media_path = $host . "media/"; // don't forget to set permissions on this folder
-	$media_root = $root . "media/";
-}
+// Regular Storage Environmental Variable
+$media_path = $host . "media/"; // don't forget to set permissions on this folder
+$media_root = $root . "media/";
 
 $models_root = $admin_root . "models/";
 
@@ -43,11 +38,6 @@ $resize = false;
 $resize_scale = 65;
 $resize_root = $media_root . "hi/";
 
-// Media DB Increment/Decrement amount
-// SEE THIS: https://stackoverflow.com/questions/14078288/heroku-mysql-auto-increment
-$m_db_incr = 10; // If using Heroku / ClearDB
-// $m_db_incr = 1; // All Else
-
 // namespace stuff, for markdown parser
 set_include_path($lib_root);
 spl_autoload_register(function ($class) {
@@ -57,15 +47,12 @@ spl_autoload_register(function ($class) {
 });
 
 // connect to database (called in head.php)
-function db_connect($remote_user)
-{
+function db_connect($remote_user) {
+	global $adminURLString;
+	global $readOnlyURLString;
+
 	$users = array();
 	$creds = array();
-
-	// Admin MySQL URL string
-	$adminURLString = getenv("CLEARDB_DATABASE_URL");
-	// Read Only MySQL URL String
-	$readOnlyURLString = getenv("CLEARDB_DATABASE_URL");
 
 	if ($adminURLString) {
 		// IF YOU ARE USING ENVIRONMENTAL VARIABLES (you should)
@@ -81,21 +68,21 @@ function db_connect($remote_user)
 		$creds['r']['db_pass'] = $urlReadOnly["pass"];
 
 	} else {
-			// IF YOU ARE NOT USING ENVIRONMENTAL VARIABLES
-			$host = "db153.pair.com";
-			$dbse = "reinfurt_onrungo";
-			// full access
-			$creds['full']['db_user'] = "reinfurt_42";
-			$creds['full']['db_pass'] = "vNDEC89e";
+		// IF YOU ARE NOT USING ENVIRONMENTAL VARIABLES
+		$host = "localhost";
+		$dbse = "main";
+		// full access
+		$creds['full']['db_user'] = "username";
+		$creds['full']['db_pass'] = "password";
 
-			// read / write access
-			// (can't create / drop tables)
-			$creds['rw']['db_user'] = "reinfurt_42_w";
-			$creds['rw']['db_pass'] = "Rh5JrwEP";
+		// read / write access
+		// (can't create / drop tables)
+		$creds['rw']['db_user'] = "username_w";
+		$creds['rw']['db_pass'] = "password";
 
-			// read-only access
-			$creds['r']['db_user'] = "reinfurt_42_r";
-			$creds['r']['db_pass'] = "8hPxYMS9";
+		// read-only access
+		$creds['r']['db_user'] = "username";
+		$creds['r']['db_pass'] = "password";
 	}
 
 	// users

@@ -128,25 +128,6 @@ function process_media($toid)
 	global $resize_root;
 	global $resize_scale;
 	global $media_root;
-	global $$m_db_incr;
-
-	// AWS Information
-	global $bucket_id;
-	global $bucket_region;
-	global $bucket_key;
-	global $bucket_secret;
-
-	$s3 = NULL;
-	if ($bucket_id) {
-		$s3 = new Aws\S3\S3Client([
-	    'version'     => 'latest',
-	    'region'      => $bucket_region,
-	    'credentials' => [
-	        'key'    => $bucket_key,
-	        'secret' => $bucket_secret
-	    ]
-		]);
-	}
 
 	$m_rows = $mm->num_rows();
 	$m_old = $m_rows;
@@ -154,54 +135,28 @@ function process_media($toid)
 	{
 		if($error == UPLOAD_ERR_OK)
 		{
-			if ($bucket_id) {
-				$tmp_name = $_FILES["uploads"]["tmp_name"][$key];
-				$m_name = $_FILES["uploads"]["name"][$key];
-				$m_type = strtolower(end(explode(".", $m_name)));
-				$m_rows += $m_db_incr;
-				$m_file = m_pad($m_rows).".".$m_type;
+			$tmp_name = $_FILES["uploads"]["tmp_name"][$key];
+			$m_name = $_FILES["uploads"]["name"][$key];
+			$m_type = strtolower(end(explode(".", $m_name)));
 
-				$m_dest = $resize ? $resize_root : $media_root;
-				$m_dest.= $m_file;
+			// add to db's image list
+			$m_arr["type"] = "'".$m_type."'";
+			$m_arr["object"] = "'".$toid."'";
+			$m_arr["caption"] = "'".$rr->captions[$key+count($rr->medias)]."'";
+			$insert_id = $mm->insert($m_arr);
+			$m_rows++;
 
-				try {
-					$upload = $s3->putObject(array(
-						'Bucket' => $bucket_id,
-						'Key' => 'public/' . $m_file,
-						'SourceFile' => $tmp_name
-					));
+			$m_file = m_pad($insert_id).".".$m_type;
+			$m_dest = $resize ? $resize_root : $media_root;
+			$m_dest.= $m_file;
 
-					// add to db's image list
-					$m_arr["type"] = "'".$m_type."'";
-					$m_arr["object"] = "'".$toid."'";
-					$m_arr["caption"] = "'".$rr->captions[$key+count($rr->medias)]."'";
-					$mm->insert($m_arr);
-				} catch (Exception $e) {
-					$m_rows -= $m_db_incr;
-				}
-			} else {
-				$tmp_name = $_FILES["uploads"]["tmp_name"][$key];
-				$m_name = $_FILES["uploads"]["name"][$key];
-				$m_type = strtolower(end(explode(".", $m_name)));
-				$m_rows += $m_db_incr;
-				$m_file = m_pad().".".$m_type;
-
-				$m_dest = $resize ? $resize_root : $media_root;
-				$m_dest.= $m_file;
-
-				if(move_uploaded_file($tmp_name, $m_dest))
-				{
-					if($resize)
-						resize($m_dest, $media_root.$m_file, $resize_scale);
-
-					// add to db's image list
-					$m_arr["type"] = "'".$m_type."'";
-					$m_arr["object"] = "'".$toid."'";
-					$m_arr["caption"] = "'".$rr->captions[$key+count($rr->medias)]."'";
-					$mm->insert($m_arr);
-				}
-				else
-					$m_rows -= $m_db_incr;
+			if(move_uploaded_file($tmp_name, $m_dest)) {
+				if($resize)
+					resize($m_dest, $media_root.$m_file, $resize_scale);
+			}
+			else {
+				$m_rows--;
+				$mm->deactivate($insert_id);
 			}
 		}
 	}

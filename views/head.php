@@ -13,7 +13,7 @@ $user = $_SERVER['REMOTE_USER'] ? $_SERVER['REMOTE_USER'] : $_SERVER['REDIRECT_R
 $db = db_connect($user);
 
 // this function determines which part of the url contains
-// object-specific information and which part is just 
+// object-specific information and which part is just
 // incidental to the location of the o-r-g on the server
 // it compares the request uri, eg:
 // /PATH/open-records-generator/browse/parent/child
@@ -27,17 +27,17 @@ function url_array()
 	global $view;
 	$s = explode('/', rtrim($_SERVER['SCRIPT_NAME'], '/'));
 	$u = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
-	
+
 	while($s[0] == $u[0])
 	{
 		array_shift($s);
 		array_shift($u);
 	}
-	
+
 	$view = array_shift($u);
 	// if no view is selected, show the cover page
 	$view = $view ? $view : "cover";
-	
+
 	return $u;
 }
 
@@ -77,6 +77,10 @@ if(file_exists($settings_file))
 }
 else
 	$max_uploads = 5;
+
+if ($view == "logout")
+	header("HTTP/1.1 401 Unauthorized");
+
 ?><!DOCTYPE html>
 <html>
 	<head>

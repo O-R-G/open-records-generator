@@ -98,7 +98,7 @@
       }
 
       // echo "Synced.<br /><br />Productions Added: $productionAddCount<br /><br />Performances Added: $performanceAddCount<br />Performances Updated: $performanceUpdateCount";
-			echo "Synced.<br /><br />Productions Added: $productionAddCount<br /><br />Performances Updated: $performanceUpdateCount";
+			echo "Synced.<br /><br />Productions Added: $productionAddCount<br />Productions Updated: $productionUpdateCount<br /><br />Performances Updated: $performanceUpdateCount";
 		}
 		?></div>
 	</div>
@@ -143,11 +143,27 @@ function add_or_update_production($production) {
 	$booking_url = "https://ica.web.patronbase.co.uk/performances?ProdID=$pb_id";
 
 	// does this exist?
-	$sql = "SELECT name2 FROM objects WHERE name2='$pb_id' AND active=1";
+	$sql = "SELECT * FROM objects WHERE name2='$pb_id' AND active=1";
 	$res = $db->query($sql)->fetch_assoc();
 
 	if (sizeof($res) > 0) {
-		// update
+
+		// update dates
+		$processed = array(
+			"begin" => date($oo::MYSQL_DATE_FMT, strtotime($production['begin_date'])), // begin date
+			"end" => date($oo::MYSQL_DATE_FMT, strtotime($production['end_date'])) // end date
+		);
+
+		foreach($processed as $key => $value)
+		{
+			if($value)
+				$processed[$key] = "'".addslashes($value)."'";
+			else
+				$processed[$key] = "null";
+		}
+
+		$oo->update($res['id'], $processed);
+
 		return false;
 	} else {
 		// create

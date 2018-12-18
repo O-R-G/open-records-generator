@@ -10,8 +10,8 @@ $license = file_get_contents($license_file);
 		<div class="self-container">
 			<p>
 				Open Records Generator<br>
-				Version 3.2.1<br>
-				10 October 2018<br>
+				Version 3.2.2<br>
+				22 October 2018<br>
 				<a href="http://www.o-r-g.com/" target="_blank">O R G inc.</a>
 			</p>
 			<div class="license-container">

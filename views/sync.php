@@ -60,7 +60,7 @@
 					"booking_url" => $production->urls->bookonline,
           "prod_group" => $production->project,
           "begin_date" => $production->dates->from,
-          "end_date" => $production->dates->to,
+          "end_date" => $production->permissions->public->hidedate,
 					"price_range" => $production->pricing->formatted
         );
 
@@ -172,7 +172,7 @@ function add_or_update_production($production) {
 			"name2" => $pb_id, // ticketing id
 			"country" => $booking_url, // booking url
 			// "phone" => $production["price_range"],  // price range // Stop pulling per request from Stuart and Michael
-			"head" => $production["prod_group"], // production group
+			// "head" => $production["prod_group"], // production group // Stop pulling as moving to new schema
 			"begin" => date($oo::MYSQL_DATE_FMT, strtotime($production['begin_date'])), // begin date
 			"end" => date($oo::MYSQL_DATE_FMT, strtotime($production['end_date'])), // end date
 			"url" => slug($production["name"]), // slug!

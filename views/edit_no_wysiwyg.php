@@ -1,7 +1,7 @@
 <?
 $browse_url = $admin_path.'browse/'.$uu->urls();
 
-$vars = array("name1", "deck", "body", "address1", "address2", "zip", "notes", "city", "state", "head", "name2", "country", "phone", "url", "rank", "begin", "end");
+$vars = array("name1", "deck", "body", "address1", "address2", "zip", "notes", "city", "state", "name2", "country", "phone", "url", "rank", "begin", "end");
 
 $var_info = array();
 
@@ -16,7 +16,7 @@ $var_info["input-type"]["url"] = "text";
 $var_info["input-type"]["rank"] = "text";
 
 // custom
-$var_info["input-type"]["head"] = "text";
+// $var_info["input-type"]["head"] = "text";
 $var_info["input-type"]["name2"] = "text";
 $var_info["input-type"]["address1"] = "textarea";
 $var_info["input-type"]["address2"] = "textarea";
@@ -38,7 +38,7 @@ $var_info["label"]["url"] = "URL Slug";
 $var_info["label"]["rank"] = "Rank";
 
 // custom
-$var_info["label"]["head"] = "Production Group";
+// $var_info["label"]["head"] = "Production Group";
 $var_info["label"]["name2"] = "Ticketing ID";
 $var_info["label"]["address1"] = "Bio";
 $var_info["label"]["address2"] = "Credit";

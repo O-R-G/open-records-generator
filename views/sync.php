@@ -37,14 +37,14 @@
       $headers = 'X-PatronBase-Api-Key:d73e6ac69f9ad58a2bced324d0c7e8f56d85e0b8';
 
 			$performanceAddCount = 0;
-      $performanceUpdateCount = 0;
+            $performanceUpdateCount = 0;
 
 			$productionAddCount = 0;
 			$productionUpdateCount = 0;
 
       // get json from patronbase
       $json = getJSON($endpoint, $headers, false);
-
+    
 			// delete existing where performance time > now
 			$sql_del = "DELETE FROM patronbase WHERE date_time > NOW()";
 			$res_del = $db->query($sql_del);
@@ -57,12 +57,18 @@
 					"category" => $production->category->name,
 					"department" => $production->department,
           "pb_id" => $production->id,
-					"booking_url" => $production->urls->bookonline,
+                    "booking_url" => $production->urls->bookonline,
           "prod_group" => $production->project,
           "begin_date" => $production->dates->from,
           "end_date" => $production->permissions->public->hidedate,
 					"price_range" => $production->pricing->formatted
         );
+
+// debug encoding
+
+// $productionObject["name"] = "Behind The Wall: Jürgen Böttcher";
+$productionObject["name"] = "Behind The Wall: Jürgen Böttcher";
+$productionObject["pb_id"] = "1a1";
 
         $production_added = add_or_update_production($productionObject);
 
@@ -88,7 +94,6 @@
           );
 
           $performance_added = add_or_update_performance($performanceObject);
-
 					$performanceUpdateCount++;
           // if ($performance_added)
           //   $performanceAddCount++;
@@ -96,8 +101,7 @@
           //   $performanceUpdateCount++;
         }
       }
-
-      // echo "Synced.<br /><br />Productions Added: $productionAddCount<br /><br />Performances Added: $performanceAddCount<br />Performances Updated: $performanceUpdateCount";
+            // echo "Synced.<br /><br />Productions Added: $productionAddCount<br /><br />Performances Added: $performanceAddCount<br />Performances Updated: $performanceUpdateCount";
 			echo "Synced.<br /><br />Productions Added: $productionAddCount<br />Productions Updated: $productionUpdateCount<br /><br />Performances Updated: $performanceUpdateCount";
 		}
 		?></div>
@@ -121,7 +125,7 @@ function getJSON($endpoint, $headers='', $convertToArray = false) {
 // returns true if added or false ir updated
 function add_or_update_production($production) {
 	global $db;
-  global $oo;
+    global $oo;
 	global $ww;
 
 	// TODO: Find out exactly how this gets mapped...
@@ -143,7 +147,7 @@ function add_or_update_production($production) {
 	$booking_url = "https://ica.web.patronbase.co.uk/performances?ProdID=$pb_id";
 
 	// does this exist?
-	$sql = "SELECT * FROM objects WHERE name2='$pb_id' AND active=1";
+	$sql = "SELECT * FROM objects, wires WHERE objects.name2='$pb_id' AND wires.toid=objects.id AND objects.active=1 AND wires.active=1";
 	$res = $db->query($sql)->fetch_assoc();
 
 	if (sizeof($res) > 0) {

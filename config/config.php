@@ -1,5 +1,5 @@
 <?php
-date_default_timezone_set('America/New_York');
+date_default_timezone_set('Europe/London');
 
 // database settings
 $db_name = getenv("DATABASE_NAME");
@@ -69,20 +69,39 @@ function db_connect($remote_user) {
 
 	} else {
 		// IF YOU ARE NOT USING ENVIRONMENTAL VARIABLES
-		$host = "localhost";
-		$dbse = "main";
+        $host = "localhost";
+		$dbse = "ica_local";
+
 		// full access
-		$creds['full']['db_user'] = "username";
-		$creds['full']['db_pass'] = "password";
+		$creds['full']['db_user'] = "root";
+		$creds['full']['db_pass'] = "";
 
 		// read / write access
 		// (can't create / drop tables)
-		$creds['rw']['db_user'] = "username_w";
-		$creds['rw']['db_pass'] = "password";
+		$creds['rw']['db_user'] = "root";
+		$creds['rw']['db_pass'] = "";
 
 		// read-only access
-		$creds['r']['db_user'] = "username";
-		$creds['r']['db_pass'] = "password";
+		$creds['r']['db_user'] = "root";
+		$creds['r']['db_pass'] = "";
+
+        /*
+		$host = "db67a.pair.com";
+		$dbse = "reinfurt_devicaart";
+
+		// full access
+		$creds['full']['db_user'] = "reinfurt_52";
+		$creds['full']['db_pass'] = "E34-8hm-7pB-pCo";
+
+		// read / write access
+		// (can't create / drop tables)
+		$creds['rw']['db_user'] = "reinfurt_52_w";
+		$creds['rw']['db_pass'] = "E34-8hm-7pB-pCo";
+
+		// read-only access
+		$creds['r']['db_user'] = "reinfurt_52_r";
+		$creds['r']['db_pass'] = "E34-8hm-7pB-pCo";
+        */
 	}
 
 	// users

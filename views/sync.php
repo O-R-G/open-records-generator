@@ -64,12 +64,6 @@
 					"price_range" => $production->pricing->formatted
         );
 
-// debug encoding
-
-// $productionObject["name"] = "Behind The Wall: Jürgen Böttcher";
-$productionObject["name"] = "Behind The Wall: Jürgen Böttcher";
-$productionObject["pb_id"] = "1a1";
-
         $production_added = add_or_update_production($productionObject);
 
 				if ($production_added)

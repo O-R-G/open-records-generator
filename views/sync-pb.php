@@ -25,7 +25,7 @@
 		if($rr->action != "sync")
 		{
 		?>
-			<form action="<? echo $admin_path; ?>sync" method="post">
+			<form action="<? echo $admin_path; ?>sync-pb" method="post">
 				<span>Sync with Patronbase </span>
 				<input name='action' type='hidden' value='sync'>
 				<input name='submit' type='submit' value='Sync'>
@@ -44,7 +44,7 @@
 
       // get json from patronbase
       $json = getJSON($endpoint, $headers, false);
-    
+
 			// delete existing where performance time > now
 			$sql_del = "DELETE FROM patronbase WHERE date_time > NOW()";
 			$res_del = $db->query($sql_del);
@@ -57,7 +57,7 @@
 					"category" => $production->category->name,
 					"department" => $production->department,
           "pb_id" => $production->id,
-                    "booking_url" => $production->urls->bookonline,
+          "booking_url" => $production->urls->bookonline,
           "prod_group" => $production->project,
           "begin_date" => $production->dates->from,
           "end_date" => $production->permissions->public->hidedate,

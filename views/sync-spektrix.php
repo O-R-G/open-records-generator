@@ -33,7 +33,7 @@
 		}
 		else
 		{
-			$spektrix_site_name = 'instituteofcontemporaryarts_staging';
+			$spektrix_site_name = 'ica';
       $endpoint = 'https://system.spektrix.com/' . $spektrix_site_name . '/api/v1/eventsrestful.svc';
 
 			$eventAddCount = 0;

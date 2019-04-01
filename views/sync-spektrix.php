@@ -145,7 +145,7 @@ function addOrUpdateEvent($event) {
 	$booking_url = "/book/$spektrix_id";
 
 	// does this exist?
-	$sql = "SELECT * FROM objects, wires WHERE objects.name2='$spektrix_id' AND wires.toid=objects.id AND objects.active=1 AND wires.active=1";
+	$sql = "SELECT objects.* FROM objects, wires WHERE objects.name2='$spektrix_id' AND wires.toid=objects.id AND objects.active=1 AND wires.active=1";
 	$res = $db->query($sql)->fetch_assoc();
 
 	if (sizeof($res) > 0) {

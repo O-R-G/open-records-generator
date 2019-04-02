@@ -60,6 +60,7 @@
           "spektrix_id" => (string)$event->Id,
           "begin_date" => (string)$event->FirstInstance,
           "end_date" => (string)$event->LastInstance
+					"on_sale_on_web" => (string)$event->OnSaleOnWeb,
         );
 
         $eventAdded = addOrUpdateEvent($eventObject);
@@ -143,6 +144,10 @@ function addOrUpdateEvent($event) {
 	$root = $roots[$event["category"]];
 	$spektrix_id = $event["spektrix_id"];
 	$booking_url = "/book/$spektrix_id";
+
+	if (!$event["on_sale_on_web"]) {
+		$booking_url = '';
+	}
 
 	// does this exist?
 	$sql = "SELECT objects.* FROM objects, wires WHERE objects.name2='$spektrix_id' AND wires.toid=objects.id AND objects.active=1 AND wires.active=1";

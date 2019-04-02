@@ -59,8 +59,8 @@
 					"category" => (string)getCategory($event),
           "spektrix_id" => (string)$event->Id,
           "begin_date" => (string)$event->FirstInstance,
-          "end_date" => (string)$event->LastInstance
-					"on_sale_on_web" => (string)$event->OnSaleOnWeb,
+          "end_date" => (string)$event->LastInstance,
+					"on_sale_on_web" => (string)$event->OnSaleOnWeb
         );
 
         $eventAdded = addOrUpdateEvent($eventObject);

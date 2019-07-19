@@ -62,7 +62,9 @@ function update_object(&$old, &$new, $siblings, $vars)
 
 	// add a sort of url break statement for urls that are already in existence
 	// (and potentially violate our new rules?)
-	$url_updated = urldecode($old['url']) != $new['url'];
+    // urldecode() is for query strings, ' ' -> '+'
+    // rawurldecode() is for urls, ' ' -> '%20'
+	$url_updated = rawurldecode($old['url']) != $new['url'];
 
 	if($url_updated)
 	{
@@ -401,7 +403,7 @@ if ($rr->action != "update" && $uu->id)
 						{
 						?><input name='<? echo $var; ?>'
 								type='<? echo $var_info["input-type"][$var]; ?>'
-								value='<? echo urldecode($item[$var]); ?>'
+								value='<? echo rawurldecode($item[$var]); ?>'
 								onclick="hideToolBars(); resetViews();"
 								<?php if ($user == 'guest'): ?>
 									disabled = "disabled"

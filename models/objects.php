@@ -53,8 +53,10 @@ class Objects extends Model
 						"wires.active = 1",
 						"wires.toid = objects.id",
 						"objects.active = '1'");
-		$order 	= array("objects.rank", "objects.begin", "objects.end", "objects.name1");
-
+		// $order 	= array("objects.rank", "objects.begin", "objects.end", "objects.name1");
+        /* exception for ICA, applies globally */
+        $order 	= array("objects.rank", "objects.modified DESC", "objects.end", "objects.begin", "objects.name1");
+    
 		return $this->get_all($fields, $tables, $where, $order);
 	}
 	

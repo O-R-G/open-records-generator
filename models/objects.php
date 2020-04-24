@@ -98,10 +98,20 @@ class Objects extends Model
 		return $ids;
 	}
 
+    /*  
+        major performance issues on ica.art. the issue is:
+
+            > $all = $this->traverse(0);
+
+        which does not scale efficiently to the size of ica.art database
+    */
+
 	public function siblings($o)
 	{
-		$all = $this->traverse(0);
 		$siblings = array();
+
+        /*
+		$all = $this->traverse(0);
 		
 		for($i = 0; $i < count($all); $i++)
 		{
@@ -115,6 +125,8 @@ class Objects extends Model
 		$siblings = array_unique($siblings);
 		$k = array_search($o, $siblings);
 		unset($siblings[$k]);
+        */
+
 		return  $siblings;
 	}
 	
@@ -163,11 +175,22 @@ class Objects extends Model
 	// breaking when $o is found,
 	// reporting the actual parents at the time of finding
 	// repeats this process through the entire tree array, in case
-	// object is linked elswhere
+	// object is linked elsewhere
+
+    /*  
+        major performance issues on ica.art. the issue is:
+
+            > $all = $this->traverse(0);
+
+        which does not scale efficiently to the size of ica.art database
+    */
+
 	public function ancestors($o)
 	{
-		$all = $this->traverse(0);
 		$ancestors = array();
+
+        /*
+		$all = $this->traverse(0);
 		$a = array();
 		for($i = 0; $i < count($all); $i++)
 		{
@@ -179,6 +202,9 @@ class Objects extends Model
 			$d = count($all[$i]);
 			$a[$d-1] = end($all[$i]);
 		}
+        // var_dump(array_unique($ancestors));
+        */
+
 		return array_unique($ancestors);
 	}
 	

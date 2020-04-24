@@ -34,14 +34,15 @@
 		else
 		{
 			$spektrix_site_name = 'ica';
-      $endpoint = 'https://system.spektrix.com/' . $spektrix_site_name . '/api/v1/eventsrestful.svc';
+            // $endpoint = 'https://system.spektrix.com/' . $spektrix_site_name . '/api/v1/eventsrestful.svc';
+            $endpoint = 'https://buy.ica.art/' . $spektrix_site_name . '/api/v1/eventsrestful.svc';
 
 			$eventAddCount = 0;
-      $eventUpdateCount = 0;
+            $eventUpdateCount = 0;
 
 			$instanceUpdateCount = 0;
 
-      // get spektrix list of all future events from now
+            // get spektrix list of all future events from now
 			$getFrom = '/allattributes/from?date=' . date('Y-m-d\TH:i:s',strtotime('now'));
 			$spektrixData = getXML($endpoint, $getFrom);
 
@@ -49,49 +50,47 @@
 			$sql_del = "DELETE FROM spektrix WHERE date_time > NOW()";
 			$res_del = $db->query($sql_del);
 
-      // iterate through events
-      foreach ($spektrixData->Event as $event) {
+            // iterate through events
+            foreach ($spektrixData->Event as $event) {
 				// print_r($event);
 
-        // make event
-        $eventObject = array(
-          "name" => (string)$event->Name,
-					"category" => (string)getCategory($event),
-          "spektrix_id" => (string)$event->Id,
-          "begin_date" => (string)$event->FirstInstance,
-          "end_date" => (string)$event->LastInstance,
-					"on_sale_on_web" => (string)$event->OnSaleOnWeb
-        );
+            // make event
+            $eventObject = array(
+              "name" => (string)$event->Name,
+	    				"category" => (string)getCategory($event),
+              "spektrix_id" => (string)$event->Id,
+              "begin_date" => (string)$event->FirstInstance,
+              "end_date" => (string)$event->LastInstance,
+		    			"on_sale_on_web" => (string)$event->OnSaleOnWeb
+            );
 
-        $eventAdded = addOrUpdateEvent($eventObject);
+            $eventAdded = addOrUpdateEvent($eventObject);
 
-				if ($eventAdded)
-					$eventAddCount++;
-				else
-					$eventUpdateCount++;
+			if ($eventAdded)
+				$eventAddCount++;
+			else
+				$eventUpdateCount++;
 
-        // iterate through instances
+            // iterate through instances
+				
+            foreach ($event->Times->EventTime as $instance) {
+				// print_r($instance);
 
-				foreach ($event->Times->EventTime as $instance) {
-					// print_r($instance);
+		    	// make instance
+                $instanceObject = array(
+                    "spektrix_id" => (string)$event->Id,
+                    "instance_id" => (string)$instance->EventInstanceId,
+                    "date" => (string)$instance->Time,
+                    "duration" => (string)$event->Duration,
+                    "venue" => (string)getVenue($instance)
+                );
 
-					// make instance
-          $instanceObject = array(
-            "spektrix_id" => (string)$event->Id,
-            "instance_id" => (string)$instance->EventInstanceId,
-            "date" => (string)$instance->Time,
-            "duration" => (string)$event->Duration,
-            "venue" => (string)getVenue($instance)
-          );
-
-					// print_r($instanceObject);
-
-          $instanceAdded = addOrUpdateInstance($instanceObject);
-					$instanceUpdateCount++;
+				// print_r($instanceObject);
+                $instanceAdded = addOrUpdateInstance($instanceObject);
+				    $instanceUpdateCount++;
+            }
         }
-      }
-
-			echo "Synced.<br /><br />Events Added: $eventAddCount<br />Events Updated: $eventUpdateCount<br /><br />Instances Updated: $instanceUpdateCount";
+		echo "Synced.<br /><br />Events Added: $eventAddCount<br />Events Updated: $eventUpdateCount<br /><br />Instances Updated: $instanceUpdateCount";
 		}
 		?></div>
 	</div>

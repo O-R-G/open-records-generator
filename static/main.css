@@ -302,6 +302,13 @@ input[type = 'text'].search_input{
 .select-container{
 	margin-bottom: 20px;
 }
+.small-text{
+	font-size: 0.75em;
+}
+.indent-text{
+	margin-left: 50px;
+}
+
 @media screen and (max-device-width: 568px) {
 	html {
 		font-size: 13px;

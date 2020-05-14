@@ -331,6 +331,29 @@ if ($rr->action != "update" && $uu->id)
                     return str;
 				}
 
+				function getSelectionText() {
+				    var text = "";
+				    if (window.getSelection) {
+				        text = window.getSelection().toString();
+				    } else if (document.selection && document.selection.type != "Control") {
+				        text = document.selection.createRange().text;
+				    }
+				    return text;
+				}
+
+				function small(name){
+					var text = getSelectionText();
+					document.execCommand("insertHTML", false, "<span class='small-text'>"+ text+"</span>");
+				}
+
+				function indent(name){
+					var text = getSelectionText();
+					if( text.charCodeAt(text.length-1) == 10)
+						document.execCommand("insertHTML", false, "<span class='indent-text'>"+ text+"</span><br>");
+					else
+						document.execCommand("insertHTML", false, "<span class='indent-text'>"+ text+"</span>");
+				}
+
 				// add "autosave functionality" every 5 sec
 				// setInterval(function() {
 				// 	commitAll();
@@ -357,6 +380,8 @@ if ($rr->action != "update" && $uu->id)
 													<?php endif; ?>
 													<a id="<? echo $var; ?>-bold" class='' href="#null" onclick="document.execCommand('bold',false,null);">bold</a>
 	                        <a id="<? echo $var; ?>-italic" class='' href="#null" onclick="document.execCommand('italic',false,null);">italic</a>
+	                        <a id="<? echo $var; ?>-small" class='' href="#null" onclick="small('<? echo $var; ?>');">small</a>
+	                        <a id="<? echo $var; ?>-indent" class='' href="#null" onclick="indent('<? echo $var; ?>');">indent</a>
 	                        <a id="<? echo $var; ?>-link" class='' href="#null" onclick="link('<? echo $var; ?>');">link</a>
 													<a id="<? echo $var; ?>-image" class='' href="#null" onclick="image('<? echo $var; ?>');">image</a>
 													<div id="<?echo $var; ?>-imagecontainer" class='imagecontainer dontdisplay' style="background-color: #999;">

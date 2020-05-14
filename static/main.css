@@ -294,6 +294,14 @@ select {
 	margin-left: 20px;
 }
 
+input[type = 'text'].search_input{
+	display: inline-block;
+	width: 75%;
+	margin-bottom: 5px;
+}
+.select-container{
+	margin-bottom: 20px;
+}
 @media screen and (max-device-width: 568px) {
 	html {
 		font-size: 13px;

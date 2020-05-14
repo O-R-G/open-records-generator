@@ -185,6 +185,8 @@ if ($rr->action != "update" && $uu->id)
 					document.getElementById(name + '-bold').addEventListener('click', function(e) {resignImageContainer(name);}, false);
 					document.getElementById(name + '-italic').addEventListener('click', function(e) {resignImageContainer(name);}, false);
 					document.getElementById(name + '-link').addEventListener('click', function(e) {resignImageContainer(name);}, false);
+					document.getElementById(name + '-small').addEventListener('click', function(e) {resignImageContainer(name);}, false);
+					document.getElementById(name + '-indent').addEventListener('click', function(e) {resignImageContainer(name);}, false);
 				}
 
 				function resignImageContainer(name) {
@@ -250,6 +252,8 @@ if ($rr->action != "update" && $uu->id)
 					var bold = document.getElementById(name + '-bold');
 					var italic = document.getElementById(name + '-italic');
 					var link = document.getElementById(name + '-link');
+					var small = document.getElementById(name + '-small');
+					var indent = document.getElementById(name + '-indent');
 					var image = document.getElementById(name + '-image');
 					var imagecontainer = document.getElementById(name + '-imagecontainer');
 					var html = document.getElementById(name + '-html');
@@ -265,6 +269,8 @@ if ($rr->action != "update" && $uu->id)
 
 					bold.style.visibility = 'visible';
 					italic.style.visibility = 'visible';
+					small.style.visibility = 'visible';
+					indent.style.visibility = 'visible';
 					link.style.visibility = 'visible';
 					image.style.visibility = 'visible';
 
@@ -276,6 +282,8 @@ if ($rr->action != "update" && $uu->id)
 					var bold = document.getElementById(name + '-bold');
 					var italic = document.getElementById(name + '-italic');
 					var link = document.getElementById(name + '-link');
+					var small = document.getElementById(name + '-small');
+					var indent = document.getElementById(name + '-indent');
 					var image = document.getElementById(name + '-image');
 					var imagecontainer = document.getElementById(name + '-imagecontainer');
 					var html = document.getElementById(name + '-html');
@@ -291,6 +299,8 @@ if ($rr->action != "update" && $uu->id)
 
 					bold.style.visibility = 'hidden';
 					italic.style.visibility = 'hidden';
+					small.style.visibility = 'hidden';
+					indent.style.visibility = 'hidden';
 					link.style.visibility = 'hidden';
 					image.style.visibility = 'hidden';
 					imagecontainer.style.display = 'none';

@@ -70,20 +70,20 @@ function db_connect($remote_user) {
 	} else {
 		// IF YOU ARE NOT USING ENVIRONMENTAL VARIABLES
         $host = "localhost";
-		$dbse = "ica_local";
+		$dbse = "dev_ica_art_local";
 
 		// full access
 		$creds['full']['db_user'] = "root";
-		$creds['full']['db_pass'] = "";
+		$creds['full']['db_pass'] = "f3f4p4ax";
 
 		// read / write access
 		// (can't create / drop tables)
 		$creds['rw']['db_user'] = "root";
-		$creds['rw']['db_pass'] = "";
+		$creds['rw']['db_pass'] = "f3f4p4ax";
 
 		// read-only access
 		$creds['r']['db_user'] = "root";
-		$creds['r']['db_pass'] = "";
+		$creds['r']['db_pass'] = "f3f4p4ax";
 
         /*
 		$host = "db67a.pair.com";

@@ -257,6 +257,43 @@ select {
     right: 16px;
 }
 
+.children-index{
+	text-align: center;
+	padding: 10px 0;
+}
+.folio{
+	padding: 5px;
+	
+}
+.folio:last-child{
+	margin-right: 0;
+}
+.folio.active{
+	font-weight: bold;
+	text-decoration: underline;
+}
+.folio, 
+.children-prev, 
+.children-next{
+	cursor: pointer;
+	display: inline-block;
+}
+.folio:hover{
+	text-decoration: underline;
+	font-weight: bold;
+}
+.children-prev:hover, 
+.children-next:hover{
+	text-decoration: underline;
+
+}
+.children-prev{
+	margin-right: 20px;
+}
+.children-next{
+	margin-left: 20px;
+}
+
 @media screen and (max-device-width: 568px) {
 	html {
 		font-size: 13px;

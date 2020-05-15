@@ -330,10 +330,7 @@ if ($rr->action != "update" && $uu->id)
 
 				// pretifies html (barely) by adding two new lines after a </div>
 				function pretty(str) {
-					var temp = document.createElement('span');
-					temp.innerText = str;
-					str = temp.innerText;
-					while(str.charCodeAt(0) == '9'){
+					while(str.charCodeAt(0) == '9' || str.charCodeAt(0) == '10'){
 						str = str.substring(1, str.length);
 					}
 			        // return (str + '').replace(/(?<=<\/div>)(?!\n)/gi, '\n\n');

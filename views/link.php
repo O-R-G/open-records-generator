@@ -54,7 +54,7 @@ if($uu->urls())
 				
 				<div class="form">
 					<div class="select-container">
-						<input class = 'search_input' type = 'text'><button class = 'search_btn'>search</button>
+						<input class = 'search_input' type = 'text'><a href = '#null'  class = 'search_btn'>search</a>
 						<select name='wires_toid[]'><?
 							$items = $oo->unlinked_list($uu->id);
 							$all_items = $oo->traverse(0);
@@ -76,7 +76,7 @@ if($uu->urls())
 							}
 						?></select>
 					</div>
-					<button id = 'btn_add_item'>Add new item</button>
+					<a href = '#null' id = 'btn_add_item'>Add new item</a>
 					<div class="button-container">
 						<input 
 							name='action' 
@@ -134,8 +134,7 @@ if($uu->urls())
 	select_container_template.appendChild(btn_remove_btn);
 	var sBtn_add_item = document.getElementById('btn_add_item');
 
-	sBtn_add_item.addEventListener('click', function(e){
-		e.preventDefault();
+	sBtn_add_item.addEventListener('click', function(){
 		search_btn_index ++;
 		var new_item = select_container_template.cloneNode(true);
 		sSelect_container.parentNode.insertBefore(new_item, sBtn_add_item);
@@ -151,33 +150,36 @@ if($uu->urls())
 		var this_options = this_select_container.querySelectorAll('option');
 		var this_btn_remove = this_select_container.querySelector('.btn_remove_item');
 
-		this_search_btn.addEventListener('click', function(e){
-			e.preventDefault();
+		this_search_btn.addEventListener('click', function(){
 			var hasFound = false;
 			var filter = this_input.value.toUpperCase();
 			for (i = 0; i < this_options.length; i++) {
 				var txtValue = this_options[i].textContent || this_options[i].innerText;
+				console.log(txtValue.toUpperCase().indexOf(filter) > -1);
 				if (txtValue.toUpperCase().indexOf(filter) > -1) {
 					if( !hasFound ){
 						hasFound = true;
 						this_options[i].setAttribute('selected', 'selected');
 					}
 					this_options[i].style.display = "block";
+					this_options[i].disabled = false;
 				} else {
 					this_options[i].style.display = "none";
+					this_options[i].disabled = true;
 				}
 				
 			}
 			if(!hasFound){
 				alert('no results found');
 				for (i = 0; i < this_options.length; i++) {
-						this_options[i].style.display = "block";					
+						this_options[i].style.display = "block";	
+						this_options[i].disabled = false;				
 				}
 			}
 		});
+
 		if(search_btn_index!==0){
-			this_btn_remove.addEventListener('click', function(e){
-				e.preventDefault();
+			this_btn_remove.addEventListener('click', function(){
 				search_btn_index--;
 				this_select_container.parentNode.removeChild(this_select_container);
 			});

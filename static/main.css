@@ -313,6 +313,7 @@ input[type = 'text'].search_input{
 	font-size: 0.75em;
 }
 .indent-text{
+	display: block;
 	margin-left: 50px;
 }
 

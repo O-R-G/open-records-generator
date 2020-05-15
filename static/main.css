@@ -277,6 +277,13 @@ select {
 .children-next{
 	cursor: pointer;
 	display: inline-block;
+	-webkit-user-select: none; /* Chrome/Safari */        
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* IE10+ */
+
+	/* Rules below not implemented in browsers yet */
+	-o-user-select: none;
+	user-select: none;
 }
 .folio:hover{
 	text-decoration: underline;

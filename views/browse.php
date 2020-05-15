@@ -173,6 +173,7 @@
 				var folio_to_activate = el.getElementsByClassName('folio')[index];
 				folio_to_activate.classList.add('active');
 			});
+			window.scrollTo(0,0);
 		}
 		function deactivate_folio(){
 			var active_folio = document.querySelectorAll('.folio.active');

@@ -333,7 +333,6 @@ if ($rr->action != "update" && $uu->id)
 					var temp = document.createElement('span');
 					temp.innerText = str;
 					str = temp.innerText;
-					console.log(str.charCodeAt(0));
 					while(str.charCodeAt(0) == '9'){
 						str = str.substring(1, str.length);
 					}
@@ -358,8 +357,10 @@ if ($rr->action != "update" && $uu->id)
 
 				function indent(name){
 					var text = getSelectionText();
-					if( text.charCodeAt(text.length-1) == 10)
-						document.execCommand("insertHTML", false, "<span class='indent-text'>"+ text+"</span><br>");
+					if( text.charCodeAt(text.length-1) == 10){
+						text = text.substring(0, text.length-1);
+						document.execCommand("insertHTML", false, "<span class='indent-text'>"+ text+"</span><br><br>");
+					}
 					else
 						document.execCommand("insertHTML", false, "<span class='indent-text'>"+ text+"</span>");
 				}

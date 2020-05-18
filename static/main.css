@@ -107,7 +107,9 @@ a:hover {
 .child + #object-actions,
 .select-container + .button-container,
 .button-container,
-.children-container {
+.children-container,
+.children-page + #object-actions
+{
 	padding-top: 16px;
 }
 
@@ -258,19 +260,21 @@ select {
 }
 
 .children-index{
-	text-align: center;
+	/*text-align: center;*/
 	padding: 10px 0;
 }
 .folio{
-	padding: 5px;
-	
+	padding: 0 2px;
+	margin: 0 5px ;
 }
-.folio:last-child{
-	margin-right: 0;
+.folio:first-child{
+	/*margin-left: 0;*/
+	padding-left: 0;
 }
 .folio.active{
-	font-weight: bold;
-	text-decoration: underline;
+	/*font-weight: bold;*/
+	color: #000;
+	background-color: transparent;
 }
 .folio, 
 .children-prev, 
@@ -285,20 +289,21 @@ select {
 	-o-user-select: none;
 	user-select: none;
 }
-.folio:hover{
+/*.folio:hover{
 	text-decoration: underline;
 	font-weight: bold;
-}
-.children-prev:hover, 
+}*/
+/*.children-prev:hover, 
 .children-next:hover{
 	text-decoration: underline;
-
-}
+}*/
 .children-prev{
-	margin-right: 20px;
+	margin-left: 10px;
+	/*padding: 0 2px;*/
 }
 .children-next{
-	margin-left: 20px;
+	/*padding: 0 2px;*/
+	margin-left: 10px;
 }
 
 input[type = 'text'].search_input{

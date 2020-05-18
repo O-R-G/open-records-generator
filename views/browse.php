@@ -43,7 +43,17 @@
 		// children
 		$children = $oo->children($uu->id);
 		$num_children = count($children);
-		
+		$paged = false;
+		$page_total = intval( $num_children / 100 ) +1;
+
+		if($num_children && $num_children > 100){
+			$paged = true;
+		?><div class = 'children-index'><?
+		for($i = 0; $i < $page_total; $i++){
+			?><a href = '#null' class = 'folio'><? echo $i+1 ?></a><?
+		}
+		?><a href = '#null' class = 'children-prev'><<</a><a href = '#null' class = 'children-next'>>></a></div><?
+		}
 		?><div id="children"><?
 		if($num_children)
 		{	
@@ -57,43 +67,39 @@
 
 			if($paged){
 				// $page_current = 1;
-				$page_total = intval( $num_children / 100 ) +1;
-				?><div class = 'children-index'><span class = 'children-prev'><<</span><?
+				
+				for ($k = 0; $k < $page_total; $k++){
+					$style =  ($k == 0) ? 'display:block;' : 'display:none;';
+					?><div id = 'children-page<? echo ($k+1); ?>' class = 'children-page' style = '<? echo $style ?>'><?
+						for($i = $k * 100; $i <  ($k+1) * 100 ; $i++)
+						{
+							if(!isset($children[$i]))
+								break;
+							$c = $children[$i];
+							$j = $i + 1;
+							$j_pad = str_pad($j, $pad, "0", STR_PAD_LEFT);
+
+							// this is to avoid adding an extra slash
+							// in child urls of the root object
+							$url = $admin_path."browse/";
+							if($uu->urls())
+								$url.= $uu->urls()."/";
+							$url.= $c["url"];
+
+							?><div class="child">
+								<span><? echo $j_pad; ?></span>
+								<a href="<? echo $url; ?>"><? echo $c["name1"]; ?></a>
+							</div><?
+						}
+					?></div><?
+				}
+				?>
+					<!-- <div class = 'children-index'><span class = 'children-prev'><<</span><?
 					for($i = 0; $i < $page_total; $i++){
 						?><span class = 'folio'><? echo $i+1 ?></span><?
 					}
-					?><span class = 'children-next'>>></span></div><?
-
-					for ($k = 0; $k < $page_total; $k++){
-						$style =  ($k == 0) ? 'display:block;' : 'display:none;';
-						?><div id = 'children-page<? echo ($k+1); ?>' class = 'children-page' style = '<? echo $style ?>'><?
-							for($i = $k * 100; $i <  ($k+1) * 100 ; $i++)
-							{
-								if(!isset($children[$i]))
-									break;
-								$c = $children[$i];
-								$j = $i + 1;
-								$j_pad = str_pad($j, $pad, "0", STR_PAD_LEFT);
-
-								// this is to avoid adding an extra slash
-								// in child urls of the root object
-								$url = $admin_path."browse/";
-								if($uu->urls())
-									$url.= $uu->urls()."/";
-								$url.= $c["url"];
-
-								?><div class="child">
-									<span><? echo $j_pad; ?></span>
-									<a href="<? echo $url; ?>"><? echo $c["name1"]; ?></a>
-								</div><?
-							}
-						?></div><?
-					}
-					?><div class = 'children-index'><span class = 'children-prev'><<</span><?
-					for($i = 0; $i < $page_total; $i++){
-						?><span class = 'folio'><? echo $i+1 ?></span><?
-					}
-					?><span class = 'children-next'>>></span></div><?
+					?><span class = 'children-next'>>></span></div> -->
+					<?
 			}else{
 				for($i = 0; $i < $num_children; $i++)
 				{

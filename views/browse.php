@@ -58,9 +58,6 @@
 		if($num_children)
 		{	
 
-			$paged = false;
-			if($num_children > 100)
-				$paged = true;
 			$pad = floor(log10($num_children)) + 1;
 			if($pad < 2)
 				$pad = 2;

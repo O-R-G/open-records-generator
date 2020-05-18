@@ -259,26 +259,12 @@ select {
     right: 16px;
 }
 
-.children-index{
-	/*text-align: center;*/
-	padding: 10px 0;
-}
-.folio{
-	padding: 0 2px;
-	margin: 0 5px ;
-}
-.folio:first-child{
-	/*margin-left: 0;*/
-	padding-left: 0;
-}
-.folio.active{
-	/*font-weight: bold;*/
-	color: #000;
-	background-color: transparent;
-}
 .folio, 
 .children-prev, 
 .children-next{
+	padding: 0 2px;
+	margin: 0 5px ;
+
 	cursor: pointer;
 	display: inline-block;
 	-webkit-user-select: none; /* Chrome/Safari */        
@@ -289,21 +275,25 @@ select {
 	-o-user-select: none;
 	user-select: none;
 }
-/*.folio:hover{
-	text-decoration: underline;
-	font-weight: bold;
-}*/
-/*.children-prev:hover, 
-.children-next:hover{
-	text-decoration: underline;
-}*/
-.children-prev{
+.folio:first-child{
 	margin-left: 10px;
-	/*padding: 0 2px;*/
+	/*padding-left*/: 0;
 }
-.children-next{
-	/*padding: 0 2px;*/
-	margin-left: 10px;
+.folio.active{
+	/*font-weight: bold;*/
+	color: #000;
+	background-color: transparent;
+}
+.select-container select{
+	width: 100%;
+}
+.filter_ctner{
+	margin-top: 3px;
+}
+.filter_ctner > input, 
+.filter_ctner > a
+{
+	vertical-align: bottom;
 }
 .filter_input{
 	width: 325px;
@@ -315,7 +305,6 @@ select {
 	font-size: 0.75em;
 }
 .indent-text{
-	/*display: block;*/
 	margin-left: 50px;
 }
 

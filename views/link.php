@@ -74,9 +74,8 @@ if($uu->urls())
 							?></option><?
 							}
 						?></select>
-						<div><br>Or filter the results by keywords:</div>
 						<div class = 'filter_ctner'>
-							<input class = 'filter_input' type = ''><a href = '#null' class = 'filter_btn'>FILTER...</a><a href = '#null' class = 'clear_btn'>CLEAR...</a>
+							<input class = 'filter_input' type = '' placeholder = 'Filter by keywords'><a href = '#null' class = 'filter_btn'>FILTER...</a><a href = '#null' class = 'clear_btn'>CLEAR...</a>
 					</div>
 					<!-- <button id = 'btn_add_item'>Add new item</button> -->
 					<div class="button-container">

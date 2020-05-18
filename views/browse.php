@@ -48,11 +48,11 @@
 
 		if($num_children && $num_children > 100){
 			$paged = true;
-		?><div class = 'children-index'><?
+		?><div class = 'children-index'>PAGE<?
 		for($i = 0; $i < $page_total; $i++){
 			?><a href = '#null' class = 'folio'><? echo $i+1 ?></a><?
 		}
-		?><a href = '#null' class = 'children-prev'><<</a><a href = '#null' class = 'children-next'>>></a></div><?
+		?><a href = '#null' class = 'children-prev'><</a><a href = '#null' class = 'children-next'>></a></div><?
 		}
 		?><div id="children"><?
 		if($num_children)

@@ -1,0 +1,29 @@
+OPEN-RECORDS-GENERATOR supports Markdown as well as standard HTML. This includes basic markup, advanced formatting and embedding. The most common Markdown syntax rules are provided here for copy-paste reference:
+
+emphasis: 
+
+*words within single asterisks are italicised*
+
+**words within double asterisks are bold**
+
+note: to underline an asterisk, escape it with a backslash, \*.
+
+links:
+
+This is a [link](http://www.google.com) to google.com.
+
+Full Documentation of Markdown syntax may be found at: 
+
+https://daringfireball.net/projects/markdown
+
+Here are some standard HTML tags, for reference: 
+
+<i>words here appear in italics</i>
+
+<b>words here appear in bold</b>
+
+<br /> forces a line return when otherwise not specified
+
+<a href = 'http://www.example.com'>this text is a hyperlink in same window</a>
+
+<a href = 'http://www.example.com' target= 'new'>this text is a hyperlink in a new window</a>

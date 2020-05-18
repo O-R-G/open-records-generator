@@ -1,32 +1,26 @@
-OPEN-RECORDS-GENERATOR supports Markdown as well as standard HTML. This includes basic markup, advanced formatting and embedding. The most common Markdown syntax rules are provided here for copy-paste reference:
+ADDITIONAL NOTES SPECIFIC TO ICA.ART
 
-emphasis: 
+1. As you use this interface, it should become increasingly transparent to you. As you work in OPEN-RECORDS-GENERATOR, use the GENERATE > button consistently to check your work and to see live changes you have just made to your website.
 
-*words within single asterisks are italicised*
+2. OPEN-RECORDS-GENERATOR automatically sorts object lists based on each object's fields. Objects are sorted by their Rank (ascending) field. So, to make a RECORD appear first in the Menu, give it a RANK of 1. Alternately, you could rank your RECORDS 100, 200, 300 and they would still appear in ascending order. Doing it this way makes it easier to add new RECORDS in between as needed without re-ranking the list.
 
-**words within double asterisks are bold**
+3. OPEN-RECORDS-GENERATOR supports rich text editing within its Synopsis, Detail, and Notes fields. You are easily able to make text bold, add links, and embed images that are uploaded to that record. You can also use toggle the field mode to allow for HTML markup. This will allow you to use the full extent of the HTML markup language, including <embed> tags, such as from youtube.com, vimeo, issuu or other sites. For your reference, here's a short list of common html markup:
 
-note: to underline an asterisk, escape it with a backslash, \*.
+<b>bold</b>
+<i>italic</i>
+<u>underline</u>
+<a href="http://www.example.com">A hyperlink</a>
+<a href="http://www.example.com" target="_blank">Opens in a new window</a>
 
-links:
+4. An entry can be hidden from the website by prepending a "." to the Name field. This will make it still accessible to those with a direct URL and editable, but will not be shown in other parts of the website.
 
-This is a [link](http://www.google.com) to google.com.
+5. An entry can be hidden from its category page by prepending a "-" to the Name field. This will still let it show up in the home page and search, but not in category. This is useful for when there are many productions as part of a season.
 
-Full Documentation of Markdown syntax may be found at: 
+6. An entry can be hidden from the docket by prepending a "~" to the Name field. Thiswill still let it show up in its category page and search, but not on the home page. However, if the entry is added under _Highlights, it will still show up.
 
-https://daringfireball.net/projects/markdown
+7. Submenus can be added and used under the Home page and category pages. This can be located the ">Submenu" entry under _Home or each category page. Within the entry, the submenu contents are defined under the Detail field. Each line includes one submenu item, with the title and url of the link defining how the item is shown on the front end.
 
-Here are some standard HTML tags, for reference: 
-
-<i>words here appear in italics</i>
-
-<b>words here appear in bold</b>
-
-<br /> forces a line return when otherwise not specified
-
-<a href = 'http://www.example.com'>this text is a hyperlink in same window</a>
-
-<a href = 'http://www.example.com' target= 'new'>this text is a hyperlink in a new window</a>
+8. An entry can be forced to display even if it is on a Monday from the docket by prepending a "!" to the Name field.
 
 --
 

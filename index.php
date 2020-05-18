@@ -7,7 +7,6 @@ require_once("views/head.php");
 // else is for backwards compatibility (maybe not necessary?)
 if($view)
 	$view_path = "views/".$view.".php";
-
 try {
 	if(!file_exists($view_path))
 		throw new Exception("404");

@@ -94,7 +94,116 @@ if($uu->urls())
 					</div>
 				</div>
 			</form>
-		</div><? 
+		</div>
+		<script>
+			/* ========= for linking multiple objects =========
+			wei: If linking multiple objects is reactivated someday,
+			it needs some modification like the part hiding/showing filtered results. 
+
+			var filter_btn = document.getElementsByClassName('filter_btn')[0];
+			var filter_btn_index = 0; // index of focused select-container
+			var sSelect_container = document.querySelector('.select-container');
+			var select_container_template = sSelect_container.cloneNode(true);
+			var btn_remove_btn = document.createElement('button');
+			btn_remove_btn.className = 'btn_remove_item';
+			btn_remove_btn.innerText = 'Remove item';
+			select_container_template.appendChild(btn_remove_btn);
+			var sBtn_add_item = document.getElementById('btn_add_item');
+
+			sBtn_add_item.addEventListener('click', function(e){
+				e.preventDefault();
+				filter_btn_index ++;
+				var new_item = select_container_template.cloneNode(true);
+				sSelect_container.parentNode.insertBefore(new_item, sBtn_add_item);
+				
+				new_item_add_listener(filter_btn_index);
+			});
+			
+
+			function new_item_add_listener(index){
+				var this_filter_btn = document.getElementsByClassName('filter_btn')[index];
+				var this_select_container = this_filter_btn.parentNode;
+				var this_input = this_select_container.querySelector('.filter_input');
+				var this_options = this_select_container.querySelectorAll('option');
+				var this_btn_remove = this_select_container.querySelector('.btn_remove_item');
+
+				this_filter_btn.addEventListener('click', function(e){
+					e.preventDefault();
+					var hasFound = false;
+					var filter = this_input.value.toUpperCase();
+					for (i = 0; i < this_options.length; i++) {
+						var txtValue = this_options[i].textContent || this_options[i].innerText;
+						if (txtValue.toUpperCase().indexOf(filter) > -1) {
+							if( !hasFound ){
+								hasFound = true;
+								this_options[i].setAttribute('selected', 'selected');
+							}
+							this_options[i].style.display = "block";
+							this_options[i].disabled = false;
+						} else {
+							this_options[i].style.display = "none";
+							this_options[i].disabled = true;
+						}
+						
+					}
+					if(!hasFound){
+						alert('no results found');
+						for (i = 0; i < this_options.length; i++) {
+								this_options[i].style.display = "block";
+								this_options[i].disabled = false;				
+						}
+					}
+				});
+				if(filter_btn_index!==0){
+					this_btn_remove.addEventListener('click', function(e){
+						e.preventDefault();
+						filter_btn_index--;
+						this_select_container.parentNode.removeChild(this_select_container);
+					});
+				}
+			}
+
+			new_item_add_listener(filter_btn_index);
+			*/
+
+			/* ========= for linking single object ========== */
+
+			var filter_btn = document.getElementsByClassName('filter_btn')[0];
+			var options = document.querySelectorAll('.select-container option');
+			var filter_input = document.getElementsByClassName('filter_input')[0];
+			var clear_input = document.getElementsByClassName('clear_btn')[0];
+			var select = document.querySelector('.select-container > select');
+			var full_options = select.innerHTML;
+
+			filter_btn.addEventListener('click', function(){
+				var hasFound = false;
+				var filter = filter_input.value.toUpperCase();
+				select.innerHTML = full_options;
+				options = document.querySelectorAll('.select-container option');
+				for (i = 0; i < options.length; i++) {
+					var txtValue = options[i].textContent || options[i].innerText;
+					if (txtValue.toUpperCase().indexOf(filter) > -1) {
+						if( !hasFound ){
+							hasFound = true;
+							options[i].setAttribute('selected', 'selected');
+						}
+					} else {
+						// display block/none won't work for <option> in safari
+						select.removeChild(options[i]);
+					}
+					
+				}
+				if(!hasFound){
+					alert('no results found');
+				}
+			});
+			clear_input.addEventListener('click', function(){
+				filter_input.value = '';
+				select.innerHTML = full_options;
+			});
+
+		</script>
+	<? 
 	}
 	else 
 	{

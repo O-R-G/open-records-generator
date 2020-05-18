@@ -305,14 +305,11 @@ select {
 	/*padding: 0 2px;*/
 	margin-left: 10px;
 }
-
-input[type = 'text'].search_input{
-	display: inline-block;
-	width: 75%;
-	margin-bottom: 5px;
+.filter_input{
+	width: 325px;
 }
-.select-container{
-	margin-bottom: 20px;
+.filter_btn, .clear_btn{
+	margin-left: 10px;
 }
 .small-text{
 	font-size: 0.75em;

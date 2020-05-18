@@ -354,19 +354,19 @@ if ($rr->action != "update" && $uu->id)
 
 				function indent(name){
 					var text = getSelectionText();
-					var modified_text = '<ul>';
-					var this_item = '<li class = "list-item">';
+					var modified_text = '<ul class = "unordered-list">';
+					var this_item = '<li class = "unordered-list-item">';
 					while(text.length != 0){
 						if(text.charCodeAt(0) != 10){
 							this_item += text[0];
 						}else{
 							this_item+='</li>';
 							modified_text+=this_item;
-							this_item = '<li class = "list-item">';
+							this_item = '<li class = "unordered-list-item">';
 						}
 						text = text.substring(1);
 					}
-					if(this_item.length != 0 && this_item!='<li class = "list-item">')
+					if(this_item.length != 0 && this_item!='<li class = "unordered-list-item">')
 						modified_text+=this_item + '</li>';
 					modified_text += '</ul>';
 

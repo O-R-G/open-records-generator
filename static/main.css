@@ -315,7 +315,7 @@ select {
 	font-size: 0.75em;
 }
 .indent-text{
-	display: block;
+	/*display: block;*/
 	margin-left: 50px;
 }
 

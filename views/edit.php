@@ -355,7 +355,6 @@ if ($rr->action != "update" && $uu->id)
 				function list(name){
 					var text = getSelectionText();
 					var modified_text = '<ul>';
-					var break_counter = 0;
 					var this_item = '<li class = "list-item">';
 					while(text.length != 0){
 						if(text.charCodeAt(0) != 10){
@@ -370,7 +369,7 @@ if ($rr->action != "update" && $uu->id)
 					if(this_item.length != 0 && this_item!='<li class = "list-item">')
 						modified_text+=this_item + '</li>';
 					modified_text += '</ul>';
-					// console.log(break_counter);
+
 					document.execCommand("insertHTML", false, modified_text);
 				}
 

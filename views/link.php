@@ -54,7 +54,6 @@ if($uu->urls())
 				
 				<div class="form">
 					<div class="select-container">
-						<input class = 'search_input' type = 'text'><a href = '#null'  class = 'search_btn'>search</a>
 						<select name='wires_toid[]'><?
 							$items = $oo->unlinked_list($uu->id);
 							$all_items = $oo->traverse(0);
@@ -74,7 +73,9 @@ if($uu->urls())
 									echo $oo->name(end($i));
 							?></option><?
 							}
-						?></select>
+						?>
+							<!-- <input class = 'search_input' type = 'text'><a href = '#null'  class = 'search_btn'>search</a> -->
+						</select>
 					</div>
 					<a href = '#null' id = 'btn_add_item'>Add new item</a>
 					<div class="button-container">

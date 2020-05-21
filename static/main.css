@@ -107,7 +107,9 @@ a:hover {
 .child + #object-actions,
 .select-container + .button-container,
 .button-container,
-.children-container {
+.children-container,
+.children-page + #object-actions
+{
 	padding-top: 16px;
 }
 
@@ -255,6 +257,55 @@ select {
 .right {
     position: absolute;
     right: 16px;
+}
+
+.folio, 
+.children-prev, 
+.children-next{
+	padding: 0 2px;
+	margin: 0 5px ;
+
+	cursor: pointer;
+	display: inline-block;
+	-webkit-user-select: none; /* Chrome/Safari */        
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* IE10+ */
+
+	/* Rules below not implemented in browsers yet */
+	-o-user-select: none;
+	user-select: none;
+}
+.folio:first-child{
+	margin-left: 10px;
+	/*padding-left*/: 0;
+}
+.folio.active{
+	/*font-weight: bold;*/
+	color: #000;
+	background-color: transparent;
+}
+.select-container select{
+	width: 100%;
+}
+.filter_ctner{
+	margin-top: 3px;
+}
+.filter_ctner > input, 
+.filter_ctner > a
+{
+	vertical-align: bottom;
+}
+.filter_input{
+	width: 325px;
+}
+.filter_btn, .clear_btn{
+	margin-left: 10px;
+}
+.small-text{
+	font-size: 0.75em;
+}
+.indent-text{
+	margin-left: 50px;
 }
 
 @media screen and (max-device-width: 568px) {

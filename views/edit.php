@@ -359,6 +359,8 @@ if ($rr->action != "update" && $uu->id)
 					var text = getSelectionText();
 					var modified_text = '<ul class = "unordered-list">';
 					var this_item = '<li class = "unordered-list-item">';
+                    // alternately, could use document.execCommand("indent"); 
+                    // and document.execCommand("outdent"); below ...
 					while(text.length != 0){
 						if(text.charCodeAt(0) != 10){
 							this_item += text[0];

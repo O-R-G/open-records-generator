@@ -349,7 +349,10 @@ if ($rr->action != "update" && $uu->id)
 
 				function small(name){
 					var text = getSelectionText();
-					document.execCommand("insertHTML", false, "<span class='small-text'>"+ text+"</span>");
+                    // using <small> as an html element rather than <span> seems to address
+                    // issues with overlapping <spans> when indenting, etc 
+					// document.execCommand("insertHTML", false, "<span class='small-text'>"+ text+"</span>");
+					document.execCommand("insertHTML", false, "<small class='small-text'>"+ text+"</small>");
 				}
 
 				function indent(name){
@@ -398,10 +401,10 @@ if ($rr->action != "update" && $uu->id)
 														<a id="<? echo $var; ?>-txt" class='right dontdisplay' href="#null" onclick="showrich('<? echo $var; ?>');">done.</a>
 													<?php endif; ?>
 													<a id="<? echo $var; ?>-bold" class='' href="#null" onclick="document.execCommand('bold',false,null);">bold</a>
-	                        <a id="<? echo $var; ?>-italic" class='' href="#null" onclick="document.execCommand('italic',false,null);">italic</a>
-	                        <a id="<? echo $var; ?>-small" class='' href="#null" onclick="small('<? echo $var; ?>');">small</a>
-	                        <a id="<? echo $var; ?>-indent" class='' href="#null" onclick="indent('<? echo $var; ?>');">indent</a>
-	                        <a id="<? echo $var; ?>-link" class='' href="#null" onclick="link('<? echo $var; ?>');">link</a>
+	                                                <a id="<? echo $var; ?>-italic" class='' href="#null" onclick="document.execCommand('italic',false,null);">italic</a>
+                        	                        <a id="<? echo $var; ?>-small" class='' href="#null" onclick="small('<? echo $var; ?>');">small</a>
+	                                                <a id="<? echo $var; ?>-indent" class='' href="#null" onclick="indent('<? echo $var; ?>');">indent</a>
+	                                                <a id="<? echo $var; ?>-link" class='' href="#null" onclick="link('<? echo $var; ?>');">link</a>
 													<a id="<? echo $var; ?>-image" class='' href="#null" onclick="image('<? echo $var; ?>');">image</a>
 													<div id="<?echo $var; ?>-imagecontainer" class='imagecontainer dontdisplay' style="background-color: #999;">
 														<span style="color: white;">insert an image...</span>

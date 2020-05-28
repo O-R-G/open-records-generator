@@ -56,6 +56,10 @@ a:hover {
 	background-color: #999;
 }
 
+aside {
+    font-size: 9px;
+}
+
 #header-container,
 #footer-container {
 	color: #fff;

@@ -131,7 +131,6 @@ if ($rr->action != "update" && $uu->id)
 		else
 			$medias[$i]["display"] = $medias[$i]["file"];
 	}
-
 	$form_url = $admin_path."edit/".$uu->urls();
 // object contents
 ?><div id="form-container">
@@ -160,8 +159,8 @@ if ($rr->action != "update" && $uu->id)
 					document.getElementById(name + '-bold').addEventListener('click', function(e) {resignImageContainer(name);}, false);
 					document.getElementById(name + '-italic').addEventListener('click', function(e) {resignImageContainer(name);}, false);
 					document.getElementById(name + '-link').addEventListener('click', function(e) {resignImageContainer(name);}, false);
-					document.getElementById(name + '-small').addEventListener('click', function(e) {resignImageContainer(name);}, false);
 					document.getElementById(name + '-indent').addEventListener('click', function(e) {resignImageContainer(name);}, false);
+					document.getElementById(name + '-reset').addEventListener('click', function(e) {resignImageContainer(name);}, false);
 				}
 
 				function resignImageContainer(name) {
@@ -227,8 +226,8 @@ if ($rr->action != "update" && $uu->id)
 					var bold = document.getElementById(name + '-bold');
 					var italic = document.getElementById(name + '-italic');
 					var link = document.getElementById(name + '-link');
-					var small = document.getElementById(name + '-small');
 					var indent = document.getElementById(name + '-indent');
+					var reset = document.getElementById(name + '-reset');
 					var image = document.getElementById(name + '-image');
 					var imagecontainer = document.getElementById(name + '-imagecontainer');
 					var html = document.getElementById(name + '-html');
@@ -244,8 +243,8 @@ if ($rr->action != "update" && $uu->id)
 
 					bold.style.visibility = 'visible';
 					italic.style.visibility = 'visible';
-					small.style.visibility = 'visible';
 					indent.style.visibility = 'visible';
+					reset.style.visibility = 'visible';
 					link.style.visibility = 'visible';
 					image.style.visibility = 'visible';
 
@@ -257,8 +256,8 @@ if ($rr->action != "update" && $uu->id)
 					var bold = document.getElementById(name + '-bold');
 					var italic = document.getElementById(name + '-italic');
 					var link = document.getElementById(name + '-link');
-					var small = document.getElementById(name + '-small');
 					var indent = document.getElementById(name + '-indent');
+					var reset = document.getElementById(name + '-reset');
 					var image = document.getElementById(name + '-image');
 					var imagecontainer = document.getElementById(name + '-imagecontainer');
 					var html = document.getElementById(name + '-html');
@@ -274,8 +273,8 @@ if ($rr->action != "update" && $uu->id)
 
 					bold.style.visibility = 'hidden';
 					italic.style.visibility = 'hidden';
-					small.style.visibility = 'hidden';
 					indent.style.visibility = 'hidden';
+					reset.style.visibility = 'hidden';
 					link.style.visibility = 'hidden';
 					image.style.visibility = 'hidden';
 					imagecontainer.style.display = 'none';
@@ -322,36 +321,14 @@ if ($rr->action != "update" && $uu->id)
 				    return text;
 				}
 
-				function small(name){
-					var text = getSelectionText();
-                    // using <small> as an html element rather than <span> seems to address
-                    // issues with overlapping <spans> when indenting, etc 
-					// document.execCommand("insertHTML", false, "<span class='small-text'>"+ text+"</span>");
-					document.execCommand("insertHTML", false, "<small class='small-text'>"+ text+"</small>");
-				}
-
 				function indent(name){
-					var text = getSelectionText();
-					var modified_text = '<ul class = "unordered-list">';
-					var this_item = '<li class = "unordered-list-item">';
-                    // alternately, could use document.execCommand("indent"); 
-                    // and document.execCommand("outdent"); below ...
-					while(text.length != 0){
-						if(text.charCodeAt(0) != 10){
-							this_item += text[0];
-						}else{
-							this_item+='</li>';
-							modified_text+=this_item;
-							this_item = '<li class = "unordered-list-item">';
-						}
-						text = text.substring(1);
-					}
-					if(this_item.length != 0 && this_item!='<li class = "unordered-list-item">')
-						modified_text+=this_item + '</li>';
-					modified_text += '</ul>';
+	                document.execCommand('formatBlock',false,'blockquote');
+                }
 
-					document.execCommand("insertHTML", false, modified_text);
-				}
+				function reset(name){
+	                document.execCommand('formatBlock',false,'div');
+	                document.execCommand('removeFormat',false,'');
+                }
 
 				// add "autosave functionality" every 5 sec
 				// setInterval(function() {
@@ -378,9 +355,10 @@ if ($rr->action != "update" && $uu->id)
 														<a id="<? echo $var; ?>-txt" class='right dontdisplay' href="#null" onclick="showrich('<? echo $var; ?>');">done.</a>
 													<?php endif; ?>
 													<a id="<? echo $var; ?>-bold" class='' href="#null" onclick="document.execCommand('bold',false,null);">bold</a>
-	                                                <a id="<? echo $var; ?>-italic" class='' href="#null" onclick="document.execCommand('italic',false,null);">italic</a>
-                        	                        <a id="<? echo $var; ?>-small" class='' href="#null" onclick="small('<? echo $var; ?>');">small</a>
+	                                                <a id="<? echo $var; ?>-italic" class='' href="#null" onclick="document.execCommand('italic',false,null);">italic</a> 
 	                                                <a id="<? echo $var; ?>-indent" class='' href="#null" onclick="indent('<? echo $var; ?>');">indent</a>
+	                                                <a id="<? echo $var; ?>-reset" class='' href="#null" onclick="reset('<? echo $var; ?>');">&nbsp;&times;&nbsp;</a>
+                                                    &nbsp;
 	                                                <a id="<? echo $var; ?>-link" class='' href="#null" onclick="link('<? echo $var; ?>');">link</a>
 													<a id="<? echo $var; ?>-image" class='' href="#null" onclick="image('<? echo $var; ?>');">image</a>
 													<div id="<?echo $var; ?>-imagecontainer" class='imagecontainer dontdisplay' style="background-color: #999;">

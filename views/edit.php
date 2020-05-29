@@ -584,9 +584,11 @@ else
 	}
 
 	// update caption, weight, rank
-	$num_captions = sizeof($rr->captions);
-	if (sizeof($rr->medias) < $num_captions)
-		$num_captions = sizeof($rr->medias);
+    if (is_array($rr->captions)) {
+	    $num_captions = sizeof($rr->captions);
+	    if (sizeof($rr->medias) < $num_captions)
+		    $num_captions = sizeof($rr->medias);
+    }
 
 	for ($i = 0; $i < $num_captions; $i++)
 	{

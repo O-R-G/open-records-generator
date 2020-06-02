@@ -147,9 +147,11 @@ Logs the user out of the current session. Useful for changing users or terminati
 
 ## DEV NOTES
 for basic password protection, create the an `.htpasswd` file with the following command:
+
 `htpasswd -c /PATH/TO/HTPASSWD`
 
 and then create an `.htaccess` file in the OPEN-RECORDS-GENERATOR directory:
+
 `AuthUserFile /PATH/TO/HTPASSWD`  
 `AuthName "OPEN-RECORDS-GENERATOR"`  
 `AuthType Basic`  

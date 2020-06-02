@@ -1,7 +1,7 @@
 # OPEN RECORDS GENERATOR
-Version 3.2.1
+Version 3.3.0
 O-R-G inc.  
-Last updated 16 July 2019
+Last updated 2 June 2020
 
 ## INSTRUCTIONS
 
@@ -9,13 +9,19 @@ Your new website runs off of a database. You can easily modify this database by 
 
 http://domain.tld/open-records-generator/
 
-Once you've entered this and connected to the database, click "ENTER DATABASE..." to begin. You will now see a brief menu that corresponds to the structure of your website. Clicking on any of these choices will navigate you through the hierarchical menu tree that organizes your site. As you navigate, you will always see the previous level that you have just selected above you in sequential "bands" of alternating background colors. In fact, you will notice throughout that the interface of the OPEN-RECORDS-GENERATOR is organized around this interface metaphor.
+To login, pick one of the following accounts (User Name) and the corresponding credential (Password). Each account has different permissions over the content of the website. You should use "main" unless you have a strong reason not to.
+
+	admin : add, edit, and delete entries plus edit HTML
+	main  : add, edit, and delete entries
+	guest : view entries only, cannot modify
+
+Once you've connected to the database, click "ENTER DATABASE..." to begin. You will now see a brief menu that corresponds to the structure of your website. Clicking on any of these choices will navigate you through the hierarchical menu tree that organizes your site. As you navigate, you will always see the previous level that you have just selected above you in sequential "bands" of alternating background colors. In fact, you will notice throughout that the interface of the OPEN-RECORDS-GENERATOR is organized around this interface metaphor.
 
 To the right of the currently selected RECORD (in the currently selected RECORD band) you will see two options, listed as EDIT and DELETE. These apply to the currently selected RECORD. They are described here:
 
 ### EDIT . . .
 
-All objects can be selected, and then modified by clicking "EDIT..." Each time you select an object for editing you will be provided 5 empty slots of uploading additional images. Once the images are uploaded you can add captions or delete them. All fields in this RECORD are editable including the URL, DATE and RANK fields.
+All objects can be selected, and then modified by clicking "EDIT..." Each time you select an object for editing you will be provided 5 empty slots for uploading additional images. Once the images are uploaded you can add captions or delete them. All fields in this RECORD are editable including the URL, DATE and RANK fields. Certain fields contain rich text editing features, which allow for text to be bolded, italicized, indented, or linked. Images attached to the record can also be uploaded and inserted directly into any of the fields. Once an image inserted into a field, you can choose to delete the image. It will continue to remain accessible as a file on the server. 
 
 ### DELETE . . .
 
@@ -23,11 +29,11 @@ All objects can be deleted. Before deleting an object the OPEN-RECORDS-GENERATOR
 
 ### ADD OBJECT . . .
 
-The OPEN-RECORDS-GENERATOR allows you to create and modify RECORDS within your database. A RECORD can contain text and images. Click "ADD OBJECT..." to create a new RECORD. You will see text fields and image upload options. All fields are optional, but if you do not give your object a name it will automatically be named "Untitled." In the date field you can enter a date in nearly any format and it will be converted to standard server time. For example, "02 Jan 06 6pm" and "January 2, 2006 18:00" will both become "2006-01-02 18:00:00." You can also use date commands like "today + 1 week."
+The OPEN-RECORDS-GENERATOR allows you to create and modify RECORDS within your database. A RECORD can contain text and images. Click "ADD OBJECT..." to create a new RECORD. You will see text fields and image upload options. All fields are optional, but if you do not give your object a name it will automatically be named "Untitled." In the date field you can enter a date in nearly any format and it will be converted to standard server time. For example, "02 Jan 06 6pm" and "January 2, 2006 18:00" will both become "2006-01-02 18:00:00." You can also use date commands like "today + 1 week." A typical convention of open-records-generator websites allows a user to choose to hide the object from being displayed while it is in a draft state by prepending a "." to its name. To publish, remove the ".".
 
 ### LINK. . .
 
-Similar to ADD OBJECT . . . , however LINK . . . lets you redundantly add a record in more than one place in the database. So for example, you might like the same project or text to appear in more than one place in the menu structure. This button allows that simple functionality. When you click on LINK . . . you will be presented with a pull-down menu of all of the available RECORDS in the database. Clicking one RECORD attaches it redundantly to this position in the menu. If there are any other RECORDS attached, these are also duplicated.
+Similar to ADD OBJECT . . . , however LINK . . . lets you lets you insert an existing record in more than one place in the database. So for example, you might like the same project or text to appear in more than one place in the menu structure. To link an entry, navigate to the location in OPEN-RECORDS-GENERATOR where you would like the entry to appear. When you click on LINK . . . you will be presented with a pull-down menu of all of the available RECORDS in the database. Clicking one RECORD attaches it redundantly to this position in the menu. If there are any other RECORDS attached, these are also mirrored. 
 
 ### COPY. . .
 
@@ -75,8 +81,10 @@ Logs the user out of the current session. Useful for changing users or terminati
 + 3.0.0 -- January 2016: add clean URL schema
 + 3.1.0 -- October 2018: add full wyswig editor
 + 3.1.1 -- July 2019: update readme.md
++ 3.3.0 -- June 2020: add wysiwyg functionality to master and cleanup repository including updated readme.md and repo transferred to O-R-G github team.
 
 ## SITES
+
 + [o-r-g.com](http://www.o-r-g.com/)
 + [dextersinister.org](http://www.dextersinister.org/)
 + [shop.dextersinister.org](http://shop.dextersinister.org/)
@@ -135,8 +143,12 @@ Logs the user out of the current session. Useful for changing users or terminati
 + [tschumi.com](http://www.tschumi.com/)
 + [k-u-r-a.it](https://k-u-r-a.it/)
 + [theartreport.org](https://theartreport.org/)
++ [radioathenes.tv](http://staging.radioathenes.tv/)
++ [materiaabierta.com](https://www.materiaabierta.com)
++ [ica.art](https://www.ica.art/)
 
 ## DEV NOTES
+
 for basic password protection, create the an `.htpasswd` file with the following command:
 `htpasswd -c /PATH/TO/HTPASSWD`
 
@@ -145,3 +157,7 @@ and then create an `.htaccess` file in the OPEN-RECORDS-GENERATOR directory:
 `AuthName "OPEN-RECORDS-GENERATOR"`  
 `AuthType Basic`  
 `Require valid-user`  
+
+requires mysql database configuration using the following template: `db/3.3.sql` and corresponding credentials added in `config/config.php`.
+
+*

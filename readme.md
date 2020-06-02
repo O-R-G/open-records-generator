@@ -65,7 +65,6 @@ Logs the user out of the current session. Useful for changing users or terminati
 4. RECORDS can be hidden from the website by prepending a "." to the Name field. This will make it still accessible to those with a direct URL and editable, but will not be shown in other parts of the website.
 
 ## VERSION HISTORY
-
 + 2.0 -- July 2005: complete overhaul including interface
 + 2.2 -- January 2006: fixes and incremental improvements
 + 2.3 -- February 2007: image rank dropdown menu
@@ -84,7 +83,6 @@ Logs the user out of the current session. Useful for changing users or terminati
 + 3.3.0 -- June 2020: add wysiwyg functionality to master and cleanup repository including updated readme.md and repo transferred to O-R-G github team.
 
 ## SITES
-
 + [o-r-g.com](http://www.o-r-g.com/)
 + [dextersinister.org](http://www.dextersinister.org/)
 + [shop.dextersinister.org](http://shop.dextersinister.org/)
@@ -148,7 +146,6 @@ Logs the user out of the current session. Useful for changing users or terminati
 + [ica.art](https://www.ica.art/)
 
 ## DEV NOTES
-
 for basic password protection, create the an `.htpasswd` file with the following command:
 `htpasswd -c /PATH/TO/HTPASSWD`
 

@@ -1,3 +1,2 @@
 License holder
-Hash
-Date valid
+Hash sha256

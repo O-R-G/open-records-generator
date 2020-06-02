@@ -12,8 +12,9 @@ $license_gnu = file_get_contents($license_gnu_file);
 		<div class="self-container">
 			<p>
 				Open Records Generator<br>
-                <? echo nl2br($license); ?>
 				<a href="http://www.o-r-g.com/" target="_blank">O R G inc.</a>
+                <br/><br/>
+                Licensed to: <? echo nl2br($license); ?>
 			</p>
 			<div class="license-container">
 				<textarea class="large"><? echo $license_gnu; ?></textarea>

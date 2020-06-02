@@ -156,3 +156,5 @@ and then create an `.htaccess` file in the OPEN-RECORDS-GENERATOR directory:
 `Require valid-user`  
 
 requires mysql database configuration using the following template: `db/3.3.sql` and corresponding credentials added in `config/config.php`.
+
+requires license for commercial use in `static/license.txt`

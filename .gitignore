@@ -3,3 +3,4 @@
 settings.store
 vendor/
 license.txt
+config.php

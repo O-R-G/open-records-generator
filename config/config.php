@@ -87,6 +87,7 @@ function db_connect($remote_user) {
 	}
 
 	// users
+	$users["admin"] = $creds['full'];
 	$users["main"] = $creds['rw'];
 	$users["guest"] = $creds['r'];
 

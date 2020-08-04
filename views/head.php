@@ -9,7 +9,8 @@ require_once($config_dir."request.php");
 require_once($config_dir."org-settings.php");
 
 // logged in user via .htaccess, .htpasswd
-$user = $_SERVER['REMOTE_USER'] ? $_SERVER['REMOTE_USER'] : $_SERVER['REDIRECT_REMOTE_USER'];
+// $user = $_SERVER['REMOTE_USER'] ? $_SERVER['REMOTE_USER'] : $_SERVER['REDIRECT_REMOTE_USER'];
+$user = $_SERVER['PHP_AUTH_USER'] ? $_SERVER['PHP_AUTH_USER'] : $_SERVER['REDIRECT_REMOTE_USER'];
 $db = db_connect($user);
 
 // this function determines which part of the url contains

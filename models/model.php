@@ -39,6 +39,7 @@ class Model
 									$limit = '',
 									$descending = FALSE,
 									$distinct = FALSE)
+									// $distinct = TRUE)
 	{
 		global $db;
 		$sql = "SELECT ";

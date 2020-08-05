@@ -1,28 +1,32 @@
 <?php
+
+/*
+    use environment variables
+    set in server block directive, read via php
+    
+    apache:
+
+    SetEnv MYSQL_R_DATABASE_URL mysql2://user:pass:@host/database
+    SetEnv MYSQL_RW_DATABASE_URL mysql2://user:pass:@host/database
+
+    nginx:
+  
+    fastcgi_param   MYSQL_R_DATABASE_URL mysql2://user:pass:@host/database
+    fastcgi_param   MYSQL_RW_DATABASE_URL mysql2://user:pass:@host/database
+*/
+
+// get environment variables
 date_default_timezone_set('America/New_York');
-
-// database settings
-$db_name = getenv("DATABASE_NAME");
-$db_name = $db_name ? $db_name : "open-records-generator";
-
-// $host = "http://o-r-g.com/";
+$db_name = "open-records-generator";
 $host = "//".$_SERVER["HTTP_HOST"]."/";
 $root = $_SERVER["DOCUMENT_ROOT"]."/";
-
 $admin_path = $host . "open-records-generator/";
 $admin_root = $root . "open-records-generator/";
-
-// Admin MySQL URL Environental Variable
 $adminURLString = getenv("MYSQL_RW_DATABASE_URL");
-// Read Only MySQL URL Environental Variable
 $readOnlyURLString = getenv("MYSQL_R_DATABASE_URL");
-
-// Regular Storage Environmental Variable
 $media_path = $host . "media/"; // don't forget to set permissions on this folder
 $media_root = $root . "media/";
-
 $models_root = $admin_root . "models/";
-
 $lib_root = $admin_root . "lib/";
 
 require_once($models_root."model.php");

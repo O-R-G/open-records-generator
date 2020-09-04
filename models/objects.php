@@ -185,25 +185,32 @@ class Objects extends Model
         which does not scale efficiently to the size of ica.art database
     */
 
-	public function ancestors($o)
+	public function ancestors($o, $all = NULL, $force = FALSE)
 	{
 		$ancestors = array();
 
-        /*
-		$all = $this->traverse(0);
-		$a = array();
-		for($i = 0; $i < count($all); $i++)
-		{
-			if(end($all[$i]) == $o)
-			{
-				$d = count($all[$i]);
-				$ancestors = array_merge($ancestors, array_slice($a, 0, $d-1));
-			}
-			$d = count($all[$i]);
-			$a[$d-1] = end($all[$i]);
-		}
-        // var_dump(array_unique($ancestors));
-        */
+        // added $force to ONLY call this computation-heavy function
+        // if absolutely required (as in unlinked_list() where it prevents
+        // recursive links from being added to database which result in
+        // infinite regress on traverse()
+
+        // added $all (if available) to avoid traverse(0) again
+
+        if ($force) {
+            if (!$all)
+                $all = $this->traverse(0);
+            $a = array();
+            for($i = 0; $i < count($all); $i++)
+            {
+                if(end($all[$i]) == $o)
+			    {
+				    $d = count($all[$i]);
+                    $ancestors = array_merge($ancestors, array_slice($a, 0, $d-1));
+                }
+                $d = count($all[$i]);
+                $a[$d-1] = end($all[$i]);
+            }
+        }
 
 		return array_unique($ancestors);
 	}
@@ -278,7 +285,8 @@ class Objects extends Model
 		
 		$exclude_ids = $this->children_ids($o);
 		$exclude_ids[] = $o;
-		$exclude_ids = array_merge($exclude_ids , $this->ancestors($o));
+		$ancestors = $this->ancestors($o, $all, TRUE);
+		$exclude_ids = array_merge($exclude_ids, $ancestors);
 		$include_ids = array_unique(array_diff($all_ids, $exclude_ids));
 		return $include_ids;
 	}

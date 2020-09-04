@@ -8,7 +8,7 @@
 class Model
 {
 	const MYSQL_DATE_FMT = "Y-m-d H:i:s";
-	
+
 	// takes: $id of database entry
 	// returns: associative array of database entry or NULL
 	public static function get($id)
@@ -29,7 +29,7 @@ class Model
 		$res->close();
 		return $item;
 	}
-	
+
 	// takes: arrays $fields, $tables, $where, $order, int $limit
 	// returns: associative array of associative arrays of matching rows
 	public static function get_all(	$fields = array("*"), 
@@ -38,7 +38,8 @@ class Model
 									$order = array(),
 									$limit = '',
 									$descending = FALSE,
-									$distinct = TRUE)
+									$distinct = FALSE)
+									// $distinct = TRUE)
 	{
 		global $db;
 		$sql = "SELECT ";
@@ -75,18 +76,22 @@ class Model
 		$dt = date(self::MYSQL_DATE_FMT);
 		$arr["created"] = "'".$dt."'";
 		$arr["modified"] = "'".$dt."'";
-		$keys = implode(", ", array_keys($arr));
+		$keys = array();
+		foreach(array_keys($arr) as $k)
+			$keys[] = "`".$k."`";
+		$keys = implode(", ", $keys);
 		$values = implode(", ", array_values($arr));
 		$sql = "INSERT INTO " . static::table_name . " (";
 		$sql .= $keys . ") VALUES(" . $values . ")";
+
 		$db->query($sql);
 		return $db->insert_id;
 	}
-	
+
 	// updates a row of the db associated with a particular $id
 	// $id is the id of the object / wire / media to be updated
 	// $arr is an associative array of col => value
-	// 
+	//
 	// TODO:
 	// + VERIFY INPUTS
 	public static function update($id, $arr)
@@ -95,7 +100,7 @@ class Model
 		$dt = date(self::MYSQL_DATE_FMT);
 		$arr["modified"] = "'".$dt."'";
 		foreach($arr as $key => $value)
-			$pairs[] = $key."=".$value;
+			$pairs[] = "`".$key."`"."=".$value;
 		$z = implode(", ", $pairs);
 		$sql = "UPDATE ".static::table_name." 
 				SET ".$z."

@@ -53,9 +53,9 @@ class Objects extends Model
 						"wires.active = 1",
 						"wires.toid = objects.id",
 						"objects.active = '1'");
-		$order 	= array("objects.rank", "objects.begin", "objects.end", "objects.name1");
+		// $order 	= array("objects.rank", "objects.begin", "objects.end", "objects.name1");
         /* exception for ICA, applies globally */
-        // $order 	= array("objects.rank", "objects.modified DESC", "objects.end", "objects.begin", "objects.name1");
+        $order 	= array("objects.rank", "objects.modified DESC", "objects.end", "objects.begin", "objects.name1");
     
 		return $this->get_all($fields, $tables, $where, $order);
 	}
@@ -185,17 +185,11 @@ class Objects extends Model
         which does not scale efficiently to the size of ica.art database
     */
 
+    // added $force to ONLY call if absolutely required 
+    // added $all (if available) to avoid traverse(0) again
 	public function ancestors($o, $all = NULL, $force = FALSE)
 	{
 		$ancestors = array();
-
-        // added $force to ONLY call this computation-heavy function
-        // if absolutely required (as in unlinked_list() where it prevents
-        // recursive links from being added to database which result in
-        // infinite regress on traverse()
-
-        // added $all (if available) to avoid traverse(0) again
-
         if ($force) {
             if (!$all)
                 $all = $this->traverse(0);
@@ -211,7 +205,6 @@ class Objects extends Model
                 $a[$d-1] = end($all[$i]);
             }
         }
-
 		return array_unique($ancestors);
 	}
 	
@@ -251,7 +244,7 @@ class Objects extends Model
 		$tables = array("media");
 		$where 	= array("object = '".$o."'", 
 						"active = '1'");
-		$order 	= array("`rank`", "modified", "created", "id");
+		$order 	= array("rank", "modified", "created", "id");
 		
 		return $this->get_all($fields, $tables, $where, $order);
 	}
@@ -262,7 +255,7 @@ class Objects extends Model
 		$tables = array("media");
 		$where 	= array("object = '".$o."'", 
 						"active = '1'");
-		$order 	= array("`rank`", "modified", "created", "id");
+		$order 	= array("rank", "modified", "created", "id");
 		$res = $this->get_all($fields, $tables, $where, $order);
 		$ids = array();
 		foreach($res as $r)
@@ -275,20 +268,27 @@ class Objects extends Model
 	// $o cannot link to its children 
 	// (because it is already linked to them) 
 	// or any of its direct ancestors 
-	// (because doing so would create a loop)
+	// (because doing so would create a loop)        
+    // optimized using mysql query in place of multiple array_merge()
+    // get every record that is neither parent nor child nor itself
+    // return only one record per object even if linked multiple times 
+    // ie, multiple wires in database
 	public function unlinked_list($o)
 	{	
-		$all = $this->traverse(0);
-		$all_ids = array();
-		foreach($all as $a)
-			$all_ids[] = end($a);
-		
-		$exclude_ids = $this->children_ids($o);
-		$exclude_ids[] = $o;
-		$ancestors = $this->ancestors($o, $all, TRUE);
-		$exclude_ids = array_merge($exclude_ids, $ancestors);
-		$include_ids = array_unique(array_diff($all_ids, $exclude_ids));
-		return $include_ids;
+        global $db;
+        $id = $o;
+        $sql = "SELECT objects.id, objects.name1, objects.active, 
+                wires.toid, wires.fromid, wires.active, wires.created 
+                FROM objects INNER JOIN wires ON objects.id=wires.toid 
+                INNER JOIN (SELECT toid, MAX(created) created_max FROM wires 
+                GROUP BY toid) wires_sub ON wires.toid = wires_sub.toid 
+                AND wires.created = wires_sub.created_max 
+                WHERE (wires.fromid != $id) AND (objects.id NOT IN 
+                (SELECT wires.fromid FROM wires WHERE wires.toid = $id AND wires.active=1)) 
+                AND (objects.id != $id) AND (objects.active = 1 AND wires.active = 1) 
+                ORDER BY objects.name1;";
+        $items = $db->query($sql);
+        return $items;
 	}
 	
 	// returns an array of [path] of objects rooted at $o

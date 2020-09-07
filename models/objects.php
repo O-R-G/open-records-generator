@@ -278,14 +278,15 @@ class Objects extends Model
         global $db;
         $id = $o;
         $sql = "SELECT objects.id, objects.name1, objects.active, 
-                wires.toid, wires.fromid, wires.active, wires.created 
-                FROM objects INNER JOIN wires ON objects.id=wires.toid 
-                INNER JOIN (SELECT toid, MAX(created) created_max FROM wires 
-                GROUP BY toid) wires_sub ON wires.toid = wires_sub.toid 
-                AND wires.created = wires_sub.created_max 
+                wires.toid, wires.fromid, wires.active, wires.created FROM 
+                objects INNER JOIN wires ON objects.id=wires.toid INNER JOIN 
+                (SELECT toid, MAX(created) created_max FROM wires WHERE 
+                wires.active = 1 GROUP BY toid) wires_sub ON wires.toid = 
+                wires_sub.toid AND wires.created = wires_sub.created_max 
                 WHERE (wires.fromid != $id) AND (objects.id NOT IN 
-                (SELECT wires.fromid FROM wires WHERE wires.toid = $id AND wires.active=1)) 
-                AND (objects.id != $id) AND (objects.active = 1 AND wires.active = 1) 
+                (SELECT wires.fromid FROM wires WHERE wires.toid = $id 
+                AND wires.active=1)) AND (objects.id != $id) AND 
+                (objects.active = 1 AND wires.active = 1) 
                 ORDER BY objects.name1;";
         $items = $db->query($sql);
         return $items;

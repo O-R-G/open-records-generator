@@ -244,7 +244,7 @@ class Objects extends Model
 		$tables = array("media");
 		$where 	= array("object = '".$o."'", 
 						"active = '1'");
-		$order 	= array("rank", "modified", "created", "id");
+		$order 	= array("media.rank", "media.modified", "media.created", "media.id");
 		
 		return $this->get_all($fields, $tables, $where, $order);
 	}
@@ -255,7 +255,7 @@ class Objects extends Model
 		$tables = array("media");
 		$where 	= array("object = '".$o."'", 
 						"active = '1'");
-		$order 	= array("rank", "modified", "created", "id");
+		$order 	= array("media.rank", "media.modified", "media.created", "media.id");
 		$res = $this->get_all($fields, $tables, $where, $order);
 		$ids = array();
 		foreach($res as $r)

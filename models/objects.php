@@ -108,6 +108,7 @@ class Objects extends Model
 
 	public function siblings($o)
 	{
+		global $db;
 		$siblings = array();
 
         /*
@@ -126,6 +127,27 @@ class Objects extends Model
 		$k = array_search($o, $siblings);
 		unset($siblings[$k]);
         */
+
+        $sql = "SELECT wires.fromid FROM wires, objects WHERE wires.toid = '" . $o . "' AND objects.id = wires.fromid AND objects.active = '1'";
+        $res = $db->query($sql);
+        if(!$res)
+			throw new Exception($db->error);
+		$fromid_arr = array();
+		while ($obj = $res->fetch_assoc())
+			$fromid_arr[] = $obj['fromid'];
+		$res->close();
+
+		foreach($fromid_arr as $parent_id)
+		{
+			$this_siblings = $this->children_ids($parent_id);
+			foreach($this_siblings as $key => $s_id)
+			{
+				if($s_id == $o)
+					unset($this_siblings[$key]);
+			}
+			$this_siblings = array_values($this_siblings);
+			$siblings = array_merge($siblings, $this_siblings);
+		}
 
 		return  $siblings;
 	}

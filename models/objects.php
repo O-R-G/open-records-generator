@@ -103,7 +103,10 @@ class Objects extends Model
 		global $db;
 		$siblings = array();
 
-        $sql = "SELECT wires.fromid FROM wires, objects WHERE wires.toid = '" . $o . "' AND objects.id = wires.fromid AND objects.active = '1'";
+        $sql = "SELECT wires.fromid FROM wires, objects 
+                WHERE wires.toid = '" . $o . "' 
+                AND objects.id = wires.fromid 
+                AND objects.active = '1'";
         $res = $db->query($sql);
         if(!$res)
 			throw new Exception($db->error);

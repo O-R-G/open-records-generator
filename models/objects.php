@@ -105,8 +105,9 @@ class Objects extends Model
 
         $sql = "SELECT wires.fromid FROM wires, objects 
                 WHERE wires.toid = '" . $o . "' 
-                AND objects.id = wires.fromid 
-                AND objects.active = '1'";
+                AND ((objects.id = wires.fromid 
+                AND objects.active = '1' )
+                OR (wires.fromid = '0' AND objects.id = wires.toid))";
         $res = $db->query($sql);
         if(!$res)
 			throw new Exception($db->error);

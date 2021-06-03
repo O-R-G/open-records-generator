@@ -25,11 +25,13 @@ $var_info["label"]["end"] = "End";
 $var_info["label"]["url"] = "URL Slug";
 $var_info["label"]["rank"] = "Rank";
 
+$urlIsValid = true;
 // return false if object not updated,
 // else, return true
 function update_object(&$old, &$new, $siblings, $vars)
 {
 	global $oo;
+	global $urlIsValid;
 
 	// set default name if no name given
 	if(!$new['name1'])
@@ -54,12 +56,13 @@ function update_object(&$old, &$new, $siblings, $vars)
 			$new['url'] = slug($new['name1']);
 
 		// make sure url doesn't clash with urls of siblings
-
 		$s_urls = array();
 		foreach($siblings as $s_id)
 			$s_urls[] = $oo->get($s_id)['url'];
 
-		$new['url'] = valid_url($new['url'], strval($old['id']), $s_urls);
+		$urlIsValid = validate_url($new['url'], $s_urls);
+		if( !$urlIsValid )
+			$new['url'] = valid_url($new['url'], strval($old['id']), $s_urls);
 	}
 	// deal with dates
 	if(!empty($new['begin']))
@@ -622,6 +625,10 @@ else
 	if($updated)
 	{
 	?><p>Record successfully updated.</p><?
+		if(!$urlIsValid)
+		{
+		?><p>*** The url of this record has been set to '<?= $new['url']; ?>' because of a conflict with another record. ***</p><?
+		}
 	}
 	else
 	{

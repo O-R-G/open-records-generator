@@ -204,7 +204,7 @@ function insert_object(&$new, $siblings)
 				<?
 				if(!$urlIsValid)
 				{
-				?><br><br>*** The url of this record is set to <?= $f['url']; ?> because of a conflict with another record ***<?
+				?><br><br>*** The url of this record is set to <?= $f['url']; ?> because of a conflict with another record. ***<?
 				}
 				?>
 			</div><?

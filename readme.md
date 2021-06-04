@@ -1,7 +1,7 @@
 # OPEN RECORDS GENERATOR
-Version 3.3.0
+Version 3.3.1
 O-R-G inc.  
-Last updated 2 June 2020
+Last updated 4 June 2021
 
 ## INSTRUCTIONS
 
@@ -144,6 +144,7 @@ Logs the user out of the current session. Useful for changing users or terminati
 + [radioathenes.tv](http://staging.radioathenes.tv/)
 + [materiaabierta.com](https://www.materiaabierta.com)
 + [ica.art](https://www.ica.art/)
++ [n-y-c.org](https://www.n-y-c.org/)
 
 ## DEV NOTES
 for basic password protection, create the an `.htpasswd` file with the following command:

@@ -49,19 +49,27 @@ function rand_str($len=4)
 // this url is meant to reference
 function valid_url($u, $alt, $excludes)
 {
-	// array_search returns the position (index) of $u in
-	// $excludes, or false if not present in the array.
-	// therefore, strict compare to false
-	if(empty($u) || array_search($u, $excludes) !== false)
-	{
-		$url = $alt;
-		while(array_search($url, $excludes) !== false)
-			$url = rand_str();
-	}
-	else
-		$url = $u;
+    // array_search returns the position (index) of $u in
+    // $excludes, or false if not present in the array.
+    // therefore, strict compare to false
+    if( $alt < 10 )
+        $alt = '000' . $alt;
+    else if($alt < 100)
+        $alt = '00' . $alt;
+    else if($alt < 1000)
+        $alt = '0' . $alt;
+    $url = $u . '-' . $alt;
+    while(array_search($url, $excludes) !== false)
+        $url = $u . '-' . rand(1000, 9999);
 
-	return $url;
+    return $url;
+}
+function validate_url($u, $excludes)
+{
+    if(empty($u) || array_search($u, $excludes) !== false)
+        return false;
+    else
+        return true;
 }
 
 // why do i need two of these?

@@ -25,6 +25,7 @@ $var_info["label"]["end"] = "End";
 $var_info["label"]["url"] = "URL Slug";
 $var_info["label"]["rank"] = "Rank";
 
+$urlIsValid = true;
 // for use on add.php
 // return false if process fails
 // (siblings must not have same url slug as object)
@@ -32,6 +33,7 @@ $var_info["label"]["rank"] = "Rank";
 function insert_object(&$new, $siblings)
 {
 	global $oo;
+	global $urlIsValid;
 
 	// set default name if no name given
 	if(!$new['name1'])
@@ -75,9 +77,10 @@ function insert_object(&$new, $siblings)
 
 	// need to strip out the quotes that were added to appease sql
 	$u = str_replace("'", "", $new['url']);
-	$url = valid_url($u, strval($id), $s_urls);
-	if($url != $u)
+	$urlIsValid = validate_url($u, $s_urls);
+	if( !$urlIsValid )
 	{
+		$url = valid_url($u, strval($id), $s_urls);
 		$new['url'] = "'".$url."'";
 		$oo->update($id, $new);
 	}
@@ -197,7 +200,14 @@ function insert_object(&$new, $siblings)
 				$ww->create_wire($uu->id, $toid);
 				// media
 				process_media($toid);
-			?><div>Record added successfully.</div><?
+			?><div>Record added successfully.
+				<?
+				if(!$urlIsValid)
+				{
+				?><br><br>*** The url of this record is set to <?= $f['url']; ?> because of a conflict with another record. ***<?
+				}
+				?>
+			</div><?
 			}
 			else
 			{

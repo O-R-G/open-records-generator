@@ -82,14 +82,18 @@ $ancestors = $oo->ancestors($uu->id);
 
 // settings
 $settings_file = $config_dir."/settings.store";
+// $settings_file = $config_dir."/settings.store";
 if(file_exists($settings_file))
 {
 	$f = file_get_contents($settings_file);
 	$settings = unserialize($f);
 	$max_uploads = $settings->num_uploads;
+	$default_rich_text_field_mode = $settings->default_rich_text_field_mode;
 }
-else
+else{
 	$max_uploads = 5;
+	$default_rich_text_field_mode = 'regular';
+}
 
 if ($view == "logout")
 	header("HTTP/1.1 401 Unauthorized");

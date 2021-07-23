@@ -183,8 +183,9 @@ if ($rr->action != "update" && $uu->id)
 					}
 				}
 
-				function showToolBar(name) {
-					hideToolBars();
+				function showToolBar(name, rich_text_mode='regular') {
+					if(rich_text_mode == 'regular')
+						hideToolBars();
 					var tb = document.getElementById(name + '-toolbar');
 					tb.style.display = 'block';
 				}
@@ -255,7 +256,7 @@ if ($rr->action != "update" && $uu->id)
 					editable.innerHTML = html;    // update editable
 				}
 
-				function sethtml(name) {
+				function sethtml(name, rich_text_mode = 'regular') {
 					var bold = document.getElementById(name + '-bold');
 					var italic = document.getElementById(name + '-italic');
 					var link = document.getElementById(name + '-link');
@@ -284,10 +285,11 @@ if ($rr->action != "update" && $uu->id)
 
 					var html = editable.innerHTML;
 					textarea.value = pretty(html);    // update textarea for form submit
-					window.scrollBy(0, textarea.getBoundingClientRect().top); // scroll to the top of the textarea
+					if(rich_text_mode == 'regular')
+						window.scrollBy(0, textarea.getBoundingClientRect().top); // scroll to the top of the textarea
 				}
 
-				function resetViews(name) {
+				function resetViews(name, rich_text_mode = 'regular') {
 					commitAll();
 					var names = <?
 						$textnames = [];
@@ -299,10 +301,23 @@ if ($rr->action != "update" && $uu->id)
 						echo '["' . implode('", "', $textnames) . '"]'
 						?>;
 
-					for (var i = 0; i < names.length; i++) {
-						if (!(name && name === names[i]))
-							showrich(names[i]);
+					
+					if(rich_text_mode == 'regular')
+					{
+						for (var i = 0; i < names.length; i++) {
+							if (!(name && name === names[i]))
+								showrich(names[i]);
 						}
+					}
+					else if(rich_text_mode == 'html')
+					{
+						for (var i = 0; i < names.length; i++) {
+							if (!(name && name === names[i]))
+								sethtml(names[i], '<?= $default_rich_text_field_mode; ?>');
+						}
+					}
+						
+					
 				}
 
 				// pretifies html (barely) by adding two new lines after a </div>
@@ -354,7 +369,7 @@ if ($rr->action != "update" && $uu->id)
 
 												<div id="<?echo $var;?>-toolbar" class="toolbar dontdisplay">
 													<?php if ($user == 'admin'): ?>
-														<a id="<? echo $var; ?>-html" class='right' href="#null" onclick="sethtml('<? echo $var; ?>');">html</a>
+														<a id="<? echo $var; ?>-html" class='right' href="#null" onclick="sethtml('<? echo $var; ?>', '<?= $default_rich_text_field_mode; ?>');">html</a>
 														<a id="<? echo $var; ?>-txt" class='right dontdisplay' href="#null" onclick="showrich('<? echo $var; ?>');">done.</a>
 													<?php endif; ?>
 													<a id="<? echo $var; ?>-bold" class='' href="#null" onclick="document.execCommand('bold',false,null);">bold</a>
@@ -391,7 +406,7 @@ if ($rr->action != "update" && $uu->id)
 												<?php if ($user == 'guest'): ?>
 													<div name='<? echo $var; ?>' class='large editable' contenteditable='false' id='<? echo $var; ?>-editable' onclick="" style="display: block;">
 												<?php else: ?>
-													<div name='<? echo $var; ?>' class='large editable' contenteditable='true' id='<? echo $var; ?>-editable' onclick="showToolBar('<? echo $var; ?>'); resetViews('<? echo $var; ?>');" style="display: block;">
+													<div name='<? echo $var; ?>' class='large editable' contenteditable='true' id='<? echo $var; ?>-editable' onclick="showToolBar('<? echo $var; ?>'); resetViews('<? echo $var; ?>', '<?= $default_rich_text_field_mode; ?>');" style="display: block;">
 												<?php endif; ?>
 												<?
                             if($item[$var])
@@ -405,18 +420,22 @@ if ($rr->action != "update" && $uu->id)
 
 												<script>
 													addListeners('<?echo $var; ?>');
+													<? 
+													if($user == 'admin' && $default_rich_text_field_mode == 'html') { ?>
+														console.log('hihi');
+														sethtml('<? echo $var; ?>', '<?= $default_rich_text_field_mode; ?>');
+														showToolBar('<? echo $var; ?>', '<?= $default_rich_text_field_mode; ?>');
+													<? } ?>
 												</script>
-												<?
-
-                        // ** end minimal wysiwig toolbar **
-
+						<?
+						// ** end minimal wysiwig toolbar **
 						}
 						elseif($var == "url")
 						{
 						?><input name='<? echo $var; ?>'
 								type='<? echo $var_info["input-type"][$var]; ?>'
 								value='<? echo rawurldecode($item[$var]); ?>'
-								onclick="hideToolBars(); resetViews();"
+								onclick="hideToolBars(); resetViews('', '<?= $default_rich_text_field_mode; ?>');"
 								<?php if ($user == 'guest'): ?>
 									disabled = "disabled"
 								<?php endif; ?>
@@ -428,7 +447,7 @@ if ($rr->action != "update" && $uu->id)
 						?><input name='<? echo $var; ?>'
 								type='<? echo $var_info["input-type"][$var]; ?>'
 								value='<? echo htmlspecialchars($item[$var], ENT_QUOTES); ?>'
-								onclick="hideToolBars(); resetViews();"
+								onclick="hideToolBars(); resetViews('', '<?= $default_rich_text_field_mode; ?>');"
 								<?php if ($user == 'guest'): ?>
 									disabled = "disabled"
 								<?php endif; ?>
@@ -449,7 +468,7 @@ if ($rr->action != "update" && $uu->id)
 							<img src="<? echo $medias[$i]['display']; ?>">
 						</a>
 					</div>
-					<textarea name="captions[]" onclick="hideToolBars(); resetViews();" form="edit-form"
+					<textarea name="captions[]" onclick="hideToolBars(); resetViews('', '<?= $default_rich_text_field_mode; ?>');" form="edit-form"
 						<?php if ($user == 'guest'): ?>
 							disabled = "disabled"
 						<?php endif; ?>

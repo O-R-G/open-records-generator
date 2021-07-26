@@ -369,7 +369,7 @@ if ($rr->action != "update" && $uu->id)
 						<div id="<?echo $var;?>-toolbar" class="toolbar dontdisplay">
 							<?php if ($user == 'admin'): ?>
 								<a id="<? echo $var; ?>-html" class='right' href="#null" onclick="sethtml('<? echo $var; ?>', default_editor_mode);">html</a>
-								<a id="<? echo $var; ?>-txt" class='right dontdisplay' href="#null" onclick="showrich('<? echo $var; ?>');">rich text</a>
+								<a id="<? echo $var; ?>-txt" class='right dontdisplay' href="#null" onclick="showrich('<? echo $var; ?>');">rtf</a>
 							<?php endif; ?>
 							<a id="<? echo $var; ?>-bold" class='' href="#null" onclick="document.execCommand('bold',false,null);">bold</a>
                             <a id="<? echo $var; ?>-italic" class='' href="#null" onclick="document.execCommand('italic',false,null);">italic</a> 

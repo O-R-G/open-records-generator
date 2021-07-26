@@ -7,7 +7,6 @@ time zone
 class ORG_Settings 
 {
 	public $num_uploads = 5;
-	public $default_rich_text_field_mode = 'regular';
 	
 // 	public $sql_dbse = "";
 // 	public $sql_host = "";

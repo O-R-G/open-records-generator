@@ -88,11 +88,11 @@ if(file_exists($settings_file))
 	$f = file_get_contents($settings_file);
 	$settings = unserialize($f);
 	$max_uploads = $settings->num_uploads;
-	$default_rich_text_field_mode = $settings->default_rich_text_field_mode;
+	$default_editor_mode = $settings->default_editor_mode;
 }
 else{
 	$max_uploads = 5;
-	$default_rich_text_field_mode = 'regular';
+	$default_editor_mode = 'regular';
 }
 
 if ($view == "logout")

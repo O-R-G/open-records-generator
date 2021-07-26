@@ -3,10 +3,10 @@
 		<div id="self-container"><?
 		if($rr->action != "update")
 		{
-			$rich_text_mode_options = array(
+			$default_editor_mode_options = array(
 				array(
-					'name' => 'Regular editor',
-					'value'   => 'regular'
+					'name' => 'Rich text editor',
+					'value'   => 'rich text'
 				),
 				array(
 					'name' => 'HTML editor',
@@ -29,13 +29,13 @@
 						}
 					}
 				?></select>
-				<? if(isset($rich_text_mode_options)){ ?>
+				<? if(isset($default_editor_mode_options)){ ?>
 					<br>
-					<label for = 'default_rich_text_field_mode'>default rich text fields mode: </label>
-					<select id = 'default_rich_text_field_mode' name="default_rich_text_field_mode"><?
-					foreach($rich_text_mode_options as $option)
+					<label for = 'default_editor_mode'>default editor mode: </label>
+					<select id = 'default_editor_mode' name="default_editor_mode"><?
+					foreach($default_editor_mode_options as $option)
 					{
-						$selected = $default_rich_text_field_mode == $option['value'] ? 'selected' : '';
+						$selected = $default_editor_mode == $option['value'] ? 'selected' : '';
 						?><option value="<?= $option['value']; ?>" <?= $selected; ?>><?= $option['name']; ?></option><?
 					}
 					?></select><?
@@ -48,14 +48,14 @@
 		else
 		{
 			$uploads = $rr->uploads;
-			$default_rich_text_field_mode = $rr->default_rich_text_field_mode;
+			$default_editor_mode = $rr->default_editor_mode;
 			if(!$settings)
 				$settings = new ORG_Settings();
 			$settings->num_uploads = $uploads;
-			$settings->default_rich_text_field_mode = $default_rich_text_field_mode;
+			$settings->default_editor_mode = $default_editor_mode;
 			$f = serialize($settings);
 			file_put_contents($settings_file, $f);
-			?><span>maximum number of uploads: <? echo $uploads; ?></span><br><span>default rich text fields mode: <? echo $default_rich_text_field_mode; ?></span><br><?
+			?><span>maximum number of uploads: <? echo $uploads; ?></span><br><span>default rich text fields mode: <? echo $default_editor_mode; ?></span><br><?
 		}
 		?></div>
 	</div>

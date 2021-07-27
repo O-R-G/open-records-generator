@@ -77,20 +77,20 @@ function db_connect($remote_user) {
 	} else {
 		// IF YOU ARE NOT USING ENVIRONMENTAL VARIABLES
 		$host = "localhost";
-		$dbse = "stray_local";
+		$dbse = "database_name";
 
 		// full access
-		$creds['full']['db_user'] = "root";
-		$creds['full']['db_pass'] = "f3f4p4ax";
+		$creds['full']['db_user'] = "user_full";
+		$creds['full']['db_pass'] = "pass_full";
 
 		// read / write access
 		// (can't create / drop tables)
-		$creds['rw']['db_user'] = "root";
-		$creds['rw']['db_pass'] = "f3f4p4ax";
+		$creds['rw']['db_user'] = "user_rw";
+		$creds['rw']['db_pass'] = "pass_rw";
 
 		// read-only access
-		$creds['r']['db_user'] = "root";
-		$creds['r']['db_pass'] = "f3f4p4ax";
+		$creds['r']['db_user'] = "user_r";
+		$creds['r']['db_pass'] = "pass_r";
 	}
 
 	// users

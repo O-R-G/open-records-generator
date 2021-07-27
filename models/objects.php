@@ -90,7 +90,7 @@ class Objects extends Model
 						"objects.active = '1'",
 						"objects.name1 not like '.%'");
         $order 	= array("objects.rank", "objects.begin", "objects.end", "objects.name1");
-		$res = $this->get_all($fields, $tables, $where, $order, $limit);
+		$res = $this->get_all($fields, $tables, $where, $order);
 		$ids = array();
 		foreach($res as $r)
 			$ids[] = $r['id'];
@@ -148,7 +148,8 @@ class Objects extends Model
 							"objects.active = '1'");
             $order 	= array("objects.rank", "objects.begin", "objects.end", "objects.name1");
 			$tmp = $this->get_all($fields, $tables, $where, $order);
-			$fromid = $tmp[0]['id'];
+			if( !empty($tmp) )
+				$fromid = $tmp[0]['id'];
 			if(!$fromid)
 				throw new Exception($i);
 			$objects[] = $fromid;

@@ -29,8 +29,7 @@ function url_array()
 	$s = explode('/', rtrim($_SERVER['SCRIPT_NAME'], '/'));
 	$u = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
 
-	while($s[0] == $u[0])
-	{
+	while( isset($s[0]) && isset($u[0]) && $s[0] == $u[0] ) {
 		array_shift($s);
 		array_shift($u);
 	}

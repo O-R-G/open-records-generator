@@ -39,6 +39,7 @@ class Request
 	public $deletes;
 
 	public $uploads;
+	public $default_editor_mode;
 
 	function __construct()
 	{
@@ -49,7 +50,7 @@ class Request
 						'medias', 'types', 'captions', 'ranks', 'deletes',
 						'submit', 'action',
 						'wires_toid',
-						'uploads');
+						'uploads', 'default_editor_mode');
 
 		foreach($vars as $v)
 			$this->$v = $_POST[$v];

@@ -147,7 +147,7 @@ if ($rr->action != "update" && $uu->id)
 		> -->
 			<div class="form">
 				<script>
-
+				var default_editor_mode = '<?= $default_editor_mode; ?>';
 				function link(name) {
 						var linkURL = prompt('Enter a URL:', 'http://');
 						if (linkURL === null || linkURL === "") {
@@ -255,7 +255,7 @@ if ($rr->action != "update" && $uu->id)
 					editable.innerHTML = html;    // update editable
 				}
 
-				function sethtml(name) {
+				function sethtml(name, editorMode = 'regular') {
 					var bold = document.getElementById(name + '-bold');
 					var italic = document.getElementById(name + '-italic');
 					var link = document.getElementById(name + '-link');
@@ -284,10 +284,11 @@ if ($rr->action != "update" && $uu->id)
 
 					var html = editable.innerHTML;
 					textarea.value = pretty(html);    // update textarea for form submit
-					window.scrollBy(0, textarea.getBoundingClientRect().top); // scroll to the top of the textarea
+					if(editorMode == 'regular')
+						window.scrollBy(0, textarea.getBoundingClientRect().top); // scroll to the top of the textarea
 				}
 
-				function resetViews(name) {
+				function resetViews(name, editorMode = 'regular') {
 					commitAll();
 					var names = <?
 						$textnames = [];
@@ -299,10 +300,23 @@ if ($rr->action != "update" && $uu->id)
 						echo '["' . implode('", "', $textnames) . '"]'
 						?>;
 
-					for (var i = 0; i < names.length; i++) {
-						if (!(name && name === names[i]))
-							showrich(names[i]);
+					
+					if(editorMode == 'regular')
+					{
+						for (var i = 0; i < names.length; i++) {
+							if (!(name && name === names[i]))
+								showrich(names[i]);
 						}
+					}
+					else if(editorMode == 'html')
+					{
+						for (var i = 0; i < names.length; i++) {
+							if (!(name && name === names[i]))
+								sethtml(names[i], default_editor_mode);
+						}
+					}
+						
+					
 				}
 
 				// pretifies html (barely) by adding two new lines after a </div>
@@ -352,71 +366,73 @@ if ($rr->action != "update" && $uu->id)
 
                         ?>
 
-												<div id="<?echo $var;?>-toolbar" class="toolbar dontdisplay">
-													<?php if ($user == 'admin'): ?>
-														<a id="<? echo $var; ?>-html" class='right' href="#null" onclick="sethtml('<? echo $var; ?>');">html</a>
-														<a id="<? echo $var; ?>-txt" class='right dontdisplay' href="#null" onclick="showrich('<? echo $var; ?>');">done.</a>
-													<?php endif; ?>
-													<a id="<? echo $var; ?>-bold" class='' href="#null" onclick="document.execCommand('bold',false,null);">bold</a>
-	                                                <a id="<? echo $var; ?>-italic" class='' href="#null" onclick="document.execCommand('italic',false,null);">italic</a> 
-	                                                <a id="<? echo $var; ?>-indent" class='' href="#null" onclick="indent('<? echo $var; ?>');">indent</a>
-	                                                <a id="<? echo $var; ?>-reset" class='' href="#null" onclick="reset('<? echo $var; ?>');">&nbsp;&times;&nbsp;</a>
-                                                    &nbsp;
-	                                                <a id="<? echo $var; ?>-link" class='' href="#null" onclick="link('<? echo $var; ?>');">link</a>
-													<a id="<? echo $var; ?>-image" class='' href="#null" onclick="image('<? echo $var; ?>');">image</a>
-													<div id="<?echo $var; ?>-imagecontainer" class='imagecontainer dontdisplay' style="background-color: #999;">
-														<span style="color: white;">insert an image...</span>
-														<div id="<? echo $var; ?>-imagebox" class='imagebox'>
-															<?
-																for($i = 0; $i < $num_medias; $i++) {
-																	if ($medias[$i]["type"] != "pdf" && $medias[$i]["type"] != "mp4" && $medias[$i]["type"] != "mp3") {
-																		echo '<div class="image-container" id="'. m_pad($medias[$i]['id']) .'-'. $var .'"><img src="'. $medias[$i]['display'] .'"></div>';
-																		echo '<script>
-																		document.getElementById("'. m_pad($medias[$i]['id']) .'-'. $var .'").onclick = (function() {
-																			// closure for variable issue
-																			return function() {
-																				document.getElementById("'. $var .'-imagecontainer").style.display = "none";
-																				document.getElementById("'. $var .'-editable").focus();
-																				document.execCommand("insertImage", 0, "'. $medias[$i]['fileNoPath'] .'");
-																			}
-																		})();
-																		</script>';
-																	}
-																}
-															?>
-															</div>
-													</div>
-												</div>
+						<div id="<?echo $var;?>-toolbar" class="toolbar dontdisplay">
+							<?php if ($user == 'admin'): ?>
+								<a id="<? echo $var; ?>-html" class='right' href="#null" onclick="sethtml('<? echo $var; ?>', default_editor_mode);">html</a>
+								<a id="<? echo $var; ?>-txt" class='right dontdisplay' href="#null" onclick="showrich('<? echo $var; ?>');">rtf</a>
+							<?php endif; ?>
+							<a id="<? echo $var; ?>-bold" class='' href="#null" onclick="document.execCommand('bold',false,null);">bold</a>
+                            <a id="<? echo $var; ?>-italic" class='' href="#null" onclick="document.execCommand('italic',false,null);">italic</a> 
+                            <a id="<? echo $var; ?>-indent" class='' href="#null" onclick="indent('<? echo $var; ?>');">indent</a>
+                            <a id="<? echo $var; ?>-reset" class='' href="#null" onclick="reset('<? echo $var; ?>');">&nbsp;&times;&nbsp;</a>
+                            &nbsp;
+                            <a id="<? echo $var; ?>-link" class='' href="#null" onclick="link('<? echo $var; ?>');">link</a>
+							<a id="<? echo $var; ?>-image" class='' href="#null" onclick="image('<? echo $var; ?>');">image</a>
+							<div id="<?echo $var; ?>-imagecontainer" class='imagecontainer dontdisplay' style="background-color: #999;">
+								<span style="color: white;">insert an image...</span>
+								<div id="<? echo $var; ?>-imagebox" class='imagebox'>
+									<?
+										for($i = 0; $i < $num_medias; $i++) {
+											if ($medias[$i]["type"] != "pdf" && $medias[$i]["type"] != "mp4" && $medias[$i]["type"] != "mp3") {
+												echo '<div class="image-container" id="'. m_pad($medias[$i]['id']) .'-'. $var .'"><img src="'. $medias[$i]['display'] .'"></div>';
+												echo '<script>
+												document.getElementById("'. m_pad($medias[$i]['id']) .'-'. $var .'").onclick = (function() {
+													// closure for variable issue
+													return function() {
+														document.getElementById("'. $var .'-imagecontainer").style.display = "none";
+														document.getElementById("'. $var .'-editable").focus();
+														document.execCommand("insertImage", 0, "'. $medias[$i]['fileNoPath'] .'");
+													}
+												})();
+												</script>';
+											}
+										}
+									?>
+									</div>
+							</div>
+						</div>
 
-												<?php if ($user == 'guest'): ?>
-													<div name='<? echo $var; ?>' class='large editable' contenteditable='false' id='<? echo $var; ?>-editable' onclick="" style="display: block;">
-												<?php else: ?>
-													<div name='<? echo $var; ?>' class='large editable' contenteditable='true' id='<? echo $var; ?>-editable' onclick="showToolBar('<? echo $var; ?>'); resetViews('<? echo $var; ?>');" style="display: block;">
-												<?php endif; ?>
-												<?
+						<?php if ($user == 'guest'): ?>
+							<div name='<? echo $var; ?>' class='large editable' contenteditable='false' id='<? echo $var; ?>-editable' onclick="" style="display: block;">
+						<?php else: ?>
+							<div name='<? echo $var; ?>' class='large editable' contenteditable='true' id='<? echo $var; ?>-editable' onclick="showToolBar('<? echo $var; ?>'); resetViews('<? echo $var; ?>', default_editor_mode);" style="display: block;">
+						<?php endif; ?>
+						<?
                             if($item[$var])
                                 echo $item[$var];
                         ?></div>
 
-                        <textarea name='<? echo $var; ?>' class='large dontdisplay' id='<? echo $var; ?>-textarea' onclick="" onblur="" style="display: none;" form="edit-form"><?
+                        <textarea name='<? echo $var; ?>' class='large dontdisplay' id='<? echo $var; ?>-textarea' onclick="showToolBar('<? echo $var; ?>'); resetViews('<? echo $var; ?>', default_editor_mode);" onblur="" style="display: none;" form="edit-form"><?
                             if($item[$var])
                                 echo $item[$var];
                         ?></textarea>
 
-												<script>
-													addListeners('<?echo $var; ?>');
-												</script>
-												<?
-
-                        // ** end minimal wysiwig toolbar **
-
+						<script>
+							addListeners('<?echo $var; ?>');
+							<? 
+							if($user == 'admin' && $default_editor_mode == 'html') { ?>
+								sethtml('<? echo $var; ?>', default_editor_mode);
+							<? } ?>
+						</script>
+						<?
+						// ** end minimal wysiwig toolbar **
 						}
 						elseif($var == "url")
 						{
 						?><input name='<? echo $var; ?>'
 								type='<? echo $var_info["input-type"][$var]; ?>'
 								value='<? echo rawurldecode($item[$var]); ?>'
-								onclick="hideToolBars(); resetViews();"
+								onclick="hideToolBars(); resetViews('', default_editor_mode);"
 								<?php if ($user == 'guest'): ?>
 									disabled = "disabled"
 								<?php endif; ?>
@@ -428,7 +444,7 @@ if ($rr->action != "update" && $uu->id)
 						?><input name='<? echo $var; ?>'
 								type='<? echo $var_info["input-type"][$var]; ?>'
 								value='<? echo htmlspecialchars($item[$var], ENT_QUOTES); ?>'
-								onclick="hideToolBars(); resetViews();"
+								onclick="hideToolBars(); resetViews('', default_editor_mode);"
 								<?php if ($user == 'guest'): ?>
 									disabled = "disabled"
 								<?php endif; ?>
@@ -449,7 +465,7 @@ if ($rr->action != "update" && $uu->id)
 							<img src="<? echo $medias[$i]['display']; ?>">
 						</a>
 					</div>
-					<textarea name="captions[]" onclick="hideToolBars(); resetViews();" form="edit-form"
+					<textarea name="captions[]" onclick="hideToolBars(); resetViews('', default_editor_mode);" form="edit-form"
 						<?php if ($user == 'guest'): ?>
 							disabled = "disabled"
 						<?php endif; ?>

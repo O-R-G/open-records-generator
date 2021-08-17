@@ -146,12 +146,23 @@ function process_media($toid)
 		{
 			$tmp_name = $_FILES["uploads"]["tmp_name"][$key];
 			$m_name = $_FILES["uploads"]["name"][$key];
-			$m_type = strtolower(end(explode(".", $m_name)));
+            $temp = explode(".", $m_name);
+			$m_type = strtolower(end($temp));
 
 			// add to db's image list
 			$m_arr["type"] = "'".$m_type."'";
 			$m_arr["object"] = "'".$toid."'";
-			$m_arr["caption"] = "'".$rr->captions[$key+count($rr->medias)]."'";
+            
+            if($rr->captions != null){
+                $count_media = $rr->medias == null ? 0 : count($rr->medias);
+                if( isset($rr->captions[$key+$count_media]) )
+                    $m_arr["caption"] = "'".$rr->captions[$key+$count_media]."'";
+                else
+                    $m_arr["caption"] = "''";
+            }
+            else
+                $m_arr["caption"] = "''";
+			
 			$insert_id = $mm->insert($m_arr);
 			$m_rows++;
 

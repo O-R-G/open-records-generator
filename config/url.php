@@ -20,13 +20,13 @@ class URL extends URL_Base {
 		if (!$urls) {
             		// get script url and request url
            	 	$script = explode('/', rtrim($_SERVER['SCRIPT_NAME'], '/'));
-            		$urls = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
+        		$urls = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
 
-            		// compare and shift until they diverge
-            		while($script[0] == $urls[0]) {
-		                array_shift($script);
-                		array_shift($urls);
-            		}
+        		// compare and shift until they diverge
+        		while(isset($script[0]) && isset($urls[0]) && $script[0] == $urls[0]) {
+	                array_shift($script);
+            		array_shift($urls);
+        		}
         	}
 
 		// check that the object that this URL refers to exists
@@ -40,7 +40,7 @@ class URL extends URL_Base {
 			// header("Location: ".$loc);
 		}
 
-		$id = $ids[count($ids)-1];
+		$id = end($ids);
 		if(!$id)
 			$id = 0;
 		if(sizeof($ids) == 1 && empty($ids[0]))

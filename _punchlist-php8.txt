@@ -1,0 +1,20 @@
++ views/head.php
+	+ line 32: Add isset($s[0]) and isset($u[0]) in the while statement. 
+
++ config/request.php
+	+ line 56: Check if isset($_POST[$v])).
+
++ config/url.php
+	+ line 26: Add isset($script[0]) and isset($urls[0]) in the while statement. 
+
++ models/objects.php
+	+ line 92: remove $limit in get_all() since it's undefined.
+	+ line 151: Check if empty($tmp).
+	+ line 362: $d = $root; -> $d = $root_index+1;
+	
++ views/edit.php
+	+ line 594: Moved for($i = 0; $i < $num_captions; $i++) into if(is_array($rr->captions)){ }.
+	+ line 607: if($m_arr) -> if(isset($m_arr))
+
++ lib/lib.php
+	+ line 156 - 164: Add if statements like if($rr->captions != null) to catch warnings when there's no media/caption updated. 

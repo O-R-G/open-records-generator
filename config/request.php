@@ -52,7 +52,10 @@ class Request
 						'uploads');
 
 		foreach($vars as $v)
-			$this->$v = $_POST[$v];
+		{
+			if(isset($_POST[$v]))
+				$this->$v = $_POST[$v];
+		}
 	}
 }
 

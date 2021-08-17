@@ -591,27 +591,27 @@ else
 	    $num_captions = sizeof($rr->captions);
 	    if (sizeof($rr->medias) < $num_captions)
 		    $num_captions = sizeof($rr->medias);
+		for ($i = 0; $i < $num_captions; $i++)
+		{
+			unset($m_arr);
+			$m_id = $rr->medias[$i];
+			$caption = addslashes($rr->captions[$i]);
+			$rank = addslashes($rr->ranks[$i]);
+
+			$m = $mm->get($m_id);
+			if($m["caption"] != $caption)
+				$m_arr["caption"] = "'".$caption."'";
+			if($m["rank"] != $rank)
+				$m_arr["rank"] = "'".$rank."'";
+
+			if(isset($m_arr))
+			{
+				$arr["modified"] = "'".date("Y-m-d H:i:s")."'";
+				$updated = $mm->update($m_id, $m_arr);
+			}
+		}
     }
 
-	for ($i = 0; $i < $num_captions; $i++)
-	{
-		unset($m_arr);
-		$m_id = $rr->medias[$i];
-		$caption = addslashes($rr->captions[$i]);
-		$rank = addslashes($rr->ranks[$i]);
-
-		$m = $mm->get($m_id);
-		if($m["caption"] != $caption)
-			$m_arr["caption"] = "'".$caption."'";
-		if($m["rank"] != $rank)
-			$m_arr["rank"] = "'".$rank."'";
-
-		if($m_arr)
-		{
-			$arr["modified"] = "'".date("Y-m-d H:i:s")."'";
-			$updated = $mm->update($m_id, $m_arr);
-		}
-	}
 	?><div class="self-container"><?
 		// should change this url to reflect updated url
 		$urls = array_slice($uu->urls, 0, count($uu->urls)-1);

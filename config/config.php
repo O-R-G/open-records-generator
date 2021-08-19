@@ -18,7 +18,8 @@ $host = "//".$_SERVER["HTTP_HOST"]."/";
 $root = $_SERVER["DOCUMENT_ROOT"]."/";
 $admin_path = $host . "open-records-generator/";
 $admin_root = $root . "open-records-generator/";
-$adminURLString = getenv("MYSQL_RW_DATABASE_URL");
+$adminURLString = getenv("MYSQL_FULL_DATABASE_URL");
+$readWriteURLString = getenv("MYSQL_RW_DATABASE_URL");
 $readOnlyURLString = getenv("MYSQL_R_DATABASE_URL");
 $media_path = $host . "media/"; // don't forget to set permissions on this folder
 $media_root = $root . "media/";
@@ -54,7 +55,7 @@ function db_connect($remote_user) {
 	$users = array();
 	$creds = array();
 
-	if ($adminURLString) {
+	if ($adminURLString && $readWriteURLString && $readOnlyURLString) {
 		// IF YOU ARE USING ENVIRONMENTAL VARIABLES (you should)
 		$urlAdmin = parse_url($adminURLString);
 		$host = $urlAdmin["host"];
@@ -66,8 +67,9 @@ function db_connect($remote_user) {
 
         // read / write access
         // (can't create / drop tables)
-		$creds['rw']['db_user'] = $urlAdmin["user"];
-		$creds['rw']['db_pass'] = $urlAdmin["pass"];
+        $urlReadWrite = parse_url($readWriteURLString);
+		$creds['rw']['db_user'] = $urlReadWrite["user"];
+		$creds['rw']['db_pass'] = $urlReadWrite["pass"];
 
         // read-only access
 		$urlReadOnly = parse_url($readOnlyURLString);

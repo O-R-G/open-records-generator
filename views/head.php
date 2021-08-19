@@ -29,8 +29,7 @@ function url_array()
 	$s = explode('/', rtrim($_SERVER['SCRIPT_NAME'], '/'));
 	$u = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
 
-	while(isset($s[0]) && isset($u[0]) && $s[0] == $u[0])
-	{
+	while( isset($s[0]) && isset($u[0]) && $s[0] == $u[0] ) {
 		array_shift($s);
 		array_shift($u);
 	}
@@ -82,14 +81,18 @@ $ancestors = $oo->ancestors($uu->id);
 
 // settings
 $settings_file = $config_dir."/settings.store";
+// $settings_file = $config_dir."/settings.store";
 if(file_exists($settings_file))
 {
 	$f = file_get_contents($settings_file);
 	$settings = unserialize($f);
 	$max_uploads = $settings->num_uploads;
+	$default_editor_mode = $settings->default_editor_mode;
 }
-else
+else{
 	$max_uploads = 5;
+	$default_editor_mode = 'regular';
+}
 
 if ($view == "logout")
 	header("HTTP/1.1 401 Unauthorized");

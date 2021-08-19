@@ -221,8 +221,8 @@ if ($rr->action != "update" && $uu->id)
 					} else {
 						var html = textarea.value;
 						editable.innerHTML = html;    // update editable
+						textarea.value = editable.innerHTML;
 					}
-					// console.log([name, editable.style.display, textarea.style.display]);
 				}
 
 				function showrich(name) {

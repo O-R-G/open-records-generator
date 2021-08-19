@@ -1,4 +1,4 @@
-AuthUserFile /Library/WebServer/Documents/.htpasswd
+AuthUserFile /path/to/.htpasswd
 AuthName "OPEN-RECORDS-GENERATOR"
 AuthType Basic
 Require valid-user

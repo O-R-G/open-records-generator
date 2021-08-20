@@ -50,6 +50,7 @@ spl_autoload_register(function ($class) {
 // connect to database (called in head.php)
 function db_connect($remote_user) {
 	global $adminURLString;
+	global $readWriteURLString;
 	global $readOnlyURLString;
 
 	$users = array();

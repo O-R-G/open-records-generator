@@ -81,6 +81,7 @@ Logs the user out of the current session. Useful for changing users or terminati
 + 3.1.0 -- October 2018: add full wyswig editor
 + 3.1.1 -- July 2019: update readme.md
 + 3.3.0 -- June 2020: add wysiwyg functionality to master and cleanup repository including updated readme.md and repo transferred to O-R-G github team.
++ 3.3.1 -- August 19 2021: fix php 8 warnings, add html wrap and additional validation, update url validation, optimize any get_all() and unlinked_list()
 
 ## SITES
 + [o-r-g.com](http://www.o-r-g.com/)
@@ -145,6 +146,7 @@ Logs the user out of the current session. Useful for changing users or terminati
 + [materiaabierta.com](https://www.materiaabierta.com)
 + [ica.art](https://www.ica.art/)
 + [n-y-c.org](https://www.n-y-c.org/)
++ [w-w-w.o-r-g.net](https://w-w-w.o-r-g.net/)
 
 ## DEV NOTES
 for basic password protection, create the an `.htpasswd` file with the following command:

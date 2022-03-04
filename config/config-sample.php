@@ -80,7 +80,7 @@ function db_connect($remote_user) {
 	} else {
 		// IF YOU ARE NOT USING ENVIRONMENTAL VARIABLES
 		$host = "localhost";
-		$dbse = "database_name";
+		$dbse = "database";
 
 		// full access
 		$creds['full']['db_user'] = "user_full";

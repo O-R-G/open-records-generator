@@ -48,7 +48,7 @@ a:active {
 	text-decoration: none;
 	color: #777;
 	background-color: #d6d6d6;
-	vertical-align: top;
+	vertical-align: initial;
 }
 
 a:hover {

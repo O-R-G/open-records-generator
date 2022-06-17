@@ -27,7 +27,7 @@ function url_array()
 {
 	global $view;
 	$s = explode('/', rtrim($_SERVER['SCRIPT_NAME'], '/'));
-	$urls = explode('/', rtrim( strtok($_SERVER['REQUEST_URI'],"?"), '/'));
+	$u = explode('/', rtrim( strtok($_SERVER['REQUEST_URI'],"?"), '/'));
 
 	while( isset($s[0]) && isset($u[0]) && $s[0] == $u[0] ) {
 		array_shift($s);

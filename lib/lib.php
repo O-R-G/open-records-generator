@@ -20,6 +20,9 @@ function slug($name = "untitled")
     // force url to all ASCII
     $tmp = remove_accents($tmp);
 
+    // extra escape characters
+    $tmp = escape_charaters($tmp);
+
 	// make url safe
     // this is a failsafe in case remove_accents misses something
     // urlencode() is for query strings, ' ' -> '+'
@@ -482,6 +485,30 @@ function remove_accents($string) {
     $string = strtr($string, $chars);
 
     return $string;
+}
+
+function escape_charaters($string) {
+    // $string = htmlentities($string);
+    $chars = array(
+        // superscript
+        chr(194).chr(185) => '1', chr(194).chr(178) => '2',
+        chr(194).chr(179) => '3', chr(226).chr(129).chr(180) => '4',
+        chr(226).chr(129).chr(181) => '5', chr(226).chr(129).chr(182) => '6',
+        chr(226).chr(129).chr(183) => '7', chr(226).chr(129).chr(184) => '8',
+        chr(226).chr(129).chr(185) => '9', chr(226).chr(129).chr(176) => '0',
+        // subscript
+        chr(226).chr(130).chr(129) => '1', chr(226).chr(130).chr(130) => '2',
+        chr(226).chr(130).chr(131) => '3', chr(226).chr(130).chr(132) => '4',
+        chr(226).chr(130).chr(133) => '5', chr(226).chr(130).chr(134) => '6',
+        chr(226).chr(130).chr(135) => '7', chr(226).chr(130).chr(136) => '8',
+        chr(226).chr(130).chr(137) => '9', chr(226).chr(130).chr(128) => '0',
+        // greek letters
+        chr(195).chr(134) => 'AE', chr(195).chr(166) => 'ae'
+    );
+
+    $string = strtr($string, $chars);
+    return $string;
+    // return html_entity_decode($string);
 }
 ?>
 

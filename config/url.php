@@ -17,7 +17,7 @@ class URL extends URL_Base {
 
 		global $oo;
 
-		if (!$urls) {
+		if ($urls === null) {
     		// get script url and request url
        	 	$script = explode('/', rtrim($_SERVER['SCRIPT_NAME'], '/'));
     		$urls = explode('/', rtrim( strtok($_SERVER['REQUEST_URI'],"?"), '/'));

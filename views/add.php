@@ -1,30 +1,6 @@
 <?
 $browse_url = $admin_path.'browse/'.$uu->urls();
 
-// $vars = array("name1", "deck", "body", "notes",  "url", "rank", "begin", "end");
-
-// $var_info = array();
-
-// $var_info["input-type"] = array();
-// $var_info["input-type"]["name1"] = "text";
-// $var_info["input-type"]["deck"] = "textarea";
-// $var_info["input-type"]["body"] = "textarea";
-// $var_info["input-type"]["notes"] = "textarea";
-// $var_info["input-type"]["begin"] = "text";
-// $var_info["input-type"]["end"] = "text";
-// $var_info["input-type"]["url"] = "text";
-// $var_info["input-type"]["rank"] = "text";
-
-// $var_info["label"] = array();
-// $var_info["label"]["name1"] = "Name";
-// $var_info["label"]["deck"] = "Synopsis";
-// $var_info["label"]["body"] = "Detail";
-// $var_info["label"]["notes"] = "Notes";
-// $var_info["label"]["begin"] = "Begin";
-// $var_info["label"]["end"] = "End";
-// $var_info["label"]["url"] = "URL Slug";
-// $var_info["label"]["rank"] = "Rank";
-
 $urlIsValid = true;
 // for use on add.php
 // return false if process fails

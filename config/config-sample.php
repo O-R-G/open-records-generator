@@ -6,9 +6,11 @@
     apache:
     SetEnv MYSQL_R_DATABASE_URL mysql2://user:pass@host/database
     SetEnv MYSQL_RW_DATABASE_URL mysql2://user:pass@host/database
+    SetEnv MYSQL_FULL_DATABASE_URL mysql2://user:pass@host/database
     nginx:
     fastcgi_param   MYSQL_R_DATABASE_URL mysql2://user:pass@host/database;
     fastcgi_param   MYSQL_RW_DATABASE_URL mysql2://user:pass@host/database;
+    fastcgi_param   MYSQL_FULL_DATABASE_URL mysql2://user:pass@host/database;
 */
 
 // get environment variables

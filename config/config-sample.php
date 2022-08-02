@@ -58,7 +58,7 @@ function db_connect($remote_user) {
 	$users = array();
 	$creds = array();
 
-	if ($adminURLString || $readWriteURLString || $readOnlyURLString) {
+	if ($adminURLString && $readWriteURLString && $readOnlyURLString) {
 		// IF YOU ARE USING ENVIRONMENTAL VARIABLES (you should)
 		$urlAdmin = parse_url($adminURLString);
 		$host = $urlAdmin["host"];

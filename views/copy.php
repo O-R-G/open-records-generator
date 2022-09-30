@@ -215,13 +215,14 @@ if($uu->urls())
 		if($rr->wires_toid)
 		{
 			$wires_toid = addslashes($rr->wires_toid);
-	
+			$vars_string = implode('`, `', $vars);
+			$vars_string = '`' . $vars_string . '`';
+			$vars_string .= ', `created`, `modified`';
+			
 			// duplicate object record
-			$sql = "INSERT INTO objects (created, modified, name1, url, notes, deck, body, begin, end, rank)
-			SELECT created, modified, name1, url, notes, deck, body, begin, end, rank
-			FROM objects
-			WHERE id = '$wires_toid'";
+			$sql = "INSERT INTO objects (".$vars_string.") SELECT ".$vars_string." FROM objects WHERE id = '".$wires_toid."'";
 			$res = $db->query($sql);
+			
 			$insert_id = $db->insert_id;
 
             // add '. * (copy)' to name1

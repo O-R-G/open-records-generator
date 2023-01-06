@@ -373,21 +373,8 @@ if ($rr->action != "update" && $uu->id)
 					clipboardData = e.clipboardData || window.clipboardData;
 					pastedData = clipboardData.getData('Text');
 
-					// Do whatever with pasteddata
-					let find = getSelectionText();
-					let replacement = pastedData;
-					let caretPosition = getCaretPosition(editable);
-
-					if(find === '')
-					{
-						console.log(editable.innerText.substring(0, caretPosition));
-						console.log(editable.innerText.substring(caretPosition));
-						editable.innerText = editable.innerText.substring(0, caretPosition) + pastedData + editable.innerText.substring(caretPosition);
-					}
-					else
-					{
-						editable.innerText = editable.innerText.substring(0, caretPosition).replace(find, replacement) + editable.innerText.substring(caretPosition);
-					}
+					// var pastedData = e.clipboardData.getData('text/plain');
+					document.execCommand('insertText', false, pastedData);
 				}
 
 				// add "autosave functionality" every 5 sec

@@ -419,7 +419,7 @@ if ($rr->action != "update" && $uu->id)
 						{
 						?><input name='<? echo $var; ?>'
 								type='<? echo $var_info["input-type"][$var]; ?>'
-								value='<? echo htmlspecialchars($item[$var], ENT_QUOTES); ?>'
+								value='<? echo $item[$var] ? htmlspecialchars($item[$var], ENT_QUOTES) : ''; ?>'
 								onclick="hideToolBars(); resetViews('', default_editor_mode);"
 								<?php if ($user == 'guest'): ?>
 									disabled = "disabled"
@@ -556,7 +556,7 @@ else
 	foreach($vars as $var)
 	{
 		$new[$var] = addslashes($rr->$var);
-		$item[$var] = addslashes($item[$var]);
+		$item[$var] = empty($item[$var]) ? 'NULL' : addslashes($item[$var]);
 	}
 	$siblings = $oo->siblings($uu->id);
 	$updated = update_object($item, $new, $siblings, $vars);

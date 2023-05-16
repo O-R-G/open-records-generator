@@ -304,16 +304,6 @@ if ($rr->action != "update" && $uu->id)
                     return str;
 				}
 
-				function getSelectionText() {
-				    var text = "";
-				    if (window.getSelection) {
-				        text = window.getSelection().toString();
-				    } else if (document.selection && document.selection.type != "Control") {
-				        text = document.selection.createRange().text;
-				    }
-				    return text;
-				}
-
 				function indent(name){
 	                document.execCommand('formatBlock',false,'blockquote');
                 }
@@ -322,6 +312,70 @@ if ($rr->action != "update" && $uu->id)
 	                document.execCommand('formatBlock',false,'div');
 	                document.execCommand('removeFormat',false,'');
                 }
+
+                function getCaretPosition(editableDiv) {
+					var caretPos = 0,
+						sel, range;
+					if (window.getSelection) {
+						sel = window.getSelection();
+						if (sel.rangeCount) {
+							range = sel.getRangeAt(0);
+							if (range.commonAncestorContainer.parentNode == editableDiv) {
+								console.log(range);
+								caretPos = range.endOffset;
+							}
+						}
+					} else if (document.selection && document.selection.createRange) {
+						range = document.selection.createRange();
+						if (range.parentElement() == editableDiv) {
+							var tempEl = document.createElement("span");
+							editableDiv.insertBefore(tempEl, editableDiv.firstChild);
+							var tempRange = range.duplicate();
+							tempRange.moveToElementText(tempEl);
+							tempRange.setEndPoint("EndToEnd", range);
+							caretPos = tempRange.text.length;
+						}
+					}
+					console.log(caretPos);
+					return caretPos;
+				}
+                function getSelectionText() {
+				    var text = "";
+				    if (window.getSelection) {
+				        text = window.getSelection().toString();
+				    } else if (document.selection && document.selection.type != "Control") {
+				        text = document.selection.createRange().text;
+				    }
+				    return text;
+				}
+				function cleanEditableText(editable){
+					setTimeout(function(){
+						// editable.innerText = editable.innerText.substring(0);
+					}, 0);
+				}
+				function handleEditableMousedown(editable){
+					// console.log('mousedown');
+					// cleanEditableText(editable);
+				}
+				function handleEditableKeydown(e, editable){
+					// console.log('mousedown');
+					// if(e.keyCode != 13)
+					// 	cleanEditableText(editable);
+				}
+                function handleEditablePaste(e, editable) {
+                	var clipboardData, pastedData;
+
+					// Stop data actually being pasted into div
+					e.stopPropagation();
+					e.preventDefault();
+
+					// Get pasted data via clipboard API
+					clipboardData = e.clipboardData || window.clipboardData;
+					pastedData = clipboardData.getData('Text');
+
+					// var pastedData = e.clipboardData.getData('text/plain');
+					document.execCommand('insertText', false, pastedData);
+				}
 
 				// add "autosave functionality" every 5 sec
 				// setInterval(function() {
@@ -381,20 +435,21 @@ if ($rr->action != "update" && $uu->id)
 						<?php if ($user == 'guest'): ?>
 							<div name='<? echo $var; ?>' class='large editable' contenteditable='false' id='<? echo $var; ?>-editable' onclick="" style="display: block;">
 						<?php else: ?>
-							<div name='<? echo $var; ?>' class='large editable' contenteditable='true' id='<? echo $var; ?>-editable' onclick="showToolBar('<? echo $var; ?>'); resetViews('<? echo $var; ?>', default_editor_mode);" style="display: block;">
+							<div name='<? echo $var; ?>' class='large editable' contenteditable='true' onpaste="handleEditablePaste(event, this);"  id='<? echo $var; ?>-editable' onclick="showToolBar('<? echo $var; ?>'); resetViews('<? echo $var; ?>', default_editor_mode);" style="display: block;">
 						<?php endif; ?>
 						<?
-                            if(isset($item[$var]) && $item[$var])
-                                echo $item[$var];
+                            if($item[$var] && !empty($item[$var]))
+                                echo trim($item[$var]);
                         ?></div>
 
-			<textarea name='<? echo $var; ?>' class='large dontdisplay' id='<? echo $var; ?>-textarea' onclick="showToolBar('<? echo $var; ?>'); resetViews('<? echo $var; ?>', default_editor_mode);" onblur="" style="display: none;" form="edit-form"><?
-                            if($item[$var])
+                        <textarea name='<? echo $var; ?>' class='large dontdisplay' id='<? echo $var; ?>-textarea' onclick="showToolBar('<? echo $var; ?>'); resetViews('<? echo $var; ?>', default_editor_mode);" onblur="" style="display: none;" form="edit-form"><?
+                            if($item[$var] && !empty($item[$var]))
                                 echo htmlentities($item[$var]);
                         ?></textarea>
 
 						<script>
 							addListeners('<?echo $var; ?>');
+							cleanEditableText(document.querySelector('div[name="<?= $var; ?>"]'));
 							<? 
 							if($user == 'admin' && $default_editor_mode == 'html') { ?>
 								sethtml('<? echo $var; ?>', default_editor_mode);
@@ -419,7 +474,7 @@ if ($rr->action != "update" && $uu->id)
 						{
 						?><input name='<? echo $var; ?>'
 								type='<? echo $var_info["input-type"][$var]; ?>'
-								value='<? echo $item[$var] ? htmlspecialchars($item[$var], ENT_QUOTES) : ''; ?>'
+								value='<? echo ($item[$var] && !empty($item[$var])) ? htmlspecialchars($item[$var], ENT_QUOTES) : ""; ?>'
 								onclick="hideToolBars(); resetViews('', default_editor_mode);"
 								<?php if ($user == 'guest'): ?>
 									disabled = "disabled"

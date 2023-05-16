@@ -384,7 +384,7 @@ if ($rr->action != "update" && $uu->id)
 							<div name='<? echo $var; ?>' class='large editable' contenteditable='true' id='<? echo $var; ?>-editable' onclick="showToolBar('<? echo $var; ?>'); resetViews('<? echo $var; ?>', default_editor_mode);" style="display: block;">
 						<?php endif; ?>
 						<?
-                            if($item[$var])
+                            if(isset($item[$var]) && $item[$var])
                                 echo $item[$var];
                         ?></div>
 

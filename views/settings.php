@@ -49,8 +49,7 @@
 		{
 			$uploads = $rr->uploads;
 			$default_editor_mode = $rr->default_editor_mode;
-			if(!$settings)
-				$settings = new ORG_Settings();
+			$settings = isset($settings) ? $settings : new ORG_Settings();
 			$settings->num_uploads = $uploads;
 			$settings->default_editor_mode = $default_editor_mode;
 			$f = serialize($settings);

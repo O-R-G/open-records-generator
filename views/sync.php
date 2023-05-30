@@ -19,13 +19,14 @@ function handleResponse($existing_ids = array(), $callback = null){
     // spektrix
     if($callback) $callback();
 }
-function generateSpektrixUserpwd($key, $user){
+function generateSpektrixUserpwd($url, $key, $user){
+    $gmtnow = gmdate('D, j M Y H:i:s GMT');
     $stringToSign = "GET\n" . $url . "\n" . $gmtnow;
     $signature = base64_encode( hash_hmac('sha1', $stringToSign, base64_decode($key)) );
     $output = "SpektrixAPI3 ".$user.":" . $signature;
     return $output;
 }
-$api_userpwd = generateSpektrixUserpwd($key, $api_user);
+$api_userpwd = generateSpektrixUserpwd($req_url, $key, $api_user);
 if(!isset($_POST['action']) || $_POST['action'] != "sync")
 {
 ?>
@@ -54,7 +55,7 @@ else
     {
         global $key;
         $curl = curl_init();
-        $gmtnow = gmdate('D, j M Y H:i:s GMT');
+        
         if(!empty($header)) curl_setopt ($curl, CURLOPT_HTTPHEADER, $header);
         switch ($method)
         {

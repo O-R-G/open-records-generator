@@ -311,7 +311,9 @@ select {
 .indent-text{
 	margin-left: 50px;
 }
-
+.event-row:hover{
+    background-color: #fff;
+}
 @media screen and (max-device-width: 568px) {
 	html {
 		font-size: 13px;

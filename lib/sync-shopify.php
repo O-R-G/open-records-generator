@@ -166,132 +166,132 @@
 				var product_updated_counter = 0;
 				var product_added_counter = 0;
 				if(isTest){
-	          var shopUrl = "https://bookstore-n-y-c-test.myshopify.com";
-	          var accessToken = "f5e95d28e4d2850830979b66aa4cab7e";
-	      }
-	      else{
-	          var shopUrl = "https://new-york-consolidated-2.myshopify.com";
-	          var accessToken = "0df4a2d60f5c99276aaba8f4265b06e4";
-	      }
-	      const query_all = `query FirstProduct {
-	          products(first:200) {
-	              edges {
-	                  node {
-	                      id
-	                      title
-	                      description
-	                      descriptionHtml
-	                  }
-	              }
-	          }   
-	      }`;
-	      const fetchQuery_all = () => {
-			    // Define options for first query with no variables and body is string and not a json object
-			    const optionsQuery_all = {
-			        method: "post",
-			        headers: {
-			            "Content-Type": "application/graphql",
-			            "X-Shopify-Storefront-Access-Token": accessToken
-			        },
-			        body: query_all
-			    };
-
-			    // Fetch data and remember product id
-			    fetch(shopUrl + `/api/graphql`, optionsQuery_all)
-			        .then(res => res.json())
-			        .then(response => {
-			            console.log("<< Fetching products...");
-			            var edges = response.data.products.edges;
-			            edges.forEach(function(el, i){
-			            	var this_id = el.node.id;
-			            	var this_title = el.node.title;
-			            	var this_obj = {};	
-			            	if(this_id != donate_product_id)
-			            	{
-			            		if( this_title.toLowerCase() == 'donation' || 
-			            			 	this_title.toLowerCase() == 'donate'
-			            		)
-			            		{
-			            			if(hasDonate){
-			            				// if a product's name is similar to donate with a different ID, and donate record exists...
-				            			console.log('['+i+'] '+el.node.title+' ('+this_id + ') conflicts with the current '+el.node.title+' record.');
-				            			return;
-			            			}
-			            			else
-			            			{
-			            				// for some reason donate record is rebuilt.
-			            				console.log('['+i+'] '+el.node.title+' ('+this_id + ') is a new donatation record. Adding it to database...');
-			            				var this_product_id = window.atob(el.node.id);
-					            		this_product_id = this_product_id.replace('gid://shopify/Product/', '');
-					            		this_obj['name1'] = el.node.title;
-					            		this_obj['body'] = el.node.descriptionHtml;
-					            		this_obj['deck'] = '[' + this_product_id + ']';
-					            		this_obj['action'] = 'insert';
-					            		this_obj['s_urls'] = s_urls;
-					            		this_obj['parent_id'] = 0;
-					            		send_ajax('insert', this_obj, i);
-			            			}
-			            		}
-			            		if( existing_product_ids.includes(this_id) )
-				            	{
-				            		var this_item = existing_product_id_to_item[this_id];
-				            		var toBeUpdated = false;
-				            		console.log('['+i+'] '+el.node.title+' ('+this_id + ') is already added. Checking for updates...');
-				            		var this_description_html = el.node.descriptionHtml;
-				            		if(this_description_html != this_item['body']){
-				            			this_obj['body'] = this_description_html;
-
-				            			if(toBeUpdated === false)
-				            				toBeUpdated = '';
-				            			else
-				            				toBeUpdated += ',';
-				            			toBeUpdated += ' description';
-				            		}
-				            		if( this_title != this_item['name1'] && 
-				            				'.' + this_title != this_item['name1'] // keep the flexibility of hidding records with period.
-				            			){
-
-				            			this_obj['name1'] = this_title;
-
-				            			if(toBeUpdated === false)
-				            				toBeUpdated = '';
-				            			else
-				            				toBeUpdated += ',';
-				            			toBeUpdated += ' name';
-				            		}
-				            		if(this_title == '1996' && toBeUpdated !== false){
-				            			console.log('['+i+'] needs update:' + toBeUpdated);
-				            			this_obj['id'] = this_item['id'];
-				            			this_obj['action'] = 'update';
-				            			this_obj['s_urls'] = s_urls;
-				            			send_ajax('update', this_obj, i);
-				            		}
-				            		else
-				            		{
-				            			console.log('['+i+'] nothing to update.');
-				            		}
-				            	}
-				            	else
-				            	{
-				            		console.log('['+i+'] '+el.node.title+' ('+this_id + ') is a new product. Adding it to database...');
-				            		var this_product_id = window.atob(el.node.id);
-				            		this_product_id = this_product_id.replace('gid://shopify/Product/', '');
-				            		console.log(this_product_id);
-				            		this_obj['name1'] = el.node.title;
-				            		this_obj['body'] = el.node.descriptionHtml;
-				            		this_obj['deck'] = '[' + this_product_id + ']';
-				            		this_obj['action'] = 'insert';
-				            		this_obj['s_urls'] = s_urls;
-				            		this_obj['parent_id'] = <?= $buy_id; ?>;
-				            		send_ajax('insert', this_obj, i);
-				            	}
-			            	}		            	
-			            });
-			        });
+					var shopUrl = "https://bookstore-n-y-c-test.myshopify.com";
+					var accessToken = "f5e95d28e4d2850830979b66aa4cab7e";
 				}
-				fetchQuery_all();
-	   	 </script>
-	 	 	<?
+				else{
+					var shopUrl = "https://new-york-consolidated-2.myshopify.com";
+					var accessToken = "0df4a2d60f5c99276aaba8f4265b06e4";
+				}
+				const query_all = `query FirstProduct {
+					products(first:200) {
+						edges {
+							node {
+								id
+								title
+								description
+								descriptionHtml
+							}
+						}
+					}   
+				}`;
+				const fetchQuery_all = () => {
+						// Define options for first query with no variables and body is string and not a json object
+						const optionsQuery_all = {
+							method: "post",
+							headers: {
+								"Content-Type": "application/graphql",
+								"X-Shopify-Storefront-Access-Token": accessToken
+							},
+							body: query_all
+						};
+
+						// Fetch data and remember product id
+						fetch(shopUrl + `/api/graphql`, optionsQuery_all)
+							.then(res => res.json())
+							.then(response => {
+								console.log("<< Fetching products...");
+								var edges = response.data.products.edges;
+								edges.forEach(function(el, i){
+									var this_id = el.node.id;
+									var this_title = el.node.title;
+									var this_obj = {};	
+									if(this_id != donate_product_id)
+									{
+										if( this_title.toLowerCase() == 'donation' || 
+												this_title.toLowerCase() == 'donate'
+										)
+										{
+											if(hasDonate){
+												// if a product's name is similar to donate with a different ID, and donate record exists...
+												console.log('['+i+'] '+el.node.title+' ('+this_id + ') conflicts with the current '+el.node.title+' record.');
+												return;
+											}
+											else
+											{
+												// for some reason donate record is rebuilt.
+												console.log('['+i+'] '+el.node.title+' ('+this_id + ') is a new donatation record. Adding it to database...');
+												var this_product_id = window.atob(el.node.id);
+												this_product_id = this_product_id.replace('gid://shopify/Product/', '');
+												this_obj['name1'] = el.node.title;
+												this_obj['body'] = el.node.descriptionHtml;
+												this_obj['deck'] = '[' + this_product_id + ']';
+												this_obj['action'] = 'insert';
+												this_obj['s_urls'] = s_urls;
+												this_obj['parent_id'] = 0;
+												send_ajax('insert', this_obj, i);
+											}
+										}
+										if( existing_product_ids.includes(this_id) )
+										{
+											var this_item = existing_product_id_to_item[this_id];
+											var toBeUpdated = false;
+											// console.log('['+i+'] '+el.node.title+' ('+this_id + ') is already added. Checking for updates...');
+											var this_description_html = el.node.descriptionHtml;
+											if(this_description_html != this_item['body']){
+												this_obj['body'] = this_description_html;
+
+												if(toBeUpdated === false)
+													toBeUpdated = '';
+												else
+													toBeUpdated += ',';
+												toBeUpdated += ' description';
+											}
+											if( this_title != this_item['name1'] && 
+													'.' + this_title != this_item['name1'] // keep the flexibility of hidding records with period.
+												){
+
+												this_obj['name1'] = this_title;
+
+												if(toBeUpdated === false)
+													toBeUpdated = '';
+												else
+													toBeUpdated += ',';
+												toBeUpdated += ' name';
+											}
+											if(this_title == '1996' && toBeUpdated !== false){
+												console.log('['+i+'] needs update:' + toBeUpdated);
+												this_obj['id'] = this_item['id'];
+												this_obj['action'] = 'update';
+												this_obj['s_urls'] = s_urls;
+												send_ajax('update', this_obj, i);
+											}
+											else
+											{
+												console.log('['+i+'] nothing to update.');
+											}
+										}
+										else
+										{
+											console.log('['+i+'] '+el.node.title+' ('+this_id + ') is a new product. Adding it to database...');
+											var this_product_id = window.atob(el.node.id);
+											this_product_id = this_product_id.replace('gid://shopify/Product/', '');
+											console.log(this_product_id);
+											this_obj['name1'] = el.node.title;
+											this_obj['body'] = el.node.descriptionHtml;
+											this_obj['deck'] = '[' + this_product_id + ']';
+											this_obj['action'] = 'insert';
+											this_obj['s_urls'] = s_urls;
+											this_obj['parent_id'] = <?= $buy_id; ?>;
+											send_ajax('insert', this_obj, i);
+										}
+									}		            	
+								});
+							});
+						}
+						fetchQuery_all();
+				</script>
+			<?
 			}
 			catch(Exception $e)
 			{

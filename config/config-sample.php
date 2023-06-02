@@ -136,4 +136,6 @@ $var_info["label"]["end"] = "End";
 $var_info["label"]["url"] = "URL Slug";
 $var_info["label"]["rank"] = "Rank";
 
+$syncName = '';
+
 ?>

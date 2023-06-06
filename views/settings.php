@@ -9,12 +9,16 @@
 				foreach($org_settings as $setting_item) {
 					$name = $setting_item['name'];
 					$html = '<div class="sync-row"><label for="'.$name.'">' . $setting_item['display'] . ': </label>';
-					$html .= '<select id="'.$name.'" name="'.$name.'">';
-					foreach($setting_item['options'] as $key => $option) {
-						$html .= $settings[$setting_item['name']] == $option['value'] ?  '<option value="' . $option['value'] . '" selected>' : '<option value="' . $option['value'] . '">';
-						$html .= $option['display'] . '</option>';
+					if($setting_item['input_type'] == 'select')
+					{
+						$html .= '<select id="'.$name.'" name="'.$name.'">';
+						foreach($setting_item['options'] as $key => $option) {
+							$html .= $settings[$setting_item['name']] == $option['value'] ?  '<option value="' . $option['value'] . '" selected>' : '<option value="' . $option['value'] . '">';
+							$html .= $option['display'] . '</option>';
+						}
+						$html .= '</select>';
 					}
-					$html .= '</select></div>';
+					$html .= '</div>';
 					echo $html;
 				}
 				?>

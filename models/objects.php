@@ -350,7 +350,7 @@ class Objects extends Model
 		$pass = true;
 		
 		$top = $this->children_ids_nav($root_id);
-		$root_index = array_search($root_id, $ids) === FALSE ? 0 : array_search($root_id, $ids) + 1;
+		$root_index = array_search($root_id, $ids) === FALSE ? 0 : array_search($root_id, $ids);
 		
 		foreach($top as $t)
 		{

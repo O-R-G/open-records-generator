@@ -1,60 +1,45 @@
 <div id="body-container">
 	<div id="body">
-		<div id="self-container"><?
+		<div id="self-container"><?php
 		if($rr->action != "update")
 		{
-			$default_editor_mode_options = array(
-				array(
-					'name' => 'Rich text editor',
-					'value'   => 'rich text'
-				),
-				array(
-					'name' => 'HTML editor',
-					'value'   => 'html'
-				)
-			);
 		?>
-			<form action="<? echo $admin_path; ?>settings" method="post">
-				<span>maximum # of uploads: </span>
-				<select name="uploads"><?
-					for($i = 5; $i <= 50; $i+= 5)
-					{
-						if($i == $max_uploads)
-						{
-						?><option value="<? echo $i; ?>" selected><? echo $i; ?></option><?
-						}
-						else
-						{
-						?><option value="<? echo $i; ?>"><? echo $i; ?></option><?
-						}
+			<form action="<?php echo $admin_path; ?>settings" method="post">
+				<?php
+				foreach($org_settings as $setting_item) {
+					$name = $setting_item['name'];
+					$html = '<div class="sync-row"><label for="'.$name.'">' . $setting_item['display'] . ': </label>';
+					$html .= '<select id="'.$name.'" name="'.$name.'">';
+					foreach($setting_item['options'] as $key => $option) {
+						$html .= $settings[$setting_item['name']] == $option['value'] ?  '<option value="' . $option['value'] . '" selected>' : '<option value="' . $option['value'] . '">';
+						$html .= $option['display'] . '</option>';
 					}
-				?></select>
-				<? if(isset($default_editor_mode_options)){ ?>
-					<br>
-					<label for = 'default_editor_mode'>default editor mode: </label>
-					<select id = 'default_editor_mode' name="default_editor_mode"><?
-					foreach($default_editor_mode_options as $option)
-					{
-						$selected = $default_editor_mode == $option['value'] ? 'selected' : '';
-						?><option value="<?= $option['value']; ?>" <?= $selected; ?>><?= $option['name']; ?></option><?
-					}
-					?></select><?
-				} ?>
+					$html .= '</select></div>';
+					echo $html;
+				}
+				?>
+				<br>
 				<input name='action' type='hidden' value='update'>
-				<br><br>
 				<input name='submit' type='submit' value='update settings'>
-			</form><?
+			</form><?php
 		}
 		else
-		{
-			$uploads = $rr->uploads;
-			$default_editor_mode = $rr->default_editor_mode;
-			$settings = isset($settings) ? $settings : new ORG_Settings();
-			$settings->num_uploads = $uploads;
-			$settings->default_editor_mode = $default_editor_mode;
+		{	
+			$rr_arr = get_object_vars($rr);
+			foreach($org_settings as $org_setting)
+			{
+				
+				$name = $org_setting['name'];
+				$settings[$name] = $rr_arr[$name];
+ 			}
 			$f = serialize($settings);
 			file_put_contents($settings_file, $f);
-			?><span>maximum number of uploads: <? echo $uploads; ?></span><br><span>default rich text fields mode: <? echo $default_editor_mode; ?></span><br><?
+			foreach($org_settings as $key => $org_setting)
+			{
+				$name = $org_setting['name'];
+				$html = '<div class="sync-row"><span>' . $org_setting['display'] . ': '.$settings[$name].'</span><br></div>';
+				echo $html;
+			}
 		}
 		?></div>
 	</div>

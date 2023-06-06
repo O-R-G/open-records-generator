@@ -69,8 +69,8 @@ else
     );
     $api_userpwd = generateSpektrixUserpwd($api_url['events'], $spektrixAPIKey, $spektrixAPIUser);
     $sql = array(
-        'eventExists' => "SELECT objects.id, objects.begin, objects.end FROM objects, wires WHERE objects.name2=? AND wires.toid=objects.id AND objects.active=1 AND wires.active=1",
-        'insExists' => "SELECT * FROM `".$spektrixTable."` WHERE event_id=? AND event_instance_id=?",
+        'getEvent' => "SELECT objects.id, objects.name1, objects.begin, objects.end FROM objects, wires WHERE objects.name2=? AND wires.toid=objects.id AND objects.active=1 AND wires.active=1",
+        'getIns' => "SELECT * FROM `".$spektrixTable."` WHERE event_id=? AND event_instance_id=?",
         'updateIns' => "UPDATE `".$spektrixTable."` SET venue=?,date_time=?,duration=?,date_modified=? WHERE id=?",
         'insertIns' => "INSERT INTO `".$spektrixTable."` (event_id, event_instance_id, venue, date_time, duration, date_modified, date_created) VALUES (?, ?, ?, ?, ?, ?, ?)"
     );
@@ -103,13 +103,13 @@ else
         $root = $roots[$e['attribute_Category']];
         $booking_url = $e['isOnSale'] ? "/book/$spektrix_id" : '';
 
-        $stmt = $db->prepare($sql['eventExists']);
+        $stmt = $db->prepare($sql['getEvent']);
         $stmt->bind_param("s", $spektrix_id);
         $stmt->execute();
         $stmt->store_result();
         if ($stmt->num_rows)
         {
-            $stmt->bind_result($e_id, $e_begin, $e_end) ;
+            $stmt->bind_result($e_id, $e_name, $e_begin, $e_end) ;
             $stmt->fetch();
             $res = array(
                 'id' => $e_id,
@@ -132,7 +132,19 @@ else
                 $oo->update($res['id'], $processed);
                 $eventUpdateCount++;
                 $eventDetails[$spektrix_id] = array(
-                    'eventName' => $e['name'],
+                    'eventName' => '^ ' . $e['name'],
+                    'status' => 'updated',
+                    'duration' => addslashes($e['duration']),
+                    'ins' => array()
+                );
+            }
+            else
+            {
+                // in case its instances were updated
+                $eventDetails[$spektrix_id] = array(
+                    'eventName' => '- ' . $e['name'],
+                    'status' => 'unchanged',
+                    'duration' => addslashes($e['duration']),
                     'ins' => array()
                 );
             }
@@ -180,87 +192,105 @@ else
             }
             $eventAddCount++;
             $eventDetails[$spektrix_id] = array(
-                'eventName' => $e['name'],
+                'eventName' => '+ ' . $e['name'],
+                'status' => 'added',
+                'duration' => addslashes($e['duration']), // not being displayed on the page, but would be easier to update instances to keep duration here
                 'ins' => array()
             );
-        }        
-        $thisInstances = array_filter($instances, function($ins){ 
-            global $spektrix_id;
-            $e_id = intval($ins['event']['id']);
-            if($e_id == $spektrix_id) return $ins; 
-        });
-        // echo $spektrix_id . ' >>><br>';
-        $duration = addslashes($e['duration']);
-        foreach($thisInstances as $ins){
-            $e_id = intval($ins['event']['id']);
-            $ins_id = intval($ins['id']);
-            $time = addslashes(date($oo::MYSQL_DATE_FMT, strtotime($ins['start'])));
-            $venue = addslashes($ins['attribute_Venue']);
-            $stmt = $db->prepare($sql['insExists']);
-            $stmt->bind_param("ss", $e_id, $ins_id);
+        }
+    }
+    foreach($instances as $ins){
+        $e_id = intval($ins['event']['id']);
+        if(!isset($eventDetails[$e_id]))
+        {
+            /* if an instance is updated but the event it belongs is not -- not sure if this happens */
+            $stmt = $db->prepare($sql['getEvent']);
+            $stmt->bind_param("s", $e_id);
             $stmt->execute();
-            $result = $stmt->get_result()->fetch_assoc();
-            $now = addslashes(date($oo::MYSQL_DATE_FMT, strtotime("now")));
-            if($result != null && sizeof($result) > 0)
+            $stmt->store_result();
+            if ($stmt->num_rows)
             {
-                $new = array(
-                    'venue'         => "'" . $venue . "'",
-                    'date_time'     => $time,
-                    'duration'      => $duration
+                $stmt->bind_result($e_id, $e_name, $e_begin, $e_end);
+                $eventDetails[$e_id] = array(
+                    'eventName' => '- ' . $e_name,
+                    'status' => 'unchanged',
+                    'duration' => '', // not being displayed on the page, but would be easier to update instances to keep duration here
+                    'ins' => array()
                 );
-                $old = array(
-                    'venue'         => $result['venue'],
-                    'date_time'     => $result['date_time'],
-                    'duration'      => $result['duration']
-                );
+            }
+        }
+        $ins_id = intval($ins['id']);
+        $time = addslashes(date($oo::MYSQL_DATE_FMT, strtotime($ins['start'])));
+        $venue = addslashes($ins['attribute_Venue']);
+        $duration = $eventDetails[$e_id]['duration'];
+        $stmt = $db->prepare($sql['getIns']);
+        $stmt->bind_param("ss", $e_id, $ins_id);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        $now = addslashes(date($oo::MYSQL_DATE_FMT, strtotime("now")));
+        
 
-                if(!empty(array_diff($old, $new)))
-                {
-                    $new['date_modified'] = $now;
-                    $new[] = $result['id'];
-                    $new = array_values($new);
-                    $stmt = $db->prepare($sql['updateIns']);
-                    $stmt->bind_param("sssss", ...$new);
-                    $stmt->execute();
-                    $insUpdateCount++;
-                    // var_dump( $eventDetails[$e_id]);
-                    // echo '<br><br>';
-                }
-                continue;
-            }
-            else
+        if($result != null && sizeof($result) > 0)
+        {
+            $new = array(
+                'venue'         => "'" . $venue . "'",
+                'date_time'     => $time,
+                'duration'      => $duration
+            );
+            $old = array(
+                'venue'         => $result['venue'],
+                'date_time'     => $result['date_time'],
+                'duration'      => $result['duration']
+            );
+
+            if(!empty(array_diff($old, $new)))
             {
-                $stmt = $db->prepare($sql['insertIns']);
-                $stmt->bind_param("sssssss", $e_id, $ins_id, $venue, $time, $duration, $now, $now);
+                /* 
+                    update an instance 
+                */
+                $new['date_modified'] = $now;
+                $new[] = $result['id'];
+                $new = array_values($new);
+                $stmt = $db->prepare($sql['updateIns']);
+                $stmt->bind_param("sssss", ...$new);
                 $stmt->execute();
-                $insAddCount++;
-                $eventDetails[$e_id]['ins'][] = array(
-                    'date_time' => $time,
-                );
-                continue;
+                $insUpdateCount++;
+                $eventDetails[$e_id]['ins'][] = '^ ' . $time;
             }
+            continue;
+        }
+        else
+        {
+            /* 
+                insert an instance 
+            */
+            $stmt = $db->prepare($sql['insertIns']);
+            $stmt->bind_param("sssssss", $e_id, $ins_id, $venue, $time, $duration, $now, $now);
+            $stmt->execute();
+            $insAddCount++;
+            $eventDetails[$e_id]['ins'][] = '+ ' . $time;
+            continue;
         }
     }
     $response['status'] = 'success';
     $response['body'] .= "Synced.<br /><br />";
     $response['body'] .= "<br />Events added: $eventAddCount<br />Events updated: $eventUpdateCount<br /><br />";
     $response['body'] .= "<br />Instances added: $insAddCount<br />Instances updated: $insUpdateCount<br /><br />";
-    if(count($eventDetails))
-    {
+    if(count($eventDetails)) {
         $response['body'] .= 'Detail: <br>';
         $e_counter = 1;
         $e_digits = count($eventDetails) < 100 ? 2 : 3;
         $i_pad = '&nbsp;';
         for($i = 0; $i < $e_digits; $i++)
             $i_pad .= '&nbsp;';
-        foreach($eventDetails as $e)
-        {
+        foreach($eventDetails as $key => $e) {
+            if($e['status'] == 'unchanged' && empty($e['ins']))
+                continue;
             $response['body'] .= '<div class="event-row" >' . str_pad($e_counter, $e_digits, "0", STR_PAD_LEFT) . ' ' . $e['eventName'];
             $ins_counter = 1;
             $i_digits = count($e['ins']) < 100 ? (count($e['ins']) < 10 ? 1 : 2) : 3;
-            foreach($e['ins'] as $ins)
-            {
-                $response['body'] .= '<div class="ins-row" >'.  $i_pad . '- ' . $ins['date_time'] . '</div>';
+            foreach($e['ins'] as $ins) {
+                $response['body'] .= '<div class="ins-row" >'.  $i_pad . $ins . '</div>';
                 $ins_counter++;
             }
             $response['body'] .= '</div>';

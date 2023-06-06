@@ -281,7 +281,7 @@ select {
 }
 .folio:first-child{
 	margin-left: 10px;
-	/*padding-left*/: 0;
+	/*padding-left: 0;*/
 }
 .folio.active{
 	/*font-weight: bold;*/
@@ -313,6 +313,24 @@ select {
 }
 .event-row:hover{
     background-color: #fff;
+}
+.sync-row
+{
+	display: flex;
+	min-height: 18px;
+}
+.sync-row + .sync-row
+{
+	margin-top: 2px;
+}
+.sync-row > label{
+	flex: 1;
+}
+.sync-row > select
+{
+	font-size: inherit;
+	line-height: inherit;
+	flex: 0 0 120px;
 }
 @media screen and (max-device-width: 568px) {
 	html {

@@ -81,17 +81,19 @@ $ancestors = $oo->ancestors($uu->id);
 
 // settings
 $settings_file = $config_dir."/settings.store";
-$max_uploads = 5;
-$default_editor_mode = 'regular';
+$settings = array();
 
 if(file_exists($settings_file))
 {
 	$f = file_get_contents($settings_file);
-	$settings = unserialize($f);
-	if(isset($settings->num_uploads))
-		$max_uploads = $settings->num_uploads;
-	if(isset($settings->default_editor_mode))
-		$default_editor_mode = $settings->default_editor_mode;
+	$stored = unserialize($f);
+	foreach($org_settings as $key => $org_setting)
+		$settings[$org_setting['name']] = isset($stored[$org_setting['name']]) ? $stored[$org_setting['name']] : $org_setting['default'];	
+}
+else
+{
+	foreach($org_settings as $org_setting)
+		$settings[$org_setting['name']] = $org_setting['default'];
 }
 
 if ($view == "logout")

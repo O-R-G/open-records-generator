@@ -41,7 +41,31 @@
 		?></div><?
 	}
 		// children
-		$children = $oo->children($uu->id);
+		if($settings['order_type'] == 'chronological')
+		{
+			$fields = array("objects.*");
+			$tables = array("objects", "wires");
+			$where	= array("wires.fromid = '".$uu->id."'",
+							"wires.active = 1",
+							"wires.toid = objects.id",
+							"objects.active = '1'");
+			$order 	= array("objects.begin DESC", "objects.name1", "objects.end");
+	    	$children = $oo->get_all($fields, $tables, $where, $order);
+
+		}
+		else if($settings['order_type'] == 'alphabetical')
+		{
+			$fields = array("objects.*");
+			$tables = array("objects", "wires");
+			$where	= array("wires.fromid = '".$uu->id."'",
+							"wires.active = 1",
+							"wires.toid = objects.id",
+							"objects.active = '1'");
+			$order 	= array("objects.name1", "objects.rank", "objects.begin", "objects.end");
+	    	$children = $oo->get_all($fields, $tables, $where, $order);
+		}
+		else
+			$children = $oo->children($uu->id);
 		$num_children = count($children);
 		$paged = false;
 		$page_total = intval( $num_children / 100 ) +1;
@@ -58,35 +82,6 @@
 		
 		if($num_children)
 		{	
-			$order_options = array(
-				'Default' => 'default',
-				'Chronological' => 'chronological',
-				'Alphabetical' => 'alphabetical'
-			);
-			$active_order_option = isset($_GET['order']) ? $_GET['order'] : 'default';
-			?>
-			<div id="order-container">
-				ORDER TYPE:
-				<select id="order-filter">
-					<? foreach($order_options as $key => $value){
-						$isActive = $value == $active_order_option;
-						?><option id="order-option-<?= $value; ?>" class="order-option" <?= $isActive ? 'selected' : ''; ?>><?= $key; ?></option><?
-					} ?>
-				</select>
-			</div>
-			<script>
-				var currentUrl = '/open-records-generator/browse/<?= implode('/', $uu->urls); ?>';
-				var sOrder_filter = document.getElementById('order-filter');
-				var order_options = <?= json_encode($order_options, true); ?>;
-				sOrder_filter.addEventListener('change', function(el){
-					let queryvalue = order_options[el.target.value];
-					if(queryvalue !== 'default')
-						window.location.href=currentUrl + '?order='+queryvalue;
-					else
-						window.location.href=currentUrl;
-				});
-			</script><?
-
 			$pad = floor(log10($num_children)) + 1;
 			if($pad < 2)
 				$pad = 2;

@@ -83,7 +83,7 @@ function update_object(&$old, &$new, $siblings, $vars)
 		$ancestor = $oo->get($a);
 		$a_url.= "/".$ancestor["url"];
 		?><div class="ancestor">
-			<a href="<? echo $a_url; ?>"><? echo $ancestor["name1"]; ?></a>
+			<a href="<?php echo $a_url; ?>"><?php echo $ancestor["name1"]; ?></a>
 		</div><?
 	}
 if ($rr->action != "update" && $uu->id)
@@ -114,16 +114,16 @@ if ($rr->action != "update" && $uu->id)
 // object contents
 ?><div id="form-container">
 		<div class="self">
-			<a href="<? echo $browse_url; ?>"><? echo $name; ?></a>
+			<a href="<?php echo $browse_url; ?>"><?php echo $name; ?></a>
 		</div>
 		<!-- <form
 			method="post"
 			enctype="multipart/form-data"
-			action="<? echo $form_url; ?>"
+			action="<?php echo $form_url; ?>"
 		> -->
 			<div class="form">
 				<script>
-				var default_editor_mode = '<?= $default_editor_mode; ?>';
+				var default_editor_mode = '<?php echo $settings['default_editor_mode']; ?>';
 				function link(name) {
 						var linkURL = prompt('Enter a URL:', 'http://');
 						if (linkURL === null || linkURL === "") {
@@ -387,7 +387,7 @@ if ($rr->action != "update" && $uu->id)
 				foreach($vars as $var)
 				{
 				?><div class="field">
-					<div class="field-name"><? echo $var_info["label"][$var]; ?></div>
+					<div class="field-name"><?php echo $var_info["label"][$var]; ?></div>
 					<div><?
 						if($var_info["input-type"][$var] == "textarea")
 						{
@@ -398,19 +398,19 @@ if ($rr->action != "update" && $uu->id)
 
 						<div id="<?echo $var;?>-toolbar" class="toolbar dontdisplay">
 							<?php if ($user == 'admin'): ?>
-								<a id="<? echo $var; ?>-html" class='right' href="#null" onclick="sethtml('<? echo $var; ?>', default_editor_mode);">html</a>
-								<a id="<? echo $var; ?>-txt" class='right dontdisplay' href="#null" onclick="showrich('<? echo $var; ?>');">rtf</a>
+								<a id="<?php echo $var; ?>-html" class='right' href="#null" onclick="sethtml('<?php echo $var; ?>', default_editor_mode);">html</a>
+								<a id="<?php echo $var; ?>-txt" class='right dontdisplay' href="#null" onclick="showrich('<?php echo $var; ?>');">rtf</a>
 							<?php endif; ?>
-							<a id="<? echo $var; ?>-bold" class='' href="#null" onclick="document.execCommand('bold',false,null);">bold</a>
-                            <a id="<? echo $var; ?>-italic" class='' href="#null" onclick="document.execCommand('italic',false,null);">italic</a> 
-                            <a id="<? echo $var; ?>-indent" class='' href="#null" onclick="indent('<? echo $var; ?>');">indent</a>
-                            <a id="<? echo $var; ?>-reset" class='' href="#null" onclick="reset('<? echo $var; ?>');">&nbsp;&times;&nbsp;</a>
+							<a id="<?php echo $var; ?>-bold" class='' href="#null" onclick="document.execCommand('bold',false,null);">bold</a>
+                            <a id="<?php echo $var; ?>-italic" class='' href="#null" onclick="document.execCommand('italic',false,null);">italic</a> 
+                            <a id="<?php echo $var; ?>-indent" class='' href="#null" onclick="indent('<?php echo $var; ?>');">indent</a>
+                            <a id="<?php echo $var; ?>-reset" class='' href="#null" onclick="reset('<?php echo $var; ?>');">&nbsp;&times;&nbsp;</a>
                             &nbsp;
-                            <a id="<? echo $var; ?>-link" class='' href="#null" onclick="link('<? echo $var; ?>');">link</a>
-							<a id="<? echo $var; ?>-image" class='' href="#null" onclick="image('<? echo $var; ?>');">image</a>
+                            <a id="<?php echo $var; ?>-link" class='' href="#null" onclick="link('<?php echo $var; ?>');">link</a>
+							<a id="<?php echo $var; ?>-image" class='' href="#null" onclick="image('<?php echo $var; ?>');">image</a>
 							<div id="<?echo $var; ?>-imagecontainer" class='imagecontainer dontdisplay' style="background-color: #999;">
 								<span style="color: white;">insert an image...</span>
-								<div id="<? echo $var; ?>-imagebox" class='imagebox'>
+								<div id="<?php echo $var; ?>-imagebox" class='imagebox'>
 									<?
 										for($i = 0; $i < $num_medias; $i++) {
 											if ($medias[$i]["type"] != "pdf" && $medias[$i]["type"] != "mp4" && $medias[$i]["type"] != "mp3") {
@@ -433,36 +433,36 @@ if ($rr->action != "update" && $uu->id)
 						</div>
 
 						<?php if ($user == 'guest'): ?>
-							<div name='<? echo $var; ?>' class='large editable' contenteditable='false' id='<? echo $var; ?>-editable' onclick="" style="display: block;">
+							<div name='<?php echo $var; ?>' class='large editable' contenteditable='false' id='<?php echo $var; ?>-editable' onclick="" style="display: block;">
 						<?php else: ?>
-							<div name='<? echo $var; ?>' class='large editable' contenteditable='true' onpaste="handleEditablePaste(event, this);"  id='<? echo $var; ?>-editable' onclick="showToolBar('<? echo $var; ?>'); resetViews('<? echo $var; ?>', default_editor_mode);" style="display: block;">
+							<div name='<?php echo $var; ?>' class='large editable' contenteditable='true' onpaste="handleEditablePaste(event, this);"  id='<?php echo $var; ?>-editable' onclick="showToolBar('<?php echo $var; ?>'); resetViews('<?php echo $var; ?>', default_editor_mode);" style="display: block;">
 						<?php endif; ?>
 						<?
                             if($item[$var] && !empty($item[$var]))
                                 echo trim($item[$var]);
                         ?></div>
 
-                        <textarea name='<? echo $var; ?>' class='large dontdisplay' id='<? echo $var; ?>-textarea' onclick="showToolBar('<? echo $var; ?>'); resetViews('<? echo $var; ?>', default_editor_mode);" onblur="" style="display: none;" form="edit-form"><?
+                        <textarea name='<?php echo $var; ?>' class='large dontdisplay' id='<?php echo $var; ?>-textarea' onclick="showToolBar('<?php echo $var; ?>'); resetViews('<?php echo $var; ?>', default_editor_mode);" onblur="" style="display: none;" form="edit-form"><?
                             if($item[$var] && !empty($item[$var]))
                                 echo htmlentities($item[$var]);
                         ?></textarea>
 
 						<script>
 							addListeners('<?echo $var; ?>');
-							cleanEditableText(document.querySelector('div[name="<?= $var; ?>"]'));
-							<? 
-							if($user == 'admin' && $default_editor_mode == 'html') { ?>
-								sethtml('<? echo $var; ?>', default_editor_mode);
-							<? } ?>
+							cleanEditableText(document.querySelector('div[name="<?php echo $var; ?>"]'));
+							<?php 
+							if($user == 'admin' && $settings['default_editor_mode'] == 'html') { ?>
+								sethtml('<?php echo $var; ?>', default_editor_mode);
+							<?php } ?>
 						</script>
 						<?
 						// ** end minimal wysiwig toolbar **
 						}
 						elseif($var == "url")
 						{
-						?><input name='<? echo $var; ?>'
-								type='<? echo $var_info["input-type"][$var]; ?>'
-								value='<? echo rawurldecode($item[$var]); ?>'
+						?><input name='<?php echo $var; ?>'
+								type='<?php echo $var_info["input-type"][$var]; ?>'
+								value='<?php echo rawurldecode($item[$var]); ?>'
 								onclick="hideToolBars(); resetViews('', default_editor_mode);"
 								<?php if ($user == 'guest'): ?>
 									disabled = "disabled"
@@ -472,9 +472,9 @@ if ($rr->action != "update" && $uu->id)
 						}
 						else
 						{
-						?><input name='<? echo $var; ?>'
-								type='<? echo $var_info["input-type"][$var]; ?>'
-								value='<? echo ($item[$var] && !empty($item[$var])) ? htmlspecialchars($item[$var], ENT_QUOTES) : ""; ?>'
+						?><input name='<?php echo $var; ?>'
+								type='<?php echo $var_info["input-type"][$var]; ?>'
+								value='<?php echo ($item[$var] && !empty($item[$var])) ? htmlspecialchars($item[$var], ENT_QUOTES) : ""; ?>'
 								onclick="hideToolBars(); resetViews('', default_editor_mode);"
 								<?php if ($user == 'guest'): ?>
 									disabled = "disabled"
@@ -490,10 +490,10 @@ if ($rr->action != "update" && $uu->id)
 				{
 					$im = str_pad($i+1, 2, "0", STR_PAD_LEFT);
 				?><div class="existing-image">
-					<div class="field-name">Image <? echo $im; ?></div>
+					<div class="field-name">Image <?php echo $im; ?></div>
 					<div class='preview'>
-						<a href="<? echo $medias[$i]['file']; ?>" target="_blank">
-							<img src="<? echo $medias[$i]['display']; ?>">
+						<a href="<?php echo $medias[$i]['file']; ?>" target="_blank">
+							<img src="<?php echo $medias[$i]['display']; ?>">
 						</a>
 					</div>
 					<textarea name="captions[]" onclick="hideToolBars(); resetViews('', default_editor_mode);" form="edit-form"
@@ -504,7 +504,7 @@ if ($rr->action != "update" && $uu->id)
 						echo $medias[$i]["caption"];
 					?></textarea>
 					<span>rank</span>
-					<select name="ranks[<? echo $i; ?>]" form="edit-form"
+					<select name="ranks[<?php echo $i; ?>]" form="edit-form"
 						<?php if ($user == 'guest'): ?>
 							disabled = "disabled"
 						<?php endif; ?>
@@ -513,13 +513,13 @@ if ($rr->action != "update" && $uu->id)
 						{
 							if($j == $medias[$i]["rank"])
 							{
-							?><option selected value="<? echo $j; ?>"><?
+							?><option selected value="<?php echo $j; ?>"><?
 								echo $j;
 							?></option><?php
 							}
 							else
 							{
-							?><option value="<? echo $j; ?>"><?
+							?><option value="<?php echo $j; ?>"><?
 								echo $j;
 							?></option><?php
 							}
@@ -528,7 +528,7 @@ if ($rr->action != "update" && $uu->id)
 					<label>
 						<input
 							type="checkbox"
-							name="deletes[<? echo $i; ?>]"
+							name="deletes[<?php echo $i; ?>]"
 							form="edit-form"
 							<?php if ($user == 'guest'): ?>
 								disabled = "disabled"
@@ -537,25 +537,25 @@ if ($rr->action != "update" && $uu->id)
 					delete image</label>
 					<input
 						type="hidden"
-						name="medias[<? echo $i; ?>]"
-						value="<? echo $medias[$i]['id']; ?>"
+						name="medias[<?php echo $i; ?>]"
+						value="<?php echo $medias[$i]['id']; ?>"
 						form="edit-form"
 					>
 					<input
 						type="hidden"
-						name="types[<? echo $i; ?>]"
-						value="<? echo $medias[$i]['type']; ?>"
+						name="types[<?php echo $i; ?>]"
+						value="<?php echo $medias[$i]['type']; ?>"
 						form="edit-form"
 					>
 				</div><?php
 				}
 				// upload new images
 				if ($user != 'guest') {
-					for($j = 0; $j < $max_uploads; $j++)
+					for($j = 0; $j < $settings['max_uploads']; $j++)
 					{
 						$im = str_pad(++$i, 2, "0", STR_PAD_LEFT);
 					?><div class="image-upload">
-						<span class="field-name">Image <? echo $im; ?></span>
+						<span class="field-name">Image <?php echo $im; ?></span>
 						<span>
 							<input type="file" name="uploads[]" form="edit-form">
 						</span>
@@ -576,7 +576,7 @@ if ($rr->action != "update" && $uu->id)
 						type='button'
 						name='cancel'
 						value='Cancel'
-						onClick="<? echo $js_back; ?>"
+						onClick="<?php echo $js_back; ?>"
 						form="edit-form"
 					>
 					<input
@@ -595,7 +595,7 @@ if ($rr->action != "update" && $uu->id)
 		<form
 			method="post"
 			enctype="multipart/form-data"
-			action="<? echo $form_url; ?>"
+			action="<?php echo $form_url; ?>"
 			id="edit-form"
 		>
 		</form>
@@ -667,14 +667,14 @@ else
 		if(!empty($u))
 			$url.= $u."/";
 		$url.= $new['url'];
-		?><p><a href="<? echo $url; ?>"><?php echo $new['name1']; ?></a></p><?
+		?><p><a href="<?php echo $url; ?>"><?php echo $new['name1']; ?></a></p><?
 	// Job well done?
 	if($updated)
 	{
 	?><p>Record successfully updated.</p><?
 		if(!$urlIsValid)
 		{
-		?><p>*** The url of this record has been set to '<?= $new['url']; ?>' because of a conflict with another record. ***</p><?
+		?><p>*** The url of this record has been set to '<?php echo $new['url']; ?>' because of a conflict with another record. ***</p><?
 		}
 	}
 	else

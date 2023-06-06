@@ -39,8 +39,9 @@ class Request
 	public $ranks;
 	public $deletes;
 
-	public $uploads;
+	public $max_uploads;
 	public $default_editor_mode;
+	public $order_type;
 
 	function __construct()
 	{
@@ -51,7 +52,7 @@ class Request
 						'medias', 'types', 'captions', 'ranks', 'deletes',
 						'submit', 'action',
 						'wires_toid',
-						'uploads', 'default_editor_mode');
+						'max_uploads', 'default_editor_mode', 'order_type');
 
 		foreach($vars as $v)
 		{

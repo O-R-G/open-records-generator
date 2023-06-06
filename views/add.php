@@ -1,5 +1,6 @@
 <?
 $browse_url = $admin_path.'browse/'.$uu->urls();
+$browse_url .= $order_type !== 'default' ? '?order=' . $order_type : '';
 
 $urlIsValid = true;
 // for use on add.php
@@ -73,6 +74,7 @@ function insert_object(&$new, $siblings)
 	// + link.php
 	// ancestors
 	$a_url = $admin_path."browse";
+	$a_url .= $order_type !== 'default' ? '?order=' . $order_type : '';
 	for($i = 0; $i < count($uu->ids)-1; $i++)
 	{
 		$a = $uu->ids[$i];
@@ -129,7 +131,7 @@ function insert_object(&$new, $siblings)
 					</div><?
 				}
 				//  upload new images
-				for ($j = 0; $j < $max_uploads; $j++)
+				for ($j = 0; $j < $settings->max_uploads; $j++)
 				{
 					?><div class="field">
 						<span class="field-name">Image <? echo $j+1; ?></span>

@@ -350,11 +350,7 @@ class Objects extends Model
 		$pass = true;
 		
 		$top = $this->children_ids_nav($root_id);
-		$root_index = array_search($root_id, $ids);
-		if($root_index === FALSE)
-			$root_index = 0;
-		else
-			$root_index++;
+		$root_index = array_search($root_id, $ids) === FALSE ? 0 : array_search($root_id, $ids) + 1;
 		
 		foreach($top as $t)
 		{
@@ -364,7 +360,7 @@ class Objects extends Model
 			$url = implode("/", $urls);			
 			$nav[] = array('depth'=>$d, 'o'=>$o, 'url'=>$url);
 			
-			if(!empty($ids) && $pass && $t == $ids[$root_index])
+			if(isset($ids[$root_index]) && !empty($ids) && $pass && $t == $ids[$root_index])
 			{
 				$pass = false; // short-circuit if statement
 

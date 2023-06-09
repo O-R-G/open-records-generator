@@ -5,3 +5,5 @@ vendor/
 license.txt
 config.php
 .env
+lib/sync-spektrix.php
+lib/sync-shopify.php

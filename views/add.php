@@ -129,7 +129,7 @@ function insert_object(&$new, $siblings)
 					</div><?
 				}
 				//  upload new images
-				for ($j = 0; $j < $settings->max_uploads; $j++)
+				for ($j = 0; $j < $settings["max_uploads"]; $j++)
 				{
 					?><div class="field">
 						<span class="field-name">Image <? echo $j+1; ?></span>

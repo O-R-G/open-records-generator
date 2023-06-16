@@ -1,6 +1,6 @@
 <?
 $browse_url = $admin_path.'browse/'.$uu->urls();
-$browse_url .= $order_type !== 'default' ? '?order=' . $order_type : '';
+$browse_url .= $settings['order_type'] !== 'default' ? '?order=' . $settings['order_type'] : '';
 
 $urlIsValid = true;
 // for use on add.php

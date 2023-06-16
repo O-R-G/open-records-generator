@@ -1,6 +1,5 @@
 <?
 $browse_url = $admin_path.'browse/'.$uu->urls();
-$browse_url .= $settings['order_type'] !== 'default' ? '?order=' . $settings['order_type'] : '';
 
 $urlIsValid = true;
 // for use on add.php
@@ -74,7 +73,6 @@ function insert_object(&$new, $siblings)
 	// + link.php
 	// ancestors
 	$a_url = $admin_path."browse";
-	$a_url .= $order_type !== 'default' ? '?order=' . $order_type : '';
 	for($i = 0; $i < count($uu->ids)-1; $i++)
 	{
 		$a = $uu->ids[$i];

@@ -1,4 +1,4 @@
-<?
+<?php
 $browse_url = $admin_path."browse/".$uu->urls();
 $l_url = $admin_path."copy";
 if($uu->urls())
@@ -6,7 +6,7 @@ if($uu->urls())
 	$l_url .= "/".$uu->urls();
 }
 ?><div id="body-container">
-	<div id="body"><?
+	<div id="body"><?php
 	// TODO: this code is duplicated in 
 	// + add.php 
 	// + browse.php
@@ -20,8 +20,8 @@ if($uu->urls())
 		$ancestor = $oo->get($a);
 		$a_url.= "/".$ancestor["url"];
 		?><div class="ancestor">
-			<a href="<? echo $a_url; ?>"><? echo $ancestor["name1"]; ?></a>
-		</div><?
+			<a href="<?php echo $a_url; ?>"><?php echo $ancestor["name1"]; ?></a>
+		</div><?php
 	}
 	// END TODO
 	
@@ -91,6 +91,14 @@ if($uu->urls())
 							type='submit' 
 							value="Copy Object"
 						>
+						<input 
+							id="isDeep"
+							name='isDeep' 
+							type='checkbox' 
+							value="true"
+							checked
+						>
+						<label for="isDeep">Copy the children as well</label>
 					</div>
 				</div>
 			</form>
@@ -212,36 +220,43 @@ if($uu->urls())
 		// + look for an inactive wire with the same fromid and toid?
 		//   to avoid re-creating wires that are just inactive?
 		//   is this worth the computation?
-		if($rr->wires_toid)
-		{
-			$wires_toid = addslashes($rr->wires_toid);
+		function copyRecord($toid, $fromid, $isDeep = false, $isUnique = false){
+			global $vars;
+			global $db;
+			global $media_root;
+			global $ww;
+			global $oo;
+
 			$vars_string = implode('`, `', $vars);
 			$vars_string = '`' . $vars_string . '`';
 			$vars_string .= ', `created`, `modified`';
-			
 			// duplicate object record
-			$sql = "INSERT INTO objects (".$vars_string.") SELECT ".$vars_string." FROM objects WHERE id = '".$wires_toid."'";
+			$sql = "INSERT INTO objects (".$vars_string.") SELECT ".$vars_string." FROM objects WHERE id = '".$toid."'";
 			$res = $db->query($sql);
-			
 			$insert_id = $db->insert_id;
 
-            // add '. * (copy)' to name1
-            // add '-copy' to url
-
-            $sql = "SELECT name1, url FROM objects WHERE id = '$wires_toid' AND active = 1";
-            $res = $db->query($sql);
-            $row = $res->fetch_assoc();
-            $name1 = "." . $row['name1'] . " (copy)";
-            $url = $row['url'] . "-(copy)";
-			$sql = "UPDATE objects SET name1 = '" . $name1 . "', url = '" . $url . "' WHERE id = " . $insert_id . "";
-            $res = $db->query($sql);
-
-			// duplicate media
-			// get media file attached to object being copied
-			$sql = "SELECT * from media where object = '$wires_toid' AND active = '1'";
+			/* 
+			   add '. * (copy)' to name1
+               add '-copy' to url
+			*/
+			if(!$isUnique)
+			{
+				$sql = "SELECT name1, url FROM objects WHERE id = '$toid' AND active = 1";
+				$res = $db->query($sql);
+				$row = $res->fetch_assoc();
+				$name1 = "." . $row['name1'] . " (copy)";
+				$url = $row['url'] . "-(copy)";
+				$sql = "UPDATE objects SET name1 = '" . $name1 . "', url = '" . $url . "' WHERE id = " . $insert_id . "";
+				$res = $db->query($sql);
+			}
+            
+			/* 
+			  duplicate media
+			  get media file attached to object being copied
+			*/
+			$sql = "SELECT * from media where object = '$toid' AND active = '1'";
 			$res = $db->query($sql);
 			$m_arr_arr = array();
-			
 			while($row = $res->fetch_assoc())
 			{
 				$m_arr = array();
@@ -260,9 +275,34 @@ if($uu->urls())
 				WHERE id = '".$row['id']."'";
 				$db->query($sql);
 			}
+			$ww->create_wire($fromid, $insert_id);
+			if($isDeep) {
+				$children = $oo->children($toid);
+				foreach($children as $child){
+					$copied_id = copyRecord($child['id'], $insert_id, $isDeep, true);
+					// $descendant = $oo->children($child['id']);
+					// if( count($descendant) ) loopChildren($child['id'], $descendant);
+				}
+				// loopChildren($uu->id, $children);
+			}
+
+			return $insert_id;
+		}
+
+		// function loopChildren($id, $children){
+		// 	global $oo;
+		// 	foreach($children as $child){
+		// 		$copied = copyRecord($child['id'], $id, true);
+		// 		$descendant = $oo->children($child['id']);
+		// 		if( count($descendant) ) loopChildren($child['id'], $descendant);
+		// 	}
+		// }
+
+		if($rr->wires_toid)
+		{
+			$wires_toid = addslashes($rr->wires_toid);
+			$copied_id = copyRecord($wires_toid, $uu->id, $rr->isDeep);
 			
-			// make wires
-			$ww->create_wire($uu->id, $insert_id);
 		?><div>Record copied successfully.</div><?
 		}
 		else

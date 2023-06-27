@@ -43,6 +43,8 @@ class Request
 	public $default_editor_mode;
 	public $order_type;
 
+	public $isDeep;
+
 	function __construct()
 	{
 		$this->page = basename($_SERVER['PHP_SELF'], ".php");
@@ -52,7 +54,9 @@ class Request
 						'medias', 'types', 'captions', 'ranks', 'deletes',
 						'submit', 'action',
 						'wires_toid',
-						'max_uploads', 'default_editor_mode', 'order_type');
+						'max_uploads', 'default_editor_mode', 'order_type',
+						'isDeep'
+					);
 
 		foreach($vars as $v)
 		{

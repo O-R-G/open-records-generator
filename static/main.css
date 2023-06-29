@@ -297,11 +297,11 @@ select {
 .select-container select{
 	width: 100%;
 }
-.filter_ctner{
+.filter-container{
 	margin-top: 3px;
 }
-.filter_ctner > input, 
-.filter_ctner > a
+.filter-container > input, 
+.filter-container > a
 {
 	vertical-align: bottom;
 }

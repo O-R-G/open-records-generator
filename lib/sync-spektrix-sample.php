@@ -26,7 +26,7 @@ function generateSpektrixUserpwd($url, $key, $user){
     $output = "SpektrixAPI3 ".$user.":" . $signature;
     return $output;
 }
-function CallAPI($method, $url, $userpwd, $header = array(), $data = false)
+function CallAPI($method, $url, $userpwd='', $header = array(), $data = false)
 {
     $curl = curl_init();        
     if(!empty($header)) curl_setopt ($curl, CURLOPT_HTTPHEADER, $header);
@@ -47,7 +47,7 @@ function CallAPI($method, $url, $userpwd, $header = array(), $data = false)
 
     // Optional Authentication:
     curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
-    curl_setopt($curl, CURLOPT_USERPWD, $userpwd);
+    if($userpwd) curl_setopt($curl, CURLOPT_USERPWD, $userpwd);
     curl_setopt($curl, CURLOPT_URL, $url);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 

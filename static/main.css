@@ -165,7 +165,13 @@ input[type="datetime-local"] {
 	height: 2em;
 	padding: 0px 5px;
 }
-
+input[type="checkbox"] {
+	vertical-align: middle;
+	margin-right: 0;
+}
+input[type="checkbox"] + label{
+	cursor: pointer;
+}
 textarea {
 	/*resize: vertical;*/
 }
@@ -291,11 +297,11 @@ select {
 .select-container select{
 	width: 100%;
 }
-.filter_ctner{
+.filter-container{
 	margin-top: 3px;
 }
-.filter_ctner > input, 
-.filter_ctner > a
+.filter-container > input, 
+.filter-container > a
 {
 	vertical-align: bottom;
 }

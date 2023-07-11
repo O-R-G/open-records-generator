@@ -49,7 +49,7 @@
 							"wires.active = 1",
 							"wires.toid = objects.id",
 							"objects.active = '1'");
-			$order 	= array("objects.begin DESC", "objects.name1", "objects.end");
+			$order 	= array("objects.begin DESC", "objects.rank", "objects.name1", "objects.end");
 	    	$children = $oo->get_all($fields, $tables, $where, $order);
 
 		}

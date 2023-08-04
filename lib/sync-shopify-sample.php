@@ -41,11 +41,6 @@ else
 		}`
 	);
 
-	
-	// $data = file_get_contents( "php://input" );
-	// $data = json_decode($data, true);
-	// $s_urls = $data['s_urls'];
-
 	function CallAPI($method, $url, $userpwd = '', $header = array(), $data = false)
     {
         $curl = curl_init();        

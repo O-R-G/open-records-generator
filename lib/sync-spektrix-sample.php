@@ -115,7 +115,6 @@ foreach($events as $e)
         );
         $processed = array(
             "begin" => date($oo::MYSQL_DATE_FMT, strtotime( $e['firstInstanceDateTime'] )), // begin date
-            "begin" => date($oo::MYSQL_DATE_FMT, strtotime( $e['firstInstanceDateTime'] )), // begin date
             "end" => date($oo::MYSQL_DATE_FMT, strtotime( $e['lastInstanceDateTime'] )) // end date
         );
         if($res['begin'] !== $processed['begin'] || $res['end'] !== $processed['end'])

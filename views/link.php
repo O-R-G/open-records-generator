@@ -56,12 +56,31 @@ if($uu->urls())
 						<select name='wires_toid[]'><?
                             // unlinked_list() massively optimized using mysql query
                             // in place of multiple array_merge()
-							$items = $oo->unlinked_list($uu->id);
-							foreach($items as $i) {
-                                ?><option value="<? echo $i['id']; ?>"><?
-                                echo $i['name1'];
-                                ?></option><?
-                            }
+							$tab = '>';
+							$all_items = $oo->unlinked_list($uu->id);
+							foreach($all_items as $i)
+							{
+								$m = end($i);
+								/*
+                                if(!in_array($m, $items))
+									$m = 0; 
+                                */
+								$d = count($i); 
+							?><option value="<? echo $m; ?>"><?
+								if($d !== 1) {
+									$tab_html = '<span class="tab">';
+									for($j=1; $j < $d; $j++)
+										$tab_html .= $tab;
+									$tab_html .= ' </span>';
+									echo $tab_html;
+								}
+								
+								if(!$m)
+									echo "(".$oo->name(end($i)).")";
+								else
+									echo $oo->name(end($i));
+							?></option><?
+							}
 						?></select>
 						<div class = 'filter-container'>
 							<input class = 'filter_input' type = '' placeholder = 'Filter by keywords'><a href = '#null' class = 'filter_btn'>FILTER...</a><a href = '#null' class = 'clear_btn'>CLEAR...</a>

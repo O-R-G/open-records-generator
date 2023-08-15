@@ -40,7 +40,7 @@ foreach($all_paths as $p)
 	// END TODO
 	
 	// display form
-	if(strtolower($rr->action) != "delete") 
+	if(isset($rr->action) && strtolower($rr->action) != "delete") 
 	{
 		// if this object does not exist elsewhere in the tree,
 		// check to see if its descendents are linked elsewhere

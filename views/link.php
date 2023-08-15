@@ -56,29 +56,15 @@ if($uu->urls())
 						<select name='wires_toid[]'><?
                             // unlinked_list() massively optimized using mysql query
                             // in place of multiple array_merge()
-							$tab = '>';
+							// $tab = '>';
 							$all_items = $oo->unlinked_list($uu->id);
 							foreach($all_items as $i)
 							{
-								$m = end($i);
-								/*
-                                if(!in_array($m, $items))
-									$m = 0; 
-                                */
-								$d = count($i); 
+								$m = $i['toid'];
+								$t = $i['indent'];
+								$n = $i['name1'];
 							?><option value="<? echo $m; ?>"><?
-								if($d !== 1) {
-									$tab_html = '<span class="tab">';
-									for($j=1; $j < $d; $j++)
-										$tab_html .= $tab;
-									$tab_html .= ' </span>';
-									echo $tab_html;
-								}
-								
-								if(!$m)
-									echo "(".$oo->name(end($i)).")";
-								else
-									echo $oo->name(end($i));
+								echo empty($t) ? $n : $t . ' ' . $n;
 							?></option><?
 							}
 						?></select>

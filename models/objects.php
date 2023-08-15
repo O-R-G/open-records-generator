@@ -280,6 +280,7 @@ class Objects extends Model
 	{	
         global $db;
         $id = $o;
+		$tab = '>';
 		// ids_to_exclude: ancestors, self, children
 		$ids_to_exclude = array();
 		$sql_getAncestors = "WITH RECURSIVE cte (fromid) AS ( 
@@ -292,25 +293,27 @@ class Objects extends Model
 			$ids_to_exclude[] = $obj['fromid'];
 		$ids_to_exclude[] = $id;
 		$ids_to_exclude = array_merge($ids_to_exclude, $this->children_ids($id));
-		// $ids_to_exclude = implode(',', $ids_to_exclude);
-        // $sql = "WITH RECURSIVE cte ( toid, name1, `path` ) AS ( 
-		// 	SELECT wires.toid, objects.name1, CAST( '' AS CHAR(30) ) FROM objects, wires WHERE wires.active = '1' AND objects.active = '1' AND wires.toid = objects.id AND wires.fromid = '0'
-		// 	UNION ALL
-		// 	SELECT wires.toid, objects.name1, CONCAT( cte.path, '-' ) FROM cte JOIN wires ON cte.toid = wires.fromid JOIN objects ON objects.id = wires.toid WHERE wires.toid NOT IN (".$ids_to_exclude.")
-		// 	)
-		// SELECT * FROM cte ORDER BY toid";
-		// $sql = "WITH RECURSIVE cte ( toid, indent, `path` ) AS ( 
-		// 	SELECT wires.toid, CAST( '' AS CHAR(30) ), CAST( LPAD( wires.toid,5,'0') AS CHAR(30) ) FROM wires WHERE wires.active = '1' AND wires.fromid = '0'
-		// 	UNION ALL
-		// 	SELECT wires.toid, CONCAT( cte.indent, '-' ), CONCAT( cte.path, '-', LPAD( wires.toid,5,'0') ) FROM cte JOIN wires ON cte.toid = wires.fromid WHERE wires.toid NOT IN (".$ids_to_exclude.")
-		// )
-		// SELECT * FROM cte ORDER BY path";
+		$ids_to_exclude = implode(',', $ids_to_exclude);
+        $sql = "WITH RECURSIVE cte ( toid, name1, `path` ) AS ( 
+			SELECT wires.toid, objects.name1, CAST( '' AS CHAR(30) ) FROM objects, wires WHERE wires.active = '1' AND objects.active = '1' AND wires.toid = objects.id AND wires.fromid = '0'
+			UNION ALL
+			SELECT wires.toid, objects.name1, CONCAT( cte.path, '$tab' ) FROM cte JOIN wires ON cte.toid = wires.fromid JOIN objects ON objects.id = wires.toid WHERE wires.toid NOT IN (".$ids_to_exclude.")
+			)
+		SELECT * FROM cte ORDER BY toid";
+		$sql = "WITH RECURSIVE cte ( toid, name1, indent, `path` ) AS ( 
+			SELECT wires.toid, objects.name1, CAST( '' AS CHAR(30) ), CAST( LPAD( wires.toid,5,'0') AS CHAR(120) ) FROM wires, objects WHERE objects.active = '1' AND wires.active = '1' AND objects.id = wires.toid AND wires.fromid = '0'
+			UNION ALL
+			SELECT wires.toid, objects.name1, CONCAT( cte.indent, '$tab' ), CONCAT( cte.path, LPAD( wires.toid,5,'0') ) FROM cte INNER JOIN wires ON cte.toid = wires.fromid INNER JOIN objects ON wires.toid = objects.id WHERE wires.toid NOT IN (".$ids_to_exclude.")
+		)
+		SELECT * FROM cte ORDER BY path, name1";
 		$items = array();
-		$ids_all = $this->traverse(0);
-		foreach($ids_all as $i){
-			if(!in_array(end($i), $ids_to_exclude)) $items[] = $i;
-		}
-
+		// $ids_all = $this->traverse(0);
+		// foreach($ids_all as $i){
+		// 	if(!in_array(end($i), $ids_to_exclude)) $items[] = $i;
+		// }
+		$res = $db->query($sql);
+		while($obj = $res->fetch_assoc())
+			$items[] = $obj;
         return $items;
 	}
 	

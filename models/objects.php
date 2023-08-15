@@ -294,16 +294,16 @@ class Objects extends Model
 		$ids_to_exclude[] = $id;
 		$ids_to_exclude = array_merge($ids_to_exclude, $this->children_ids($id));
 		$ids_to_exclude = implode(',', $ids_to_exclude);
-        $sql = "WITH RECURSIVE cte ( toid, name1, `path` ) AS ( 
-			SELECT wires.toid, objects.name1, CAST( '' AS CHAR(30) ) FROM objects, wires WHERE wires.active = '1' AND objects.active = '1' AND wires.toid = objects.id AND wires.fromid = '0'
-			UNION ALL
-			SELECT wires.toid, objects.name1, CONCAT( cte.path, '$tab' ) FROM cte JOIN wires ON cte.toid = wires.fromid JOIN objects ON objects.id = wires.toid WHERE wires.toid NOT IN (".$ids_to_exclude.")
-			)
-		SELECT * FROM cte ORDER BY toid";
+        // $sql = "WITH RECURSIVE cte ( toid, name1, `path` ) AS ( 
+		// 	SELECT wires.toid, objects.name1, CAST( '' AS CHAR(30) ) FROM objects, wires WHERE wires.active = '1' AND objects.active = '1' AND wires.toid = objects.id AND wires.fromid = '0'
+		// 	UNION ALL
+		// 	SELECT wires.toid, objects.name1, CONCAT( cte.path, '$tab' ) FROM cte JOIN wires ON cte.toid = wires.fromid JOIN objects ON objects.id = wires.toid WHERE wires.toid NOT IN (".$ids_to_exclude.")
+		// 	)
+		// SELECT * FROM cte ORDER BY toid";
 		$sql = "WITH RECURSIVE cte ( toid, name1, indent, `path` ) AS ( 
 			SELECT wires.toid, objects.name1, CAST( '' AS CHAR(30) ), CAST( LPAD( wires.toid,5,'0') AS CHAR(120) ) FROM wires, objects WHERE objects.active = '1' AND wires.active = '1' AND objects.id = wires.toid AND wires.fromid = '0'
 			UNION ALL
-			SELECT wires.toid, objects.name1, CONCAT( cte.indent, '$tab' ), CONCAT( cte.path, LPAD( wires.toid,5,'0') ) FROM cte INNER JOIN wires ON cte.toid = wires.fromid INNER JOIN objects ON wires.toid = objects.id WHERE wires.toid NOT IN (".$ids_to_exclude.")
+			SELECT wires.toid, objects.name1, CONCAT( cte.indent, '$tab' ), CONCAT( cte.path, LPAD( wires.toid,5,'0') ) FROM cte INNER JOIN wires ON cte.toid = wires.fromid INNER JOIN objects ON wires.toid = objects.id WHERE wires.toid NOT IN (".$ids_to_exclude.") AND wires.active = '1' AND objects.active = '1'
 		)
 		SELECT * FROM cte ORDER BY path, name1";
 		$items = array();

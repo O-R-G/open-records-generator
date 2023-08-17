@@ -65,22 +65,12 @@ if($uu->urls())
 						<select name='wires_toid'><?
 							// $all_items = $oo->traverse(0);
 							$all_items = $oo->traverse_recursive(0);
-							foreach($all_items as $i)
+							foreach($all_items as $itm)
 							{
+								$i = $itm['path'];
 								$m = end($i);
-								/*
-                                if(!in_array($m, $items))
-									$m = 0; 
-                                */
-								$d = count($i); 
-								$t = "&nbsp;&nbsp;&nbsp;";
 							?><option value="<? echo $m; ?>"><?
-								for($j=1; $j < $d; $j++)
-									echo $t;
-								if(!$m)
-									echo "(".$oo->name(end($i)).")";
-								else
-									echo $oo->name(end($i));
+								echo $itm['indent'] . $itm['name1'];
 							?></option><?
 							}
 						?></select>

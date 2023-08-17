@@ -276,11 +276,11 @@ class Objects extends Model
     // get every record that is neither parent nor child nor itself
     // return only one record per object even if linked multiple times 
     // ie, multiple wires in database
-	public function unlinked_list($o)
+	public function link_list($o)
 	{	
         global $db;
         $id = $o;
-		$tab = '>';
+		$tab = '&nbsp;';
 		// ids_to_exclude: ancestors, self, children
 		$ids_to_exclude = array();
 		$sql_getAncestors = "WITH RECURSIVE cte (fromid) AS ( 
@@ -294,29 +294,19 @@ class Objects extends Model
 		$ids_to_exclude[] = $id;
 		$ids_to_exclude = array_merge($ids_to_exclude, $this->children_ids($id));
 		$ids_to_exclude = implode(',', $ids_to_exclude);
-        // $sql = "WITH RECURSIVE cte ( toid, name1, `path` ) AS ( 
-		// 	SELECT wires.toid, objects.name1, CAST( '' AS CHAR(30) ) FROM objects, wires WHERE wires.active = '1' AND objects.active = '1' AND wires.toid = objects.id AND wires.fromid = '0'
-		// 	UNION ALL
-		// 	SELECT wires.toid, objects.name1, CONCAT( cte.path, '$tab' ) FROM cte JOIN wires ON cte.toid = wires.fromid JOIN objects ON objects.id = wires.toid WHERE wires.toid NOT IN (".$ids_to_exclude.")
-		// 	)
-		// SELECT * FROM cte ORDER BY toid";
-		$sql = "WITH RECURSIVE cte ( toid, name1, indent, `path` ) AS ( 
-			SELECT wires.toid, objects.name1, CAST( '' AS CHAR(30) ), CAST( LPAD( wires.toid,5,'0') AS CHAR(120) ) FROM wires, objects WHERE objects.active = '1' AND wires.active = '1' AND objects.id = wires.toid AND wires.fromid = '0'
+		$sql = "WITH RECURSIVE cte ( `toid`, `name1`, `indent`, `path`, `rank`, `begin`, `end`, `exclude` ) AS ( 
+			SELECT wires.toid, objects.name1, CAST( '' AS CHAR(120) ), objects.name1, objects.rank, objects.begin, objects.end, IF(wires.toid IN ($ids_to_exclude), true,false) FROM wires, objects WHERE objects.active = '1' AND wires.active = '1' AND objects.id = wires.toid AND wires.fromid = '0'
 			UNION ALL
-			SELECT wires.toid, objects.name1, CONCAT( cte.indent, '$tab' ), CONCAT( cte.path, LPAD( wires.toid,5,'0') ) FROM cte INNER JOIN wires ON cte.toid = wires.fromid INNER JOIN objects ON wires.toid = objects.id WHERE wires.toid NOT IN (".$ids_to_exclude.") AND wires.active = '1' AND objects.active = '1'
+			SELECT wires.toid, objects.name1, CONCAT( cte.indent, '$tab' ), CONCAT( cte.path, ' > ', objects.name1 ), objects.rank, objects.begin, objects.end, IF(wires.toid IN ($ids_to_exclude), true,false) FROM cte INNER JOIN wires ON cte.toid = wires.fromid INNER JOIN objects ON wires.toid = objects.id AND wires.active = '1' AND objects.active = '1'
 		)
-		SELECT * FROM cte ORDER BY path, name1";
+		SELECT * FROM cte ORDER BY `path`, `rank`, `name1`, `begin`, `end`";
 		$items = array();
-		// $ids_all = $this->traverse(0);
-		// foreach($ids_all as $i){
-		// 	if(!in_array(end($i), $ids_to_exclude)) $items[] = $i;
-		// }
 		$res = $db->query($sql);
-		while($obj = $res->fetch_assoc())
+		while($obj = $res->fetch_assoc()){
 			$items[] = $obj;
+		}
         return $items;
 	}
-	
 	// returns an array of [path] of objects rooted at $o
 	// depth is equal to the length of each path array
 	public function traverse($o)

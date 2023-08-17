@@ -7,6 +7,7 @@ if($uu->urls())
 }
 ?><div id="body-container">
 	<div id="body"><?
+	$all_items = $oo->link_list($uu->id);
 	// TODO: this code is duplicated in 
 	// + add.php 
 	// + browse.php
@@ -56,15 +57,15 @@ if($uu->urls())
 						<select name='wires_toid[]'><?
                             // unlinked_list() massively optimized using mysql query
                             // in place of multiple array_merge()
-							// $tab = '>';
-							$all_items = $oo->unlinked_list($uu->id);
+							$all_items = $oo->link_list($uu->id);
 							foreach($all_items as $i)
 							{
 								$m = $i['toid'];
 								$t = $i['indent'];
 								$n = $i['name1'];
-							?><option value="<? echo $m; ?>"><?
-								echo empty($t) ? $n : $t . ' ' . $n;
+								$disabled = $i['exclude'] ? 'disabled' : '';
+							?><option value="<?php echo $m; ?>" <?php echo $disabled; ?>><?
+								echo $t . $n;
 							?></option><?
 							}
 						?></select>

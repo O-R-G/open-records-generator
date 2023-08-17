@@ -1,24 +1,4 @@
 <?php
-$items_traverse = $oo->traverse(0);
-$items_traverse_recursive = $oo->traverse_recursive(0);
-$areEqual = true;
-foreach($items_traverse as $it) {
-	if(!in_array($it, $items_traverse_recursive)) {
-		$areEqual = false;
-		break;
-	}
-}
-if($areEqual) {
-foreach($items_traverse_recursive as $it) {
-	if(!in_array($it, $items_traverse)) {
-		$areEqual = false;
-		break;
-	}
-}
-}
-var_dump($areEqual);
-echo count($items_traverse) . ' / ' . count($items_traverse_recursive);
-die();
 $browse_url = $admin_path."browse/".$uu->urls();
 $l_url = $admin_path."copy";
 if($uu->urls())

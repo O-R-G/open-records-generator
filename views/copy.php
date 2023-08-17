@@ -7,6 +7,17 @@ if($uu->urls())
 }
 ?><div id="body-container">
 	<div id="body"><?php
+	$all_items = $oo->traverse(0);
+	for($i = 0; $i < 10; $i++)
+	{
+		echo implode(' > ', $all_items[$i]) . '<br>';
+	}
+	$all_items_recursive = $oo->traverse_recursive(0);
+	for($i = 0; $i < 10; $i++)
+	{
+		echo implode(' > ', $all_items_recursive[$i]) . '<br>';
+	}
+	die();
 	// TODO: this code is duplicated in 
 	// + add.php 
 	// + browse.php
@@ -52,7 +63,6 @@ if($uu->urls())
 				<div class="form">
 					<div class="select-container">
 						<select name='wires_toid'><?
-							$items = $oo->unlinked_list($uu->id);
 							$all_items = $oo->traverse(0);
 							foreach($all_items as $i)
 							{

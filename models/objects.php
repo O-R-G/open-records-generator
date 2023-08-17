@@ -309,7 +309,7 @@ class Objects extends Model
 	}
 	// returns an array of [path] of objects rooted at $o
 	// depth is equal to the length of each path array
-	public function traverse($o)
+	public function traverse($o, $excludes = array())
 	{
 		static $path = array();
 		$children_ids = $this->children_ids($o);
@@ -328,7 +328,23 @@ class Objects extends Model
 		}
 		return $paths;
 	}
-	
+	public function traverse_recursive($o){
+		global $db;
+		$id = $o;
+		$tab = '&nbsp;';
+		$sql = "WITH RECURSIVE cte ( `toid`, `name1`, `indent`, `path_by_name`, `path`, `rank`, `begin`, `end` ) AS ( 
+			SELECT wires.toid, objects.name1, CAST( '' AS CHAR(120) ), objects.name1, wires.toid,  objects.rank, objects.begin, objects.end FROM wires, objects WHERE objects.active = '1' AND wires.active = '1' AND objects.id = wires.toid AND wires.fromid = '0'
+			UNION ALL
+			SELECT wires.toid, objects.name1, CONCAT( cte.indent, '$tab' ), CONCAT( cte.path_by_name, ' > ', objects.name1 ), CONCAT( cte.path, ',', objects.id ), objects.rank, objects.begin, objects.end FROM cte INNER JOIN wires ON cte.toid = wires.fromid INNER JOIN objects ON wires.toid = objects.id AND wires.active = '1' AND objects.active = '1'
+		)
+		SELECT * FROM cte ORDER BY `path_by_name`, `rank`, `name1`, `begin`, `end`";
+		$items = array();
+		$res = $db->query($sql);
+		while($obj = $res->fetch_assoc()){
+			$items[] = explode(',', $obj['path']);
+		}
+        return $items;
+	}
 	// takes: a tree constructed by $oo->traverse()
 	// returns; an associative array of depth, name, url
 	public function nav_full($paths)

@@ -7,7 +7,6 @@ if($uu->urls())
 }
 ?><div id="body-container">
 	<div id="body"><?
-	$all_items = $oo->link_list($uu->id);
 	// TODO: this code is duplicated in 
 	// + add.php 
 	// + browse.php

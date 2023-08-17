@@ -1,7 +1,8 @@
 <?
 // the current object is linked elsewhere if (and only if?) it 
 // exists in the tree (returned by $oo->traverse(0)) multiple times
-$all_paths = $oo->traverse(0);
+// $all_paths = $oo->traverse(0);
+$all_paths = $oo->traverse_recursive(0);
 $l = 0; // is this declaration necessary?
 $is_linked = false;
 foreach($all_paths as $p) 
@@ -47,8 +48,10 @@ foreach($all_paths as $p)
 		// (or will be deleted with the deletion of this object)
 		if(!$is_linked || !empty($dep_paths))
 		{
-			$all_paths = $oo->traverse(0);
-			$dep_paths = $oo->traverse($uu->id);
+			// $all_paths = $oo->traverse(0);
+			// $dep_paths = $oo->traverse($uu->id);
+			$all_paths = $oo->traverse_recursive(0);
+			$dep_paths = $oo->traverse_recursive($uu->id);
 			$dep_prefix = implode("/", $uu->ids)."/";
 			$dp_len = strlen($dep_prefix);
 			$dep = array(); // ids only

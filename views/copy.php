@@ -1,4 +1,24 @@
 <?php
+$items_traverse = $oo->traverse(0);
+$items_traverse_recursive = $oo->traverse_recursive(0);
+$areEqual = true;
+foreach($items_traverse as $it) {
+	if(!in_array($it, $items_traverse_recursive)) {
+		$areEqual = false;
+		break;
+	}
+}
+if($areEqual) {
+foreach($items_traverse_recursive as $it) {
+	if(!in_array($it, $items_traverse)) {
+		$areEqual = false;
+		break;
+	}
+}
+}
+var_dump($areEqual);
+echo count($items_traverse) . ' / ' . count($items_traverse_recursive);
+die();
 $browse_url = $admin_path."browse/".$uu->urls();
 $l_url = $admin_path."copy";
 if($uu->urls())
@@ -7,17 +27,17 @@ if($uu->urls())
 }
 ?><div id="body-container">
 	<div id="body"><?php
-	$all_items = $oo->traverse(0);
-	for($i = 0; $i < 10; $i++)
-	{
-		echo implode(' > ', $all_items[$i]) . '<br>';
-	}
-	$all_items_recursive = $oo->traverse_recursive(0);
-	for($i = 0; $i < 10; $i++)
-	{
-		echo implode(' > ', $all_items_recursive[$i]) . '<br>';
-	}
-	die();
+	// $all_items = $oo->traverse(0);
+	// for($i = 0; $i < 10; $i++)
+	// {
+	// 	echo implode(' > ', $all_items[$i]) . '<br>';
+	// }
+	// $all_items_recursive = $oo->traverse_recursive(0);
+	// for($i = 0; $i < 10; $i++)
+	// {
+	// 	echo implode(' > ', $all_items_recursive[$i]) . '<br>';
+	// }
+	// die();
 	// TODO: this code is duplicated in 
 	// + add.php 
 	// + browse.php
@@ -63,7 +83,8 @@ if($uu->urls())
 				<div class="form">
 					<div class="select-container">
 						<select name='wires_toid'><?
-							$all_items = $oo->traverse(0);
+							// $all_items = $oo->traverse(0);
+							$all_items = $oo->traverse_recursive(0);
 							foreach($all_items as $i)
 							{
 								$m = end($i);

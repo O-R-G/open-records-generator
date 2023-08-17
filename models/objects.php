@@ -333,7 +333,7 @@ class Objects extends Model
 		$id = $o;
 		$tab = '&nbsp;';
 		$sql = "WITH RECURSIVE cte ( `toid`, `name1`, `indent`, `path_by_name`, `path`, `rank`, `begin`, `end` ) AS ( 
-			SELECT wires.toid, objects.name1, CAST( '' AS CHAR(120) ), objects.name1, wires.toid,  objects.rank, objects.begin, objects.end FROM wires, objects WHERE objects.active = '1' AND wires.active = '1' AND objects.id = wires.toid AND wires.fromid = '0'
+			SELECT wires.toid, objects.name1, CAST( '' AS CHAR(120) ), objects.name1, CAST( objects.id AS CHAR(120) ), objects.rank, objects.begin, objects.end FROM wires, objects WHERE objects.active = '1' AND wires.active = '1' AND objects.id = wires.toid AND wires.fromid = '0'
 			UNION ALL
 			SELECT wires.toid, objects.name1, CONCAT( cte.indent, '$tab' ), CONCAT( cte.path_by_name, ' > ', objects.name1 ), CONCAT( cte.path, ',', objects.id ), objects.rank, objects.begin, objects.end FROM cte INNER JOIN wires ON cte.toid = wires.fromid INNER JOIN objects ON wires.toid = objects.id AND wires.active = '1' AND objects.active = '1'
 		)

@@ -2,7 +2,10 @@
 // the current object is linked elsewhere if (and only if?) it 
 // exists in the tree (returned by $oo->traverse(0)) multiple times
 // $all_paths = $oo->traverse(0);
-$all_paths = $oo->traverse_recursive(0);
+// $all_paths = $oo->traverse_recursive(0);
+$all_paths_raw = $oo->traverse_recursive(0);
+foreach($all_paths_raw as $p)
+    $all_paths[] = $p['path'];
 $l = 0; // is this declaration necessary?
 $is_linked = false;
 foreach($all_paths as $p) 
@@ -39,9 +42,10 @@ foreach($all_paths as $p)
 		</div><?
 	}
 	// END TODO
-	
+
 	// display form
-	if(isset($rr->action) && strtolower($rr->action) != "delete") 
+	// if(isset($rr->action) && strtolower($rr->action) != "delete") 
+	if($rr->action != "delete")
 	{
 		// if this object does not exist elsewhere in the tree,
 		// check to see if its descendents are linked elsewhere
@@ -50,22 +54,28 @@ foreach($all_paths as $p)
 		{
 			// $all_paths = $oo->traverse(0);
 			// $dep_paths = $oo->traverse($uu->id);
-			$all_paths = $oo->traverse_recursive(0);
-			$dep_paths = $oo->traverse_recursive($uu->id);
+			// $all_paths = $oo->traverse_recursive(0);
+			// $dep_paths = $oo->traverse_recursive($uu->id);
+			$all_paths_raw = $oo->traverse_recursive(0);
+			foreach($all_paths_raw as $p)
+			    $all_paths[] = $p['path'];
+			$dep_paths_raw = $oo->traverse_recursive($uu->id);
+			foreach($dep_paths_raw as $p)
+			    $dep_paths[] = $p['path'];
 			$dep_prefix = implode("/", $uu->ids)."/";
 			$dp_len = strlen($dep_prefix);
 			$dep = array(); // ids only
 			$all = array(); // ids only
-		
+
 			foreach($dep_paths as $p)
 				$dep[] = end($p);
-		
+
 			// compare the beginning of $each path $p to $dep_prefix
 			// will that work?
 			foreach($all_paths as $p)
 				if(!(substr(implode("/", $p), 0, $dp_len) == $dep_prefix))
 					$all[] = end($p);
-		
+
 			$dependents = array_diff($dep, $all);
 			$k = count($dependents);
 		}
@@ -78,26 +88,26 @@ foreach($all_paths as $p)
 			</div><?
 			// display warning
 			if($is_linked)
-			{ 
+			{
 			?><p>This Object is linked elsewhere, so the original will not be deleted.</p><?
 			}
 			else
 			{
 			?><p>Warning! You are about to permanently delete this Object.</p><?
-				if($k) 
-				{ 
-			?><p>The following <? 
+				if($k)
+				{
+			?><p>The following <?
 					if($k > 1)
 						echo $k." Objects";
 					else
 						echo "Object"; 
-					?> will also be deleted as a result:</p><?	
+					?> will also be deleted as a result:</p><?
 					$padout = floor(log10($k)) + 1;
-					if ($padout < 2) 
+					if ($padout < 2)
 						$padout = 2;
 					$j = 1;
-			?><div class="children-container"><?		
-					foreach($dependents as $d) 
+			?><div class="children-container"><?
+					foreach($dependents as $d)
 					{
 						$child = $oo->get($d);
 						$url = $admin_path."browse/".$uu->urls()."/".$child["url"];
@@ -108,10 +118,9 @@ foreach($all_paths as $p)
 							<a href="<? echo $url; ?>"><? echo $child_name; ?></a>
 						</div><?
 					}
-			
 				}
 			}
-		?><form 
+		?><form
 				action="<? echo $admin_path.'delete/'.$uu->urls(); ?>" 
 				method="post"
 			>

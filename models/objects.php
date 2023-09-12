@@ -322,7 +322,7 @@ class Objects extends Model
 		$tab = '&nbsp;&nbsp;&nbsp;';
 		$excludes_command = empty($excludes) ? 'false' : 'IF(wires.toid IN (' . implode(',', $excludes) . '), true,false)';
 		$sql = "WITH RECURSIVE cte ( `toid`, `name1`, `indent`, `path_string`, `path`, `exclude`) AS ( 
-				SELECT wires.toid, objects.name1, CAST( '' AS CHAR(120) ), objects.name1, CAST( objects.id AS CHAR(120) ), $excludes_command FROM wires, objects WHERE objects.active = '1' AND wires.active = '1' AND objects.id = wires.toid AND wires.fromid = '0'
+				SELECT wires.toid, objects.name1, CAST( '' AS CHAR(512) ), objects.name1, CAST( objects.id AS CHAR(512) ), $excludes_command FROM wires, objects WHERE objects.active = '1' AND wires.active = '1' AND objects.id = wires.toid AND wires.fromid = '0'
 				UNION ALL
 				SELECT wires.toid, objects.name1, CONCAT( cte.indent, '$tab' ), CONCAT( cte.path_string, ' > ', objects.name1 ), CONCAT( cte.path, ',', objects.id ), $excludes_command FROM cte INNER JOIN wires ON cte.toid = wires.fromid INNER JOIN objects ON wires.toid = objects.id AND wires.active = '1' AND objects.active = '1'
 			)

@@ -55,9 +55,10 @@ function CallAPI($method, $url, $userpwd='', $header = array(), $data = false)
     curl_close($curl);
     return $result;
 }
-$spektrixTable = getenv("SPEKTRIX_TABLE");
-$spektrixAPIKey = getenv("SPEKTRIX_API_KEY");
+$spektrixTable   = getenv("SPEKTRIX_TABLE");
+$spektrixAPIKey  = getenv("SPEKTRIX_API_KEY");
 $spektrixAPIUser = getenv("SPEKTRIX_API_USER");
+$spektrixMode    = getenv("SPEKTRIX_MODE") ? getenv("SPEKTRIX_MODE") : 'production';
 
 $now = date('Y-m-d', strtotime('now'));
 $api_url = array(
@@ -66,7 +67,7 @@ $api_url = array(
 );
 $api_userpwd = generateSpektrixUserpwd($api_url['events'], $spektrixAPIKey, $spektrixAPIUser);
 $sql = array(
-    'getEvent' => "SELECT objects.id, objects.name1, objects.begin, objects.end FROM objects, wires WHERE objects.name2=? AND wires.toid=objects.id AND objects.active=1 AND wires.active=1",
+    'getEvent' => "SELECT objects.id, objects.name1, objects.begin, objects.end FROM objects, wires WHERE objects.name2=? AND wires.toid=objects.id AND objects.active=1 AND wires.active=1 AND wires.fromid=?",
     'getIns' => "SELECT * FROM `".$spektrixTable."` WHERE event_id=? AND event_instance_id=?",
     'updateIns' => "UPDATE `".$spektrixTable."` SET venue=?,date_time=?,duration=?,date_modified=? WHERE id=?",
     'insertIns' => "INSERT INTO `".$spektrixTable."` (event_id, event_instance_id, venue, date_time, duration, date_modified, date_created) VALUES (?, ?, ?, ?, ?, ?, ?)"
@@ -77,6 +78,7 @@ $eventUpdateCount = 0;
 $insAddCount = 0;
 $insUpdateCount = 0;
 $eventDetails = array();
+$printEventDetailsDetails = false;
 $event_ids = array();
 
 $roots = array(
@@ -101,7 +103,7 @@ foreach($events as $e)
     $booking_url = $e['isOnSale'] ? "/book/$spektrix_id" : '';
 
     $stmt = $db->prepare($sql['getEvent']);
-    $stmt->bind_param("s", $spektrix_id);
+    $stmt->bind_param("ss", $spektrix_id, $root);
     $stmt->execute();
     $stmt->store_result();
     if ($stmt->num_rows)
@@ -134,6 +136,7 @@ foreach($events as $e)
                 'duration' => addslashes($e['duration']),
                 'ins' => array()
             );
+            $printEventDetailsDetails = $printEventDetailsDetails ? $printEventDetailsDetails : true;
         }
         else
         {
@@ -229,7 +232,7 @@ foreach($instances as $ins){
     if($result != null && sizeof($result) > 0)
     {
         $new = array(
-            'venue'         => "'" . $venue . "'",
+            'venue'         => $venue,
             'date_time'     => $time,
             'duration'      => $duration
         );
@@ -252,6 +255,7 @@ foreach($instances as $ins){
             $stmt->execute();
             $insUpdateCount++;
             $eventDetails[$e_id]['ins'][] = '^ ' . $time;
+            $printEventDetailsDetails = $printEventDetailsDetails ? $printEventDetailsDetails : true;
         }
         continue;
     }
@@ -265,6 +269,7 @@ foreach($instances as $ins){
         $stmt->execute();
         $insAddCount++;
         $eventDetails[$e_id]['ins'][] = '+ ' . $time;
+        $printEventDetailsDetails = $printEventDetailsDetails ? $printEventDetailsDetails : true;
         continue;
     }
 }
@@ -272,7 +277,7 @@ $response['status'] = 'success';
 $response['body'] .= "Synced.<br /><br />";
 $response['body'] .= "<br />Events added: $eventAddCount<br />Events updated: $eventUpdateCount<br /><br />";
 $response['body'] .= "<br />Instances added: $insAddCount<br />Instances updated: $insUpdateCount<br /><br />";
-if(count($eventDetails)) {
+if($printEventDetailsDetails) {
     $response['body'] .= 'Detail: <br>';
     $e_counter = 1;
     $e_digits = count($eventDetails) < 100 ? 2 : 3;

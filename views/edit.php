@@ -68,12 +68,9 @@ function update_object(&$old, &$new, $siblings, $vars)
 	return $updated;
 }
 function appendLinebreakToDiv($str){
-	// var_dump(strlen($str));
-	// die();
 	$pattern = array('/<\/div\>(?:\r\n)?/');
 	$replacement = array("</div>\r\n");
 	$output = preg_replace($pattern, $replacement, $str);
-	// var_dump(strlen($output));
 	return $output;
 }
 ?><div id="body-container">
@@ -182,6 +179,7 @@ if ($rr->action != "update" && $uu->id)
 				}
 
 				function commitAll() {
+					console.log('commitAll');
 					var names = <?
 						$textnames = [];
 						foreach($vars as $var) {

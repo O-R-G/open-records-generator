@@ -67,7 +67,15 @@ function update_object(&$old, &$new, $siblings, $vars)
 
 	return $updated;
 }
-
+function appendLinebreakToDiv($str){
+	// var_dump(strlen($str));
+	// die();
+	$pattern = array('/<\/div\>(?:\r\n)?/');
+	$replacement = array("</div>\r\n");
+	$output = preg_replace($pattern, $replacement, $str);
+	// var_dump(strlen($output));
+	return $output;
+}
 ?><div id="body-container">
 	<div id="body"><?
 	// TODO: this code is duplicated in
@@ -348,20 +356,12 @@ if ($rr->action != "update" && $uu->id)
 				    }
 				    return text;
 				}
-				function cleanEditableText(editable){
-					setTimeout(function(){
-						// editable.innerText = editable.innerText.substring(0);
-					}, 0);
-				}
-				function handleEditableMousedown(editable){
-					// console.log('mousedown');
-					// cleanEditableText(editable);
-				}
-				function handleEditableKeydown(e, editable){
-					// console.log('mousedown');
-					// if(e.keyCode != 13)
-					// 	cleanEditableText(editable);
-				}
+				// function cleanEditableText(editable){
+				// 	setTimeout(function(){
+				// 		// editable.innerText = editable.innerText.substring(0);
+				// 	}, 0);
+				// }
+				
                 function handleEditablePaste(e, editable) {
                 	var clipboardData, pastedData;
 
@@ -438,18 +438,16 @@ if ($rr->action != "update" && $uu->id)
 							<div name='<?php echo $var; ?>' class='large editable' contenteditable='true' onpaste="handleEditablePaste(event, this);"  id='<?php echo $var; ?>-editable' onclick="showToolBar('<?php echo $var; ?>'); resetViews('<?php echo $var; ?>', default_editor_mode);" style="display: block;">
 						<?php endif; ?>
 						<?
-                            if($item[$var] && !empty($item[$var]))
-                                echo trim($item[$var]);
+                            if($item[$var]) echo appendLinebreakToDiv(trim($item[$var]));
                         ?></div>
 
                         <textarea name='<?php echo $var; ?>' class='large dontdisplay' id='<?php echo $var; ?>-textarea' onclick="showToolBar('<?php echo $var; ?>'); resetViews('<?php echo $var; ?>', default_editor_mode);" onblur="" style="display: none;" form="edit-form"><?
-                            if($item[$var] && !empty($item[$var]))
-                                echo htmlentities($item[$var]);
+                            if($item[$var]) echo htmlentities(appendLinebreakToDiv(trim($item[$var])));
                         ?></textarea>
 
 						<script>
 							addListeners('<?echo $var; ?>');
-							cleanEditableText(document.querySelector('div[name="<?php echo $var; ?>"]'));
+							// cleanEditableText(document.querySelector('div[name="<?php echo $var; ?>"]'));
 							<?php 
 							if($user == 'admin' && $settings['default_editor_mode'] == 'html') { ?>
 								sethtml('<?php echo $var; ?>', default_editor_mode);

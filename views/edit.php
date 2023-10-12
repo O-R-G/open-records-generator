@@ -179,7 +179,7 @@ if ($rr->action != "update" && $uu->id)
 				}
 
 				function commitAll() {
-					console.log('commitAll');
+					// console.log('commitAll');
 					var names = <?
 						$textnames = [];
 						foreach($vars as $var) {
@@ -197,17 +197,7 @@ if ($rr->action != "update" && $uu->id)
 				function commit(name) {
 					var editable = document.getElementById(name + '-editable');
 					var textarea = document.getElementById(name + '-textarea');
-					if(editable.firstChild.nodeType == 3 && editable.firstChild.textContent.match(/^\s*$/) === null) {
-						let div = document.createElement('DIV');
-						let txt = editable.firstChild;
-						editable.insertBefore(div, txt);
-						div.appendChild(txt);
-						let ns = div.nextSibling;
-						while(ns.nodeType == 3 || (ns.nodeType == 1 && (ns.tagName.toLowerCase() == 'span' || ns.tagName.toLowerCase() == 'a' || ns.tagName.toLowerCase() == 'img'))) {
-							div.appendChild(ns);
-							ns = div.nextSibling;
-						}
-					}
+					wrapFirstChildWithDiv(editable);
 					if (editable.style.display === 'block') {
 						var html = editable.innerHTML;
 						textarea.value = html;    // update textarea for form submit
@@ -248,7 +238,7 @@ if ($rr->action != "update" && $uu->id)
 					editable.innerHTML = html;    // update editable
 				}
 
-				function sethtml(name, editorMode = 'regular') {
+				function sethtml(name, editorMode = 'rich_text') {
 					var bold = document.getElementById(name + '-bold');
 					var italic = document.getElementById(name + '-italic');
 					var link = document.getElementById(name + '-link');
@@ -274,14 +264,15 @@ if ($rr->action != "update" && $uu->id)
 					link.style.visibility = 'hidden';
 					image.style.visibility = 'hidden';
 					imagecontainer.style.display = 'none';
-
+					if(containsOnlySpaces(editable.textContent)) editable.innerHTML = '';
+					wrapFirstChildWithDiv(editable);
 					var html = editable.innerHTML;
 					textarea.value = pretty(html);    // update textarea for form submit
-					if(editorMode == 'regular')
+					if(editorMode == 'rich_text')
 						window.scrollBy(0, textarea.getBoundingClientRect().top); // scroll to the top of the textarea
 				}
 
-				function resetViews(name, editorMode = 'regular') {
+				function resetViews(name, editorMode = 'rich_text') {
 					commitAll();
 					var names = <?
 						$textnames = [];
@@ -293,8 +284,7 @@ if ($rr->action != "update" && $uu->id)
 						echo '["' . implode('", "', $textnames) . '"]'
 						?>;
 
-					
-					if(editorMode == 'regular')
+					if(editorMode == 'rich_text')
 					{
 						for (var i = 0; i < names.length; i++) {
 							if (!(name && name === names[i]))
@@ -308,10 +298,8 @@ if ($rr->action != "update" && $uu->id)
 								sethtml(names[i], default_editor_mode);
 						}
 					}
-						
-					
 				}
-
+				
 				// pretifies html (barely) by adding two new lines after a </div>
 				function pretty(str) {
 					while(str.charCodeAt(0) == '9' || str.charCodeAt(0) == '10'){
@@ -385,7 +373,25 @@ if ($rr->action != "update" && $uu->id)
 					// var pastedData = e.clipboardData.getData('text/plain');
 					document.execCommand('insertText', false, pastedData);
 				}
-
+				function containsOnlySpaces(txt){
+					return txt.match(/^\s*$/) !== null;
+				}
+				function wrapFirstChildWithDiv(editable){
+					if(!editable.firstChild || editable.firstChild.nodeType !== 3 || containsOnlySpaces(editable.firstChild.textContent)) return;
+					let div = document.createElement('DIV');
+					let txt = editable.firstChild;
+					editable.insertBefore(div, txt);
+					div.appendChild(txt);
+					let ns = div.nextSibling;
+					if(!ns) return;
+					while(ns.nodeType == 3 || (ns.nodeType == 1 && (ns.tagName.toLowerCase() == 'span' || ns.tagName.toLowerCase() == 'a' || ns.tagName.toLowerCase() == 'img'))) {
+						if(ns.nodeType == 3 && containsOnlySpaces(ns.textContent)) {
+							ns.textContent = ' ';
+						}
+						div.appendChild(ns);
+						ns = div.nextSibling;
+					}
+				}
 				// add "autosave functionality" every 5 sec
 				// setInterval(function() {
 				// 	commitAll();

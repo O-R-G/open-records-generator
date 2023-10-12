@@ -199,6 +199,17 @@ if ($rr->action != "update" && $uu->id)
 				function commit(name) {
 					var editable = document.getElementById(name + '-editable');
 					var textarea = document.getElementById(name + '-textarea');
+					if(editable.firstChild.nodeType == 3 && editable.firstChild.textContent.match(/^\s*$/) === null) {
+						let div = document.createElement('DIV');
+						let txt = editable.firstChild;
+						editable.insertBefore(div, txt);
+						div.appendChild(txt);
+						let ns = div.nextSibling;
+						while(ns.nodeType == 3 || (ns.nodeType == 1 && (ns.tagName.toLowerCase() == 'span' || ns.tagName.toLowerCase() == 'a' || ns.tagName.toLowerCase() == 'img'))) {
+							div.appendChild(ns);
+							ns = div.nextSibling;
+						}
+					}
 					if (editable.style.display === 'block') {
 						var html = editable.innerHTML;
 						textarea.value = html;    // update textarea for form submit
@@ -438,11 +449,11 @@ if ($rr->action != "update" && $uu->id)
 							<div name='<?php echo $var; ?>' class='large editable' contenteditable='true' onpaste="handleEditablePaste(event, this);"  id='<?php echo $var; ?>-editable' onclick="showToolBar('<?php echo $var; ?>'); resetViews('<?php echo $var; ?>', default_editor_mode);" style="display: block;">
 						<?php endif; ?>
 						<?
-                            if($item[$var]) echo appendLinebreakToDiv(trim($item[$var]));
+                            if($item[$var] && trim($item[$var])) echo appendLinebreakToDiv(trim($item[$var]));
                         ?></div>
 
                         <textarea name='<?php echo $var; ?>' class='large dontdisplay' id='<?php echo $var; ?>-textarea' onclick="showToolBar('<?php echo $var; ?>'); resetViews('<?php echo $var; ?>', default_editor_mode);" onblur="" style="display: none;" form="edit-form"><?
-                            if($item[$var]) echo htmlentities(appendLinebreakToDiv(trim($item[$var])));
+                            if($item[$var] && trim($item[$var])) echo htmlentities(appendLinebreakToDiv(trim($item[$var])));
                         ?></textarea>
 
 						<script>

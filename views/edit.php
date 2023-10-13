@@ -382,6 +382,7 @@ if ($rr->action != "update" && $uu->id)
 					let txt = editable.firstChild;
 					editable.insertBefore(div, txt);
 					div.appendChild(txt);
+					div.innerText = pretty(div.innerText);
 					let ns = div.nextSibling;
 					if(!ns) return;
 					while(ns.nodeType == 3 || (ns.nodeType == 1 && (ns.tagName.toLowerCase() == 'span' || ns.tagName.toLowerCase() == 'a' || ns.tagName.toLowerCase() == 'img'))) {

@@ -190,7 +190,7 @@ if ($rr->action != "update" && $uu->id)
 						echo '["' . implode('", "', $textnames) . '"]'
 						?>;
 
-					for (var i = 0; i < names.length; i++) {
+					for (let i = 0; i < names.length; i++) {
 						commit(names[i]);
 					}
 				}
@@ -378,19 +378,22 @@ if ($rr->action != "update" && $uu->id)
 				}
 				function wrapFirstChildWithDiv(editable){
 					if(!editable.firstChild || editable.firstChild.nodeType !== 3 || containsOnlySpaces(editable.firstChild.textContent)) return;
+					/* if firstChild is a text node, wrap it in a div */
 					let div = document.createElement('DIV');
 					let txt = editable.firstChild;
 					editable.insertBefore(div, txt);
 					div.appendChild(txt);
-					div.innerText = pretty(div.innerText);
+					div.innerText = pretty(div.textContent);
 					let ns = div.nextSibling;
 					if(!ns) return;
+					/* move the text nodes / inline elements right after firstChild into the div  */
 					while(ns.nodeType == 3 || (ns.nodeType == 1 && (ns.tagName.toLowerCase() == 'span' || ns.tagName.toLowerCase() == 'a' || ns.tagName.toLowerCase() == 'img'))) {
 						if(ns.nodeType == 3 && containsOnlySpaces(ns.textContent)) {
 							ns.textContent = ' ';
 						}
 						div.appendChild(ns);
 						ns = div.nextSibling;
+						if(!ns) break;
 					}
 				}
 				// add "autosave functionality" every 5 sec

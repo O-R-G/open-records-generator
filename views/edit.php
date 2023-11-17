@@ -56,7 +56,7 @@ function update_object(&$old, &$new, $siblings, $vars)
 	// check for differences
 	$arr = array();
 	foreach($vars as $v)
-		if($old[$v] != $new[$v])
+		if($old[$v] !== $new[$v])
 			$arr[$v] = $new[$v] ?  "'".$new[$v]."'" : "null";
 
 	$updated = false;
@@ -195,20 +195,31 @@ if ($rr->action != "update" && $uu->id)
 					}
 				}
 				function commit(name) {
+					console.log('commit();');
 					var editable = document.getElementById(name + '-editable');
 					var textarea = document.getElementById(name + '-textarea');
 					wrapFirstChildWithDiv(editable);
 					if (editable.style.display === 'block') {
-						var html = editable.innerHTML;
-						textarea.value = html;    // update textarea for form submit
+						var html = pretty(editable.innerHTML);
+						if(containsOnlySpaces(html)) {
+							html = '';
+						}
+						else console.log(html);
+						textarea.value = pretty(html);    // update textarea for form submit
 					} else {
 						var html = textarea.value;
 						editable.innerHTML = html;    // update editable
-						textarea.value = editable.innerHTML;
+						if(!containsOnlySpaces(editable.innerHTML)){
+							console.log(editable.innerHTML);
+							textarea.value = editable.innerHTML;
+						}
+						else
+							textarea.value = '';
 					}
 				}
 
 				function showrich(name) {
+					// console.log('showrich()');
 					var bold = document.getElementById(name + '-bold');
 					var italic = document.getElementById(name + '-italic');
 					var link = document.getElementById(name + '-link');
@@ -239,6 +250,7 @@ if ($rr->action != "update" && $uu->id)
 				}
 
 				function sethtml(name, editorMode = 'rich_text') {
+					// console.log('sethtml()');
 					var bold = document.getElementById(name + '-bold');
 					var italic = document.getElementById(name + '-italic');
 					var link = document.getElementById(name + '-link');
@@ -264,8 +276,8 @@ if ($rr->action != "update" && $uu->id)
 					link.style.visibility = 'hidden';
 					image.style.visibility = 'hidden';
 					imagecontainer.style.display = 'none';
-					if(containsOnlySpaces(editable.textContent)) editable.innerHTML = '';
-					wrapFirstChildWithDiv(editable);
+					if(containsOnlySpaces(editable.textContent, true)) editable.innerHTML = '';
+					else wrapFirstChildWithDiv(editable);
 					var html = editable.innerHTML;
 					textarea.value = pretty(html);    // update textarea for form submit
 					if(editorMode == 'rich_text')
@@ -286,6 +298,7 @@ if ($rr->action != "update" && $uu->id)
 
 					if(editorMode == 'rich_text')
 					{
+						console.log('resetting views');
 						for (var i = 0; i < names.length; i++) {
 							if (!(name && name === names[i]))
 								showrich(names[i]);
@@ -373,8 +386,15 @@ if ($rr->action != "update" && $uu->id)
 					// var pastedData = e.clipboardData.getData('text/plain');
 					document.execCommand('insertText', false, pastedData);
 				}
-				function containsOnlySpaces(txt){
-					return txt.match(/^\s*$/) !== null;
+				function containsOnlySpaces(txt, report = false){
+					let output = txt.match(/^\s*$/) !== null;
+					if(report) {
+						console.log('containsOnlySpaces() ');
+						console.log('txt: ');
+						console.log(txt);
+						console.log('outcome: ' + output);
+					}
+					return output;
 				}
 				function wrapFirstChildWithDiv(editable){
 					if(!editable.firstChild || editable.firstChild.nodeType !== 3 || containsOnlySpaces(editable.firstChild.textContent)) return;
@@ -387,7 +407,7 @@ if ($rr->action != "update" && $uu->id)
 					let ns = div.nextSibling;
 					if(!ns) return;
 					/* move the text nodes / inline elements right after firstChild into the div  */
-					while(ns.nodeType == 3 || (ns.nodeType == 1 && (ns.tagName.toLowerCase() == 'span' || ns.tagName.toLowerCase() == 'a' || ns.tagName.toLowerCase() == 'img'))) {
+					while(ns.nodeType == 3 || (ns.nodeType == 1 && (ns.tagName.toLowerCase() == 'span' || ns.tagName.toLowerCase() == 'a' || ns.tagName.toLowerCase() == 'img' || ns.tagName.toLowerCase() == 'br'))) {
 						if(ns.nodeType == 3 && containsOnlySpaces(ns.textContent)) {
 							ns.textContent = ' ';
 						}
@@ -630,6 +650,7 @@ else
 		$new[$var] = addslashes($rr->$var);
 		$item[$var] = empty($item[$var]) ? 'NULL' : addslashes($item[$var]);
 	}
+	// die();
 	$siblings = $oo->siblings($uu->id);
 	$updated = update_object($item, $new, $siblings, $vars);
 

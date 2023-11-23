@@ -195,22 +195,17 @@ if ($rr->action != "update" && $uu->id)
 					}
 				}
 				function commit(name) {
-					console.log('commit();');
+					// console.log('commit();');
 					var editable = document.getElementById(name + '-editable');
 					var textarea = document.getElementById(name + '-textarea');
 					wrapFirstChildWithDiv(editable);
 					if (editable.style.display === 'block') {
-						var html = pretty(editable.innerHTML);
-						if(containsOnlySpaces(html)) {
-							html = '';
-						}
-						else console.log(html);
+						var html = editableIsEmpty(editable.innerHTML) ? '' : pretty(editable.innerHTML);
 						textarea.value = pretty(html);    // update textarea for form submit
 					} else {
 						var html = textarea.value;
 						editable.innerHTML = html;    // update editable
-						if(!containsOnlySpaces(editable.innerHTML)){
-							console.log(editable.innerHTML);
+						if(!editableIsEmpty(editable.innerHTML)){
 							textarea.value = editable.innerHTML;
 						}
 						else
@@ -250,7 +245,7 @@ if ($rr->action != "update" && $uu->id)
 				}
 
 				function sethtml(name, editorMode = 'rich_text') {
-					// console.log('sethtml()');
+					console.log('sethtml()');
 					var bold = document.getElementById(name + '-bold');
 					var italic = document.getElementById(name + '-italic');
 					var link = document.getElementById(name + '-link');
@@ -276,9 +271,14 @@ if ($rr->action != "update" && $uu->id)
 					link.style.visibility = 'hidden';
 					image.style.visibility = 'hidden';
 					imagecontainer.style.display = 'none';
-					if(containsOnlySpaces(editable.textContent, true)) editable.innerHTML = '';
+					if(editableIsEmpty(editable.innerHTML, true)) {
+						console.log('only spaces?');
+						console.log(editable.textContent);
+						editable.innerHTML = '';
+					}
 					else wrapFirstChildWithDiv(editable);
 					var html = editable.innerHTML;
+					console.log(html);
 					textarea.value = pretty(html);    // update textarea for form submit
 					if(editorMode == 'rich_text')
 						window.scrollBy(0, textarea.getBoundingClientRect().top); // scroll to the top of the textarea
@@ -298,7 +298,7 @@ if ($rr->action != "update" && $uu->id)
 
 					if(editorMode == 'rich_text')
 					{
-						console.log('resetting views');
+						// console.log('resetting views');
 						for (var i = 0; i < names.length; i++) {
 							if (!(name && name === names[i]))
 								showrich(names[i]);
@@ -339,7 +339,7 @@ if ($rr->action != "update" && $uu->id)
 						if (sel.rangeCount) {
 							range = sel.getRangeAt(0);
 							if (range.commonAncestorContainer.parentNode == editableDiv) {
-								console.log(range);
+								// console.log(range);
 								caretPos = range.endOffset;
 							}
 						}
@@ -354,7 +354,7 @@ if ($rr->action != "update" && $uu->id)
 							caretPos = tempRange.text.length;
 						}
 					}
-					console.log(caretPos);
+					// console.log(caretPos);
 					return caretPos;
 				}
                 function getSelectionText() {
@@ -386,29 +386,33 @@ if ($rr->action != "update" && $uu->id)
 					// var pastedData = e.clipboardData.getData('text/plain');
 					document.execCommand('insertText', false, pastedData);
 				}
-				function containsOnlySpaces(txt, report = false){
-					let output = txt.match(/^\s*$/) !== null;
-					if(report) {
-						console.log('containsOnlySpaces() ');
-						console.log('txt: ');
-						console.log(txt);
-						console.log('outcome: ' + output);
-					}
-					return output;
+				function strIsEmpty(str, report = false){
+					return str.match(/^\s*$/s) !== null;
+				}
+				function editableIsEmpty(html, report = false){
+					/* contains elements other than empty divs? */
+					let output = html.replace(/<div>^\s*$<\/div>/s, '');
+					
+					return strIsEmpty(output);
 				}
 				function wrapFirstChildWithDiv(editable){
-					if(!editable.firstChild || editable.firstChild.nodeType !== 3 || containsOnlySpaces(editable.firstChild.textContent)) return;
-					/* if firstChild is a text node, wrap it in a div */
+					// console.log('tagName: ' + editable.firstChild.tagName);
+					// if(!editable.firstChild.tagName) console.log(editable.firstChild);
+					if(!editable.firstChild || (editable.firstChild.nodeType === 1 && editable.firstChild.tagName.toLowerCase() === 'div')) return;
+					// console.log(editable.firstChild);
+					// console.log(editable.firstChild.tagName);
+					/* if firstChild is not a div, wrap it in a div */
 					let div = document.createElement('DIV');
-					let txt = editable.firstChild;
-					editable.insertBefore(div, txt);
-					div.appendChild(txt);
-					div.innerText = pretty(div.textContent);
+					let chd = editable.firstChild;
+					editable.insertBefore(div, chd);
+					div.appendChild(chd);
+					if(chd.nodeType === 3) div.innerText = pretty(div.textContent);
+					else if(chd.nodeType === 1) div.innerHTML = pretty(div.innerHTML);
 					let ns = div.nextSibling;
 					if(!ns) return;
 					/* move the text nodes / inline elements right after firstChild into the div  */
 					while(ns.nodeType == 3 || (ns.nodeType == 1 && (ns.tagName.toLowerCase() == 'span' || ns.tagName.toLowerCase() == 'a' || ns.tagName.toLowerCase() == 'img' || ns.tagName.toLowerCase() == 'br'))) {
-						if(ns.nodeType == 3 && containsOnlySpaces(ns.textContent)) {
+						if(ns.nodeType == 3 && strIsEmpty(ns.textContent)) {
 							ns.textContent = ' ';
 						}
 						div.appendChild(ns);

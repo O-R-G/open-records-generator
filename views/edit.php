@@ -195,7 +195,7 @@ if ($rr->action != "update" && $uu->id)
 					}
 				}
 				function commit(name) {
-					// console.log('commit();');
+					console.log('commit(): ' + name);
 					var editable = document.getElementById(name + '-editable');
 					var textarea = document.getElementById(name + '-textarea');
 					wrapFirstChildWithDiv(editable);
@@ -245,7 +245,6 @@ if ($rr->action != "update" && $uu->id)
 				}
 
 				function sethtml(name, editorMode = 'rich_text') {
-					console.log('sethtml()');
 					var bold = document.getElementById(name + '-bold');
 					var italic = document.getElementById(name + '-italic');
 					var link = document.getElementById(name + '-link');
@@ -272,20 +271,17 @@ if ($rr->action != "update" && $uu->id)
 					image.style.visibility = 'hidden';
 					imagecontainer.style.display = 'none';
 					if(editableIsEmpty(editable.innerHTML, true)) {
-						console.log('only spaces?');
-						console.log(editable.textContent);
 						editable.innerHTML = '';
 					}
 					else wrapFirstChildWithDiv(editable);
 					var html = editable.innerHTML;
-					console.log(html);
 					textarea.value = pretty(html);    // update textarea for form submit
 					if(editorMode == 'rich_text')
 						window.scrollBy(0, textarea.getBoundingClientRect().top); // scroll to the top of the textarea
 				}
 
 				function resetViews(name, editorMode = 'rich_text') {
-					commitAll();
+					// commitAll();
 					var names = <?
 						$textnames = [];
 						foreach($vars as $var) {
@@ -300,15 +296,21 @@ if ($rr->action != "update" && $uu->id)
 					{
 						// console.log('resetting views');
 						for (var i = 0; i < names.length; i++) {
-							if (!(name && name === names[i]))
+							if (!(name && name === names[i])){
 								showrich(names[i]);
+								commit(names[i]);
+							}
+								
 						}
 					}
 					else if(editorMode == 'html')
 					{
 						for (var i = 0; i < names.length; i++) {
-							if (!(name && name === names[i]))
+							if (!(name && name === names[i])){
 								sethtml(names[i], default_editor_mode);
+								commit(names[i]);
+							}
+								
 						}
 					}
 				}
@@ -386,39 +388,37 @@ if ($rr->action != "update" && $uu->id)
 					// var pastedData = e.clipboardData.getData('text/plain');
 					document.execCommand('insertText', false, pastedData);
 				}
-				function strIsEmpty(str, report = false){
+				function strContainsOnlySpaces(str, report = false){
+					/* check if a string contains only any type of space */
 					return str.match(/^\s*$/s) !== null;
 				}
 				function editableIsEmpty(html, report = false){
 					/* contains elements other than empty divs? */
 					let output = html.replace(/<div>^\s*$<\/div>/s, '');
 					
-					return strIsEmpty(output);
+					return strContainsOnlySpaces(output);
 				}
 				function wrapFirstChildWithDiv(editable){
-					// console.log('tagName: ' + editable.firstChild.tagName);
-					// if(!editable.firstChild.tagName) console.log(editable.firstChild);
+					/* wrap non-div element(s) at the beginning with a div */
 					if(!editable.firstChild || (editable.firstChild.nodeType === 1 && editable.firstChild.tagName.toLowerCase() === 'div')) return;
-					// console.log(editable.firstChild);
-					// console.log(editable.firstChild.tagName);
-					/* if firstChild is not a div, wrap it in a div */
+
 					let div = document.createElement('DIV');
-					let chd = editable.firstChild;
-					editable.insertBefore(div, chd);
-					div.appendChild(chd);
-					if(chd.nodeType === 3) div.innerText = pretty(div.textContent);
-					else if(chd.nodeType === 1) div.innerHTML = pretty(div.innerHTML);
-					let ns = div.nextSibling;
-					if(!ns) return;
-					/* move the text nodes / inline elements right after firstChild into the div  */
-					while(ns.nodeType == 3 || (ns.nodeType == 1 && (ns.tagName.toLowerCase() == 'span' || ns.tagName.toLowerCase() == 'a' || ns.tagName.toLowerCase() == 'img' || ns.tagName.toLowerCase() == 'br'))) {
-						if(ns.nodeType == 3 && strIsEmpty(ns.textContent)) {
-							ns.textContent = ' ';
-						}
-						div.appendChild(ns);
-						ns = div.nextSibling;
-						if(!ns) break;
+					let fc = editable.firstChild;
+					// let tags = ['span', 'img', 'video', 'a', 'br', 'b', 'i', 'em', 'strong', 'button', 'input', 'textarea', 'select', 'blockquote'];
+					// editable.insertBefore(div, chd);
+					// div.appendChild(chd);
+					while(fc.nodeType == 3 || (fc.nodeType == 1 && (fc.tagName.toLowerCase() !== 'div'))) {
+						if(fc.nodeType == 3 && strContainsOnlySpaces(fc.textContent))
+							editable.removeChild(fc);
+						else
+							div.appendChild(fc);
+
+						fc = editable.firstChild;
+						if(!fc) break;
 					}
+					if(strContainsOnlySpaces(div.innerHTML)) return;
+					else if(editable.firstChild) editable.insertBefore(div, editable.firstChild);
+					else editable.appendChild(div);
 				}
 				// add "autosave functionality" every 5 sec
 				// setInterval(function() {

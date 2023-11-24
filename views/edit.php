@@ -199,9 +199,7 @@ if ($rr->action != "update" && $uu->id)
 					var textarea = document.getElementById(name + '-textarea');
 					wrapFirstChildWithDiv(editable);
 					if (editable.style.display === 'block') {
-						// console.log(name + '-editable is block');
 						var html = editableIsEmpty(editable.innerHTML) ? '' : pretty(editable.innerHTML);
-						// console.log(editable);
 						textarea.value = pretty(html);    // update textarea for form submit
 					} else {
 						var html = textarea.value;
@@ -643,9 +641,7 @@ if ($rr->action != "update" && $uu->id)
 				let pass = true;
 				for(let i = 0; i < editables.length; i++) {
 					let n = editables[i].getAttribute('name');
-					console.log(n);
 					let ta = document.getElementById(n + '-textarea');
-					console.log(ta);
 					if(!ta) {
 						alert(name + ' doesnt have textarea');
 						pass = false;

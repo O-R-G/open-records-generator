@@ -195,12 +195,13 @@ if ($rr->action != "update" && $uu->id)
 					}
 				}
 				function commit(name) {
-					console.log('commit(): ' + name);
 					var editable = document.getElementById(name + '-editable');
 					var textarea = document.getElementById(name + '-textarea');
 					wrapFirstChildWithDiv(editable);
 					if (editable.style.display === 'block') {
+						// console.log(name + '-editable is block');
 						var html = editableIsEmpty(editable.innerHTML) ? '' : pretty(editable.innerHTML);
+						// console.log(editable);
 						textarea.value = pretty(html);    // update textarea for form submit
 					} else {
 						var html = textarea.value;
@@ -281,7 +282,7 @@ if ($rr->action != "update" && $uu->id)
 				}
 
 				function resetViews(name, editorMode = 'rich_text') {
-					// commitAll();
+					commitAll();
 					var names = <?
 						$textnames = [];
 						foreach($vars as $var) {
@@ -294,11 +295,9 @@ if ($rr->action != "update" && $uu->id)
 
 					if(editorMode == 'rich_text')
 					{
-						// console.log('resetting views');
 						for (var i = 0; i < names.length; i++) {
 							if (!(name && name === names[i])){
 								showrich(names[i]);
-								commit(names[i]);
 							}
 								
 						}
@@ -308,7 +307,6 @@ if ($rr->action != "update" && $uu->id)
 						for (var i = 0; i < names.length; i++) {
 							if (!(name && name === names[i])){
 								sethtml(names[i], default_editor_mode);
-								commit(names[i]);
 							}
 								
 						}
@@ -404,9 +402,6 @@ if ($rr->action != "update" && $uu->id)
 
 					let div = document.createElement('DIV');
 					let fc = editable.firstChild;
-					// let tags = ['span', 'img', 'video', 'a', 'br', 'b', 'i', 'em', 'strong', 'button', 'input', 'textarea', 'select', 'blockquote'];
-					// editable.insertBefore(div, chd);
-					// div.appendChild(chd);
 					while(fc.nodeType == 3 || (fc.nodeType == 1 && (fc.tagName.toLowerCase() !== 'div'))) {
 						if(fc.nodeType == 3 && strContainsOnlySpaces(fc.textContent))
 							editable.removeChild(fc);
@@ -478,13 +473,13 @@ if ($rr->action != "update" && $uu->id)
 						<?php if ($user == 'guest'): ?>
 							<div name='<?php echo $var; ?>' class='large editable' contenteditable='false' id='<?php echo $var; ?>-editable' onclick="" style="display: block;">
 						<?php else: ?>
-							<div name='<?php echo $var; ?>' class='large editable' contenteditable='true' onpaste="handleEditablePaste(event, this);"  id='<?php echo $var; ?>-editable' onclick="showToolBar('<?php echo $var; ?>'); resetViews('<?php echo $var; ?>', default_editor_mode);" style="display: block;">
+							<div name='<?php echo $var; ?>' class='large editable' contenteditable='true' onpaste="handleEditablePaste(event, this);"  id='<?php echo $var; ?>-editable' onfocus="showToolBar('<?php echo $var; ?>'); resetViews('<?php echo $var; ?>', default_editor_mode);" style="display: block;">
 						<?php endif; ?>
 						<?
                             if($item[$var] && trim($item[$var])) echo appendLinebreakToDiv(trim($item[$var]));
                         ?></div>
 
-                        <textarea name='<?php echo $var; ?>' class='large dontdisplay' id='<?php echo $var; ?>-textarea' onclick="showToolBar('<?php echo $var; ?>'); resetViews('<?php echo $var; ?>', default_editor_mode);" onblur="" style="display: none;" form="edit-form"><?
+                        <textarea name='<?php echo $var; ?>' class='large dontdisplay' id='<?php echo $var; ?>-textarea' onfocus="showToolBar('<?php echo $var; ?>'); resetViews('<?php echo $var; ?>', default_editor_mode);" onblur="" style="display: none;" form="edit-form"><?
                             if($item[$var] && trim($item[$var])) echo htmlentities(appendLinebreakToDiv(trim($item[$var])));
                         ?></textarea>
 
@@ -622,9 +617,7 @@ if ($rr->action != "update" && $uu->id)
 					>
 					<input
 						type='submit'
-						name='submit'
 						value='Update Object'
-						onclick='commitAll();'
 						form="edit-form"
 						<?php if ($user == 'guest'): ?>
 							disabled = "disabled"
@@ -640,6 +633,31 @@ if ($rr->action != "update" && $uu->id)
 			id="edit-form"
 		>
 		</form>
+		<script>
+			let editForm = document.getElementById('edit-form');
+			// let submitBtn = document.querySelector('input[type="submit"]');
+			editForm.addEventListener('submit', function(e){
+				e.preventDefault();
+				commitAll();
+				let editables = document.querySelectorAll('div[contenteditable="true"]');
+				let pass = true;
+				for(let i = 0; i < editables.length; i++) {
+					let n = editables[i].getAttribute('name');
+					console.log(n);
+					let ta = document.getElementById(n + '-textarea');
+					console.log(ta);
+					if(!ta) {
+						alert(name + ' doesnt have textarea');
+						pass = false;
+					}
+					else if(ta.value != editables[i].innerHTML) {
+						alert(name + ': values of editable and textarea mismatch');
+						pass = false;
+					}
+				}
+				if(pass) editForm.submit();
+			});
+		</script>
 	</div>
 <?php
 }

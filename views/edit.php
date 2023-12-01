@@ -364,11 +364,6 @@ if ($rr->action != "update" && $uu->id)
 				    }
 				    return text;
 				}
-				// function cleanEditableText(editable){
-				// 	setTimeout(function(){
-				// 		// editable.innerText = editable.innerText.substring(0);
-				// 	}, 0);
-				// }
 				
                 function handleEditablePaste(e, editable) {
                 	var clipboardData, pastedData;
@@ -379,10 +374,22 @@ if ($rr->action != "update" && $uu->id)
 
 					// Get pasted data via clipboard API
 					clipboardData = e.clipboardData || window.clipboardData;
-					pastedData = clipboardData.getData('Text');
+					pastedData = clipboardData.getData('text/html');
+					console.log('before:');
+					console.log(pastedData);
+					/* fallback? */
+					let temp = document.createElement('DIV');
+					temp.innerHTML = pastedData;
+					let styled = temp.querySelectorAll('[style]');
+					for(let i = 0; i < styled.length; i++) 
+						styled[i].removeAttribute('style');
+					console.log('after:');
+					console.log(temp.innerHTML);
 
 					// var pastedData = e.clipboardData.getData('text/plain');
-					document.execCommand('insertText', false, pastedData);
+					// document.execCommand('insertText', false, pastedData);
+
+					
 				}
 				function strContainsOnlySpaces(str, report = false){
 					/* check if a string contains only any type of space */
@@ -448,19 +455,24 @@ if ($rr->action != "update" && $uu->id)
 								<span style="color: white;">insert an image...</span>
 								<div id="<?php echo $var; ?>-imagebox" class='imagebox'>
 									<?
+									
 										for($i = 0; $i < $num_medias; $i++) {
 											if ($medias[$i]["type"] != "pdf" && $medias[$i]["type"] != "mp4" && $medias[$i]["type"] != "mp3") {
-												echo '<div class="image-container" id="'. m_pad($medias[$i]['id']) .'-'. $var .'"><img src="'. $medias[$i]['display'] .'"></div>';
-												echo '<script>
-												document.getElementById("'. m_pad($medias[$i]['id']) .'-'. $var .'").onclick = (function() {
+												?><div class="image-container" id="<?php echo m_pad($medias[$i]['id']) .'-'. $var; ?>"><img src="<?php echo $medias[$i]['display']; ?>"></div>
+												<script>
+												document.getElementById("<?php echo m_pad($medias[$i]['id']) .'-'. $var; ?>").onclick = (function() {
 													// closure for variable issue
 													return function() {
-														document.getElementById("'. $var .'-imagecontainer").style.display = "none";
-														document.getElementById("'. $var .'-editable").focus();
-														document.execCommand("insertImage", 0, "'. $medias[$i]['fileNoPath'] .'");
+														let v = '<?php echo $var; ?>';
+														document.getElementById(v + "-imagecontainer").style.display = "none";
+														document.getElementById(v + "-editable").focus();
+														let captionWithoutLinebreak = '<?php echo preg_replace(array('/\r\n/', '/\s+/', '/"/', '/\'/'), array('. ', ' ', '&quot;', '&apos;'), trim($medias[$i]['caption'])); ?>';
+														let caption = '<?php echo preg_replace(array('/\r\n/', '/\s+/', '/"/', '/\'/'), array('<br> ', ' ',  '&quot;', '&apos;'), trim($medias[$i]['caption'])); ?>';
+														let html = '<div class="figure"><img src="<?php echo $medias[$i]['fileNoPath']; ?>" caption="' +captionWithoutLinebreak+ '"><br><blockquote>'+caption+'</blockquote></div><br>';
+														document.execCommand("insertHTML", 0, html);
 													}
 												})();
-												</script>';
+												</script><?php
 											}
 										}
 									?>

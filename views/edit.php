@@ -374,20 +374,20 @@ if ($rr->action != "update" && $uu->id)
 
 					// Get pasted data via clipboard API
 					clipboardData = e.clipboardData || window.clipboardData;
-					pastedData = clipboardData.getData('text/html');
-					console.log('before:');
-					console.log(pastedData);
+					pastedData = clipboardData.getData('text/plain');
+					// console.log('before:');
+					// console.log(pastedData);
 					/* fallback? */
-					let temp = document.createElement('DIV');
-					temp.innerHTML = pastedData;
-					let styled = temp.querySelectorAll('[style]');
-					for(let i = 0; i < styled.length; i++) 
-						styled[i].removeAttribute('style');
-					console.log('after:');
-					console.log(temp.innerHTML);
+					// let temp = document.createElement('DIV');
+					// temp.innerHTML = pastedData;
+					// let styled = temp.querySelectorAll('[style]');
+					// for(let i = 0; i < styled.length; i++) 
+					// 	styled[i].removeAttribute('style');
+					// console.log('after:');
+					// console.log(temp.innerHTML);
 
-					// var pastedData = e.clipboardData.getData('text/plain');
-					// document.execCommand('insertText', false, pastedData);
+					var pastedData = e.clipboardData.getData('text/plain');
+					document.execCommand('insertText', false, pastedData);
 
 					
 				}

@@ -386,7 +386,7 @@ if ($rr->action != "update" && $uu->id)
 					// console.log('after:');
 					// console.log(temp.innerHTML);
 
-					var pastedData = e.clipboardData.getData('text/plain');
+					// var pastedData = e.clipboardData.getData('text/plain');
 					document.execCommand('insertText', false, pastedData);
 
 					

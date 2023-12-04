@@ -468,7 +468,7 @@ if ($rr->action != "update" && $uu->id)
 														document.getElementById(v + "-editable").focus();
 														let captionWithoutLinebreak = '<?php echo preg_replace(array('/\r\n/', '/\s+/', '/"/', '/\'/'), array('. ', ' ', '&quot;', '&apos;'), trim($medias[$i]['caption'])); ?>';
 														let caption = '<?php echo preg_replace(array('/\r\n/', '/\s+/', '/"/', '/\'/'), array('<br> ', ' ',  '&quot;', '&apos;'), trim($medias[$i]['caption'])); ?>';
-														let html = '<div class="figure"><img src="<?php echo $medias[$i]['fileNoPath']; ?>" caption="' +captionWithoutLinebreak+ '"><br><blockquote>'+caption+'</blockquote></div><br>';
+														let html = '<img src="<?php echo $medias[$i]['fileNoPath']; ?>" caption="' +captionWithoutLinebreak+ '"><br><blockquote>'+caption+'</blockquote><br>';
 														document.execCommand("insertHTML", 0, html);
 													}
 												})();

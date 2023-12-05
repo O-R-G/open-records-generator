@@ -195,14 +195,15 @@ if ($rr->action != "update" && $uu->id)
 					}
 				}
 				function commit(name) {
-					if(name == 'deck')
-						console.log('commit');
+					// if(name == 'deck')
+					// 	console.log('commit');
 					var editable = document.getElementById(name + '-editable');
 					var textarea = document.getElementById(name + '-textarea');
 					wrapFirstChildWithDiv(editable);
 					if (editable.style.display === 'block') {
+						// editable.innerHTML = pretty(editable.innerHTML);
 						var html = editableIsEmpty(editable.innerHTML) ? '' : pretty(editable.innerHTML);
-						textarea.value = pretty(html);    // update textarea for form submit
+						textarea.value = html;    // update textarea for form submit
 					} else {
 						var html = textarea.value;
 						editable.innerHTML = html;    // update editable
@@ -413,7 +414,7 @@ if ($rr->action != "update" && $uu->id)
 					let div = document.createElement('DIV');
 					let fc = editable.firstChild;
 					while(fc.nodeType == 3 || (fc.nodeType == 1 && (fc.tagName.toLowerCase() !== 'div'))) {
-						if(editable.getAttribute('name') == 'deck') console.log(fc);
+						// if(editable.getAttribute('name') == 'deck') console.log(fc);
 						if(fc.nodeType == 3 && strContainsOnlySpaces(fc.textContent)){
 							editable.removeChild(fc);
 							// if(editable.getAttribute('name') == 'deck')
@@ -478,7 +479,7 @@ if ($rr->action != "update" && $uu->id)
 														let captionWithoutLinebreak = '<?php echo preg_replace(array('/\r\n/', '/\s+/', '/"/', '/\'/'), array('. ', ' ', '&quot;', '&apos;'), trim($medias[$i]['caption'])); ?>';
 														let caption = '<?php echo preg_replace(array('/\r\n/', '/\s+/', '/"/', '/\'/'), array('<br> ', ' ',  '&quot;', '&apos;'), trim($medias[$i]['caption'])); ?>';
 														let html = '<img src="<?php echo $medias[$i]['fileNoPath']; ?>" caption="' +captionWithoutLinebreak+ '"><br><blockquote class="caption">'+caption+'</blockquote><br>';
-														console.log('insertHTML');
+														// console.log('insertHTML');
 														document.execCommand("insertHTML", 0, html);
 													}
 												})();
@@ -493,7 +494,7 @@ if ($rr->action != "update" && $uu->id)
 						<?php if ($user == 'guest'): ?>
 							<div name='<?php echo $var; ?>' class='large editable' contenteditable='false' id='<?php echo $var; ?>-editable' onclick="" style="display: block;">
 						<?php else: ?>
-							<div name='<?php echo $var; ?>' class='large editable' contenteditable='true' onpaste="handleEditablePaste(event, this);"  id='<?php echo $var; ?>-editable' onfocus="console.log('<?php echo $var; ?> focused'); showToolBar('<?php echo $var; ?>'); resetViews('<?php echo $var; ?>', default_editor_mode);" style="display: block;">
+							<div name='<?php echo $var; ?>' class='large editable' contenteditable='true' onpaste="handleEditablePaste(event, this);"  id='<?php echo $var; ?>-editable' onfocus="showToolBar('<?php echo $var; ?>'); resetViews('<?php echo $var; ?>', default_editor_mode);" style="display: block;">
 						<?php endif; 
 							if($item[$var] && trim($item[$var])) echo appendLinebreakToDiv(trim($item[$var]));
 							else echo '<div><br></div>'; ?></div>
@@ -665,8 +666,10 @@ if ($rr->action != "update" && $uu->id)
 						alert(name + ' doesnt have textarea');
 						pass = false;
 					}
-					else if(ta.value != editables[i].innerHTML) {
+					else if(ta.value != pretty(editables[i].innerHTML)) {
 						alert(name + ': values of editable and textarea mismatch');
+						console.log(ta.value);
+						console.log(editables[i].innerHTML);
 						pass = false;
 					}
 				}

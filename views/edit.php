@@ -498,7 +498,7 @@ if ($rr->action != "update" && $uu->id)
 							<div name='<?php echo $var; ?>' class='large editable' contenteditable='true' onpaste="handleEditablePaste(event, this);"  id='<?php echo $var; ?>-editable' onfocus="showToolBar('<?php echo $var; ?>'); resetViews('<?php echo $var; ?>', default_editor_mode);" style="display: block;">
 						<?php endif; 
 							if($item[$var] && trim($item[$var])) echo appendLinebreakToDiv(trim($item[$var]));
-							else echo '<div><br></div>'; ?></div>
+						?></div>
                         <textarea name='<?php echo $var; ?>' class='large dontdisplay' id='<?php echo $var; ?>-textarea' onfocus="showToolBar('<?php echo $var; ?>'); resetViews('<?php echo $var; ?>', default_editor_mode);" onblur="" style="display: none;" form="edit-form"><?
                             if($item[$var] && trim($item[$var])) echo htmlentities(appendLinebreakToDiv(trim($item[$var])));
                         ?></textarea>

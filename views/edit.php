@@ -465,7 +465,6 @@ if ($rr->action != "update" && $uu->id)
 								<span style="color: white;">insert an image...</span>
 								<div id="<?php echo $var; ?>-imagebox" class='imagebox'>
 									<?
-									
 										for($i = 0; $i < $num_medias; $i++) {
 											if ($medias[$i]["type"] != "pdf" && $medias[$i]["type"] != "mp4" && $medias[$i]["type"] != "mp3") {
 												?><div class="image-container" id="<?php echo m_pad($medias[$i]['id']) .'-'. $var; ?>"><img src="<?php echo $medias[$i]['display']; ?>"></div>
@@ -476,11 +475,13 @@ if ($rr->action != "update" && $uu->id)
 														let v = '<?php echo $var; ?>';
 														document.getElementById(v + "-imagecontainer").style.display = "none";
 														document.getElementById(v + "-editable").focus();
-														let captionWithoutLinebreak = '<?php echo preg_replace(array('/\r\n/', '/\s+/', '/"/', '/\'/'), array('. ', ' ', '&quot;', '&apos;'), trim($medias[$i]['caption'])); ?>';
+														let captionAttr = '<?php echo preg_replace(array('/\r\n/', '/\s+/', '/"/', '/\'/'), array('. ', ' ', '&quot;', '&apos;'), trim($medias[$i]['caption'])); ?>';
+														if(captionAttr !== '') captionAttr = 'caption="' + captionAttr + '"';
 														let caption = '<?php echo preg_replace(array('/\r\n/', '/\s+/', '/"/', '/\'/'), array('<br> ', ' ',  '&quot;', '&apos;'), trim($medias[$i]['caption'])); ?>';
-														let html = '<img src="<?php echo $medias[$i]['fileNoPath']; ?>" caption="' +captionWithoutLinebreak+ '"><br><blockquote class="caption">'+caption+'</blockquote><br>';
-														// console.log('insertHTML');
+														if(caption !== '') caption = '<blockquote class="caption">' + caption + '</blockquote><br>';
+														let html = '<div><img src="<?php echo $medias[$i]['fileNoPath']; ?>" ' + captionAttr + '><br>'+caption+'</div>';
 														document.execCommand("insertHTML", 0, html);
+														document.getElementById(v + "-editable").blur();
 													}
 												})();
 												</script><?php

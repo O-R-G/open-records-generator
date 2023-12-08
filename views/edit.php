@@ -67,9 +67,9 @@ function update_object(&$old, &$new, $siblings, $vars)
 
 	return $updated;
 }
-function appendLinebreakToDiv($str){
-	$pattern = array('/<\/div\>(?:\r\n)?/');
-	$replacement = array("</div>\r\n");
+function appendLinebreakToBr($str){
+	$pattern = array('/<br>(?:\r\n)?/');
+	$replacement = array("<br>\r\n");
 	$output = preg_replace($pattern, $replacement, $str);
 	return $output;
 }
@@ -430,10 +430,115 @@ if ($rr->action != "update" && $uu->id)
 					else if(editable.firstChild) editable.insertBefore(div, editable.firstChild);
 					else editable.appendChild(div);
 				}
-				// add "autosave functionality" every 5 sec
-				// setInterval(function() {
-				// 	commitAll();
-				// }, 5000);
+				/* divToBr */
+				function divToBr(str, useP=false){
+					/*
+						1. collapse opening tags at the very beginning 
+						/^(?:<div>)+/g => ''
+
+						2. collapse closing tags at the very end
+						/(?:<\/div>)+$/g => ''
+						
+						3. collapse closing tags that follow br
+						/<br>(?:<\/div>)+/g => '<br>'
+
+						4. replace the tag groups containg one or more tags with br
+						/(?:<div>|<\/div>)+/g => '<br>'                
+					*/
+					str = pretty(str);
+					if(strContainsOnlySpaces(str)) return '';
+					if(str.indexOf('<div>') === -1) return str;
+					console.log('start divToBr . . . ')
+					let output = str;
+					let search = [
+						{
+							'pattern': /(\r\n|\n|\r)/g,
+							'replacement': ''
+						},
+						{
+							'pattern': /<div(\s.*?)>(.*?)<\/div>/g,
+							'replacement': '<section$1>$2</section>'
+						},
+						{
+							'pattern': /^(?:<div>)+/g,
+							'replacement': ''
+						},
+						{
+							'pattern': /(?:<\/div>)+$/g,
+							'replacement': ''
+						},
+						{
+							'pattern': /<br>(?:<\/div>)+(?:<div>)*/g,
+							'replacement': '<br>'
+						},
+						{
+							'pattern': /(?:<div>|<\/div>)+/g,
+							'replacement': '<br>'
+						},
+						{
+							'pattern': /<section(\s.*?)>(.*?)<\/section>/g,
+							'replacement': useP ? '<p$1>$2</p>' : '<div$1>$2</div>'
+						}
+					];
+					for(let i = 0; i <  search.length; i++){
+						output = output.replaceAll(search[i]['pattern'], search[i]['replacement']);
+						// console.log('pattern: ' + search[i]['pattern']);
+						// console.log('output: ');
+						// console.log(output);
+						// console.log('===============')
+					}
+						
+					return output;
+				}
+				function sliceFilename(fn){
+					let dotPos = fn.lastIndexOf('.');
+					return {
+						'ext': fn.substring(dotPos + 1),
+						'name': fn.substring(0, dotPos)
+					};
+				}
+				function renderPreviewItem(file, idx=''){
+					let output = document.createElement('div');
+					output.className = 'to-upload-image';
+					let p = document.createElement('div');
+					p.className = 'preview';
+					let ta = document.createElement('textarea');
+					ta.name = 'captions[]';
+					let rm = document.createElement('div');
+					rm.className = 'remove-upload';
+					rm.innerHTML = '&times;';
+					let fn = document.createElement('div');
+					fn.className = 'fieldName';
+					fn.innerText = 'Upload';
+					if(idx !== '') fn.innerText += idx > 8 ? ' ' + (idx + 1) : ' 0' + (idx + 1); 
+					let img = document.createElement('img');
+					let filename = sliceFilename(file.name);
+					if (filename.ext == "pdf")
+						img.src = "<?php echo $admin_path; ?>media/pdf.png";
+					else if (filename.ext == "mp4")
+						img.src = "<?php echo $admin_path; ?>media/mp4.png";
+					else if (filename.ext == "mp3")
+						img.src = "<?php echo $admin_path; ?>media/mp3.png";
+					else {
+						img.onload = function(){
+							URL.revokeObjectURL(img.src);  // no longer needed, free memory
+						}
+						img.src = URL.createObjectURL(file); // set src to blob url
+
+						let reader = new FileReader();
+						reader.readAsDataURL(file); 
+						reader.onloadend = function() {
+							img.setAttribute('base64', reader.result);
+						}
+						
+					}
+					p.appendChild(img);
+					output.appendChild(fn);
+					output.appendChild(p);
+					// output.appendChild(ta);
+					// output.appendChild(rm);
+					return output;
+				}
 				</script>
 				<?php
 				// show object data
@@ -479,9 +584,12 @@ if ($rr->action != "update" && $uu->id)
 														if(captionAttr !== '') captionAttr = 'caption="' + captionAttr + '"';
 														let caption = '<?php echo preg_replace(array('/\r\n/', '/\s+/', '/"/', '/\'/'), array('<br> ', ' ',  '&quot;', '&apos;'), trim($medias[$i]['caption'])); ?>';
 														if(caption !== '') caption = '<blockquote class="caption">' + caption + '</blockquote><br>';
-														let html = '<div><img src="<?php echo $medias[$i]['fileNoPath']; ?>" ' + captionAttr + '><br>'+caption+'</div>';
+														let html = '<br><img src="<?php echo $medias[$i]['fileNoPath']; ?>" ' + captionAttr + '><br>'+caption;
 														document.execCommand("insertHTML", 0, html);
-														document.getElementById(v + "-editable").blur();
+														setTimeout(function(){
+															document.getElementById(v + "-editable").blur();
+														}, 0);
+														
 													}
 												})();
 												</script><?php
@@ -495,12 +603,12 @@ if ($rr->action != "update" && $uu->id)
 						<?php if ($user == 'guest'): ?>
 							<div name='<?php echo $var; ?>' class='large editable' contenteditable='false' id='<?php echo $var; ?>-editable' onclick="" style="display: block;">
 						<?php else: ?>
-							<div name='<?php echo $var; ?>' class='large editable' contenteditable='true' onpaste="handleEditablePaste(event, this);"  id='<?php echo $var; ?>-editable' onfocus="showToolBar('<?php echo $var; ?>'); resetViews('<?php echo $var; ?>', default_editor_mode);" style="display: block;">
+							<div name='<?php echo $var; ?>' class='large editable' contenteditable='true' onpaste="handleEditablePaste(event, this); divToBr(this.innerHTML); "  id='<?php echo $var; ?>-editable' onfocus="showToolBar('<?php echo $var; ?>'); resetViews('<?php echo $var; ?>', default_editor_mode);" style="display: block;">
 						<?php endif; 
-							if($item[$var] && trim($item[$var])) echo appendLinebreakToDiv(trim($item[$var]));
+							if($item[$var] && trim($item[$var])) echo appendLinebreakToBr(trim($item[$var]));
 						?></div>
                         <textarea name='<?php echo $var; ?>' class='large dontdisplay' id='<?php echo $var; ?>-textarea' onfocus="showToolBar('<?php echo $var; ?>'); resetViews('<?php echo $var; ?>', default_editor_mode);" onblur="" style="display: none;" form="edit-form"><?
-                            if($item[$var] && trim($item[$var])) echo htmlentities(appendLinebreakToDiv(trim($item[$var])));
+                            if($item[$var] && trim($item[$var])) echo htmlentities(appendLinebreakToBr(trim($item[$var])));
                         ?></textarea>
 						<script>
 							addListeners('<?echo $var; ?>');
@@ -614,11 +722,19 @@ if ($rr->action != "update" && $uu->id)
 						<span>
 							<input type="file" name="uploads[]" form="edit-form">
 						</span>
-						<!--textarea name="captions[]"><?php
-								echo $medias[$i]["caption"];
-						?></textarea-->
 					</div><?php
 					}
+					/*
+					?>
+					<div id="tbu-container"></div>
+					<div class="image-upload">
+						<span class="field-name">Images</span>
+						<span>
+							<input type="file" name="uploads[]" form="edit-form" multiple>
+						</span>
+					</div>
+					<?php
+					*/
 				} ?>
 				<div class="button-container">
 					<input
@@ -653,6 +769,39 @@ if ($rr->action != "update" && $uu->id)
 		>
 		</form>
 		<script>
+			let input = document.querySelector('input[name="uploads[]"]');
+			let tbu = document.getElementById('tbu-container');
+			if(input && tbu)
+			{
+				input.addEventListener('change', function(){
+					tbu.innerHTML = '';
+					console.log('change');
+					for(let i = 0; i < this.files.length; i++) {
+						let item = renderPreviewItem(this.files[i], i);
+						console.log(item);
+						// if(item === false){
+						// 	console.log('not webm/webp!');
+						// 	alert('You can only upload webp and webm here.');
+						// 	input.value = null;
+						// 	tbu.innerHTML = '';
+						// 	break;
+						// }
+						tbu.appendChild(item);
+					}
+				});
+
+			}
+			
+
+			let editables = document.querySelectorAll('div[contenteditable="true"]');
+			for(let i = 0; i < editables.length; i++) {
+				editables[i].innerHTML = divToBr(editables[i].innerHTML);
+				editables[i].addEventListener('focusout', function(){
+					console.log('focusout');
+					editables[i].innerHTML = divToBr(editables[i].innerHTML);
+				});
+			}
+
 			let editForm = document.getElementById('edit-form');
 			// let submitBtn = document.querySelector('input[type="submit"]');
 			editForm.addEventListener('submit', function(e){

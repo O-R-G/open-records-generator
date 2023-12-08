@@ -118,8 +118,16 @@ aside {
 }
 
 .license-container,
-.existing-image {
+.existing-image,
+.to-upload-image {
 	padding: 16px 0px;
+}
+
+.remove-upload {
+	display: inline-block;
+	font-size: 1.2em;
+	padding: 2px 8px;
+	cursor: pointer;
 }
 
 /* forms */

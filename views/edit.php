@@ -391,7 +391,7 @@ if ($rr->action != "update" && $uu->id)
 					// var pastedData = e.clipboardData.getData('text/plain');
 					document.execCommand('insertText', false, pastedData);
 
-					
+					editable.innerHTML = divToBr(editable.innerHTML);
 				}
 				function strContainsOnlySpaces(str, report = false){
 					/* check if a string contains only any type of space */
@@ -797,7 +797,7 @@ if ($rr->action != "update" && $uu->id)
 			for(let i = 0; i < editables.length; i++) {
 				editables[i].innerHTML = divToBr(editables[i].innerHTML);
 				editables[i].addEventListener('focusout', function(){
-					console.log('focusout');
+					console.log(editables[i].getAttribute('name') + ' focusout');
 					editables[i].innerHTML = divToBr(editables[i].innerHTML);
 				});
 			}

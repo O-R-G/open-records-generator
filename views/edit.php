@@ -377,21 +377,9 @@ if ($rr->action != "update" && $uu->id)
 					// Get pasted data via clipboard API
 					clipboardData = e.clipboardData || window.clipboardData;
 					pastedData = clipboardData.getData('text/plain');
-					// console.log('before:');
-					// console.log(pastedData);
-					/* fallback? */
-					// let temp = document.createElement('DIV');
-					// temp.innerHTML = pastedData;
-					// let styled = temp.querySelectorAll('[style]');
-					// for(let i = 0; i < styled.length; i++) 
-					// 	styled[i].removeAttribute('style');
-					// console.log('after:');
-					// console.log(temp.innerHTML);
-
-					// var pastedData = e.clipboardData.getData('text/plain');
 					document.execCommand('insertText', false, pastedData);
-
-					editable.innerHTML = divToBr(editable.innerHTML);
+					let h = divToBr(editable.innerHTML);
+					if(h !== false) editable.innerHTML = h;
 				}
 				function strContainsOnlySpaces(str, report = false){
 					/* check if a string contains only any type of space */
@@ -405,9 +393,6 @@ if ($rr->action != "update" && $uu->id)
 				}
 				function wrapFirstChildWithDiv(editable){
 					return;
-					// if(editable.getAttribute('name') == 'deck')
-					// 	console.log('wrapFirstChildWithDiv()');
-					// return;
 					/* wrap non-div element(s) at the beginning with a div */
 					if(!editable.firstChild || (editable.firstChild.nodeType === 1 && editable.firstChild.tagName.toLowerCase() === 'div')) return;
 					// return;
@@ -417,8 +402,6 @@ if ($rr->action != "update" && $uu->id)
 						// if(editable.getAttribute('name') == 'deck') console.log(fc);
 						if(fc.nodeType == 3 && strContainsOnlySpaces(fc.textContent)){
 							editable.removeChild(fc);
-							// if(editable.getAttribute('name') == 'deck')
-							// 	console.log('fc removed');
 						}
 						else
 							div.appendChild(fc);
@@ -447,7 +430,7 @@ if ($rr->action != "update" && $uu->id)
 					*/
 					str = pretty(str);
 					if(strContainsOnlySpaces(str)) return '';
-					if(str.indexOf('<div>') === -1) return str;
+					if(str.indexOf('<div>') === -1) return false;
 					console.log('start divToBr . . . ')
 					let output = str;
 					let search = [
@@ -480,14 +463,9 @@ if ($rr->action != "update" && $uu->id)
 							'replacement': useP ? '<p$1>$2</p>' : '<div$1>$2</div>'
 						}
 					];
-					for(let i = 0; i <  search.length; i++){
+					for(let i = 0; i <  search.length; i++)
 						output = output.replaceAll(search[i]['pattern'], search[i]['replacement']);
-						// console.log('pattern: ' + search[i]['pattern']);
-						// console.log('output: ');
-						// console.log(output);
-						// console.log('===============')
-					}
-						
+
 					return output;
 				}
 				function sliceFilename(fn){
@@ -535,8 +513,7 @@ if ($rr->action != "update" && $uu->id)
 					p.appendChild(img);
 					output.appendChild(fn);
 					output.appendChild(p);
-					// output.appendChild(ta);
-					// output.appendChild(rm);
+
 					return output;
 				}
 				</script>
@@ -603,7 +580,7 @@ if ($rr->action != "update" && $uu->id)
 						<?php if ($user == 'guest'): ?>
 							<div name='<?php echo $var; ?>' class='large editable' contenteditable='false' id='<?php echo $var; ?>-editable' onclick="" style="display: block;">
 						<?php else: ?>
-							<div name='<?php echo $var; ?>' class='large editable' contenteditable='true' onpaste="handleEditablePaste(event, this); divToBr(this.innerHTML); "  id='<?php echo $var; ?>-editable' onfocus="showToolBar('<?php echo $var; ?>'); resetViews('<?php echo $var; ?>', default_editor_mode);" style="display: block;">
+							<div name='<?php echo $var; ?>' class='large editable' contenteditable='true' onpaste="handleEditablePaste(event, this);"  id='<?php echo $var; ?>-editable' onfocus="showToolBar('<?php echo $var; ?>'); resetViews('<?php echo $var; ?>', default_editor_mode);" style="display: block;">
 						<?php endif; 
 							if($item[$var] && trim($item[$var])) echo appendLinebreakToBr(trim($item[$var]));
 						?></div>
@@ -795,10 +772,16 @@ if ($rr->action != "update" && $uu->id)
 
 			let editables = document.querySelectorAll('div[contenteditable="true"]');
 			for(let i = 0; i < editables.length; i++) {
-				editables[i].innerHTML = divToBr(editables[i].innerHTML);
-				editables[i].addEventListener('focusout', function(){
+				let h = divToBr(editables[i].innerHTML);
+				if(h !== false) editables[i].innerHTML = h;
+				editables[i].addEventListener('focusout', function(e){
 					console.log(editables[i].getAttribute('name') + ' focusout');
-					editables[i].innerHTML = divToBr(editables[i].innerHTML);
+					if(!e.relatedTarget || e.relatedTarget.parentNode.parentNode !== editables[i].parentNode)
+					{
+						console.log('calling divToBr()');
+						let h = divToBr(editables[i].innerHTML);
+						if(h !== false) editables[i].innerHTML = h;
+					}
 				});
 			}
 

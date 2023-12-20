@@ -1,7 +1,7 @@
 # OPEN RECORDS GENERATOR
-Version 3.3.1
+Version 3.5.0
 O-R-G inc.  
-Last updated 4 June 2021
+Last updated 20 December 2023
 
 ## INSTRUCTIONS
 
@@ -82,6 +82,8 @@ Logs the user out of the current session. Useful for changing users or terminati
 + 3.1.1 -- July 2019: update readme.md
 + 3.3.0 -- June 2020: add wysiwyg functionality to master and cleanup repository including updated readme.md and repo transferred to O-R-G github team.
 + 3.3.1 -- August 19 2021: fix php 8 warnings, add html wrap and additional validation, update url validation, optimize any get_all() and unlinked_list()
++ 3.5.0 -- December 10 2023: integrate recursive search when processing large directory trees and add divToBr() function to retaiun simple html markup in sql databases
+
 
 ## SITES
 + [o-r-g.com](http://www.o-r-g.com/)
@@ -107,33 +109,33 @@ Logs the user out of the current session. Useful for changing users or terminati
 + [wordswithoutpictures.org](http://www.wordswithoutpictures.org/)
 + [pictureswithoutwords.org](http://www.pictureswithoutwords.org/)
 + [projectprojects.com](http://www.projectprojects.com/)
-+ [whitecolumns.org](http://www.whitecolumns.org/)
-+ [damelioterras.com](http://www.damelioterras.com/)
-+ [clipstampfold.com](http://www.clipstampfold.com/)
-+ [masdesigned.com](http://www.masdesigned.com/)
-+ [nationaldesignawards.org](http://www.nationaldesignawards.org/)
-+ [elkelehmann.com](http://www.elkelehmann.com/)
-+ [patternfoundry.com](http://www.patternfoundry.com/)
-+ [solomonplanning.com](http://www.solomonplanning.com/)
-+ [jonathandsolomon.com](http://www.jonathandsolomon.com/)
-+ [306090.org](http://www.306090.org/)
-+ [solomonworkshop.com](http://www.solomonworkshop.com/)
-+ [cornelljournalofarchitecture.org](http://www.cornelljournalofarchitecture.org/)
-+ [c-o-o-l.org](http://www.c-o-o-l.org/)
-+ [mgmtdesign.com](http://www.mgmtdesign.com/)
-+ [omiami.org](http://www.omiami.org/)
-+ [dsalcoda.org](http://www.dsalcoda.org/)
-+ [t-y-p-o-g-r-a-p-h-y.org](http://www.t-y-p-o-g-r-a-p-h-y.org/)
-+ [servinglibrary.org](http://www.servinglibrary.org/)
-+ [c-i-r-c-u-l-a-t-i-o-n.org](http://www.c-i-r-c-u-l-a-t-i-o-n.org/)
-+ [theartistsinstitute.org](http://www.theartistsinstitute.org/)
-+ [modernart.net](http://www.modernart.net/)
-+ [clusternetwork.eu](http://www.clusternetwork.eu/)
-+ [zenazezza.org](http://www.zenazezza.org/)
-+ [s-i-m-p-l-i-c-i-t-y.org](http://www.s-i-m-p-l-i-c-i-t-y.org/)
-+ [zenazezza.org](http://www.zenazezza.org/)
-+ [templecontemporary.info](http://www.templecontemporary.info/)
-+ [wattis.org](http://www.wattis.org/)
++ [whitecolumns.org](http://www.whitecolumns.org)
++ [damelioterras.com](http://www.damelioterras.com)
++ [clipstampfold.com](http://www.clipstampfold.com)
++ [masdesigned.com](http://www.masdesigned.com)
++ [nationaldesignawards.org](http://www.nationaldesignawards.org)
++ [elkelehmann.com](http://www.elkelehmann.com)
++ [patternfoundry.com](http://www.patternfoundry.com)
++ [solomonplanning.com](http://www.solomonplanning.com)
++ [jonathandsolomon.com](http://www.jonathandsolomon.com)
++ [306090.org](http://www.306090.org)
++ [solomonworkshop.com](http://www.solomonworkshop.com)
++ [cornelljournalofarchitecture.org](http://www.cornelljournalofarchitecture.org)
++ [c-o-o-l.org](http://www.c-o-o-l.org)
++ [mgmtdesign.com](http://www.mgmtdesign.com)
++ [omiami.org](http://www.omiami.org)
++ [dsalcoda.org](http://www.dsalcoda.org)
++ [t-y-p-o-g-r-a-p-h-y.org](http://www.t-y-p-o-g-r-a-p-h-y.org)
++ [servinglibrary.org](http://www.servinglibrary.org)
++ [c-i-r-c-u-l-a-t-i-o-n.org](http://www.c-i-r-c-u-l-a-t-i-o-n.org)
++ [theartistsinstitute.org](http://www.theartistsinstitute.org)
++ [modernart.net](http://www.modernart.net)
++ [clusternetwork.eu](http://www.clusternetwork.eu)
++ [zenazezza.org](http://www.zenazezza.org)
++ [s-i-m-p-l-i-c-i-t-y.org](http://www.s-i-m-p-l-i-c-i-t-y.org)
++ [zenazezza.org](http://www.zenazezza.org)
++ [templecontemporary.info](http://www.templecontemporary.info)
++ [wattis.org](http://www.wattis.org)
 + [g-e-s-t-a-l-t.org](http://www.g-e-s-t-a-l-t.org/)
 + [radioathenes.org](http://www.radioathenes.org/)
 + [kunstverein-muenchen.de](http://www.kunstverein-muenchen.de)
@@ -145,8 +147,13 @@ Logs the user out of the current session. Useful for changing users or terminati
 + [radioathenes.tv](http://staging.radioathenes.tv/)
 + [materiaabierta.com](https://www.materiaabierta.com)
 + [ica.art](https://www.ica.art/)
-+ [n-y-c.org](https://www.n-y-c.org/)
-+ [w-w-w.o-r-g.net](https://w-w-w.o-r-g.net/)
++ [n-y-c.org](https://www.n-y-c.org)
++ [w-w-w.o-r-g.net](https://w-w-w.o-r-g.net)
++ [www.r-e-s-e-a-r-c-h.org](http://www.r-e-s-e-a-r-c-h.org)
++ [www.m-u-l-t-i-p-l-i-c-i-t-y.org](http://www.m-u-l-t-i-p-l-i-c-i-t-y.org)
++ [www.songwork.org](http://www.songwork.org)
++ [www.teigerfoundation.org](https://www.teigerfoundation.org)
++ [www.giornopoetrysystems.org/](https://www.giornopoetrysystems.org)
 
 ## DEV NOTES
 for basic password protection, create the an `.htpasswd` file with the following command:

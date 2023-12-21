@@ -49,7 +49,7 @@ This button generates a live view of the website whose contents you are managing
 
 ### SETTINGS
 
-Controls how many images can be added at a time per object. Once that many images are added, you must update the object and go back to reinsert additional images. This is to prevent losing too much work at any time.
+There are three setting items. "maximum # of uploads" controls how many images can be added at a time per object. Once that many images are added, you must update the object and go back to reinsert additional images. This is to prevent losing too much work at any time. "default editor mode" determines the default mode of fields like Synposis, Detail, and Notes. It can be either Rich text or HTML. You can also toggle the editor's mode when editing a record. "order type" specifies how the records are ordered. By default, the records are ordered by Name, Rank, Begin, and modified date. Chronological order prioritizes the Begin factor; Alphabetical order prioritizes the Name factor. 
 
 ### LOG OUT
 
@@ -63,6 +63,7 @@ Logs the user out of the current session. Useful for changing users or terminati
 2. OPEN-RECORDS-GENERATOR automatically sorts object lists based on each object's fields. Objects are sorted by their Rank (ascending) field. So, to make a RECORD appear first in the Menu, give it a RANK of 1. Alternately, you could rank your RECORDS 100, 200, 300 and they would still appear in ascending order. Doing it this way makes it easier to add new RECORDS in between as needed without re-ranking the list.
 3. OPEN-RECORDS-GENERATOR supports rich text editing within its Synopsis, Detail, and Notes fields. You are easily able to make text bold, add links, and embed images that are uploaded to that record. You can also use toggle the field mode to allow for HTML markup. This will allow you to use the full extent of the HTML markup language, including <embed> tags, such as from youtube.com, vimeo, issuu or other sites. 
 4. RECORDS can be hidden from the website by prepending a "." to the Name field. This will make it still accessible to those with a direct URL and editable, but will not be shown in other parts of the website.
+5. Generally, it is recommended that you limit the file size of images below 1MB to avoid a long loading time. The maximum file size that OPEN-RECORDS-GENERATOR accepts is 5MB. 
 
 ## VERSION HISTORY
 + 2.0 -- July 2005: complete overhaul including interface

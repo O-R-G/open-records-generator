@@ -31,11 +31,11 @@ All objects can be deleted. Before deleting an object the OPEN-RECORDS-GENERATOR
 
 The OPEN-RECORDS-GENERATOR allows you to create and modify RECORDS within your database. A RECORD can contain text and images. Click "ADD OBJECT..." to create a new RECORD. You will see text fields and image upload options. All fields are optional, but if you do not give your object a name it will automatically be named "Untitled." In the date field you can enter a date in nearly any format and it will be converted to standard server time. For example, "02 Jan 06 6pm" and "January 2, 2006 18:00" will both become "2006-01-02 18:00:00." You can also use date commands like "today + 1 week." A typical convention of open-records-generator websites allows a user to choose to hide the object from being displayed while it is in a draft state by prepending a "." to its name. To publish, remove the ".".
 
-### LINK. . .
+### LINK . . .
 
 Similar to ADD OBJECT . . . , however LINK . . . lets you lets you insert an existing record in more than one place in the database. So for example, you might like the same project or text to appear in more than one place in the menu structure. To link an entry, navigate to the location in OPEN-RECORDS-GENERATOR where you would like the entry to appear. When you click on LINK . . . you will be presented with a pull-down menu of all of the available RECORDS in the database. Clicking one RECORD attaches it redundantly to this position in the menu. If there are any other RECORDS attached, these are also mirrored. 
 
-### COPY. . .
+### COPY . . .
 
 Copies an entry to a new location. Only available for admin use. This is different than linking as it creates a duplicate ENTRY rather than just a link to the SAME entry (which is what LINK...) does.
 
@@ -155,7 +155,10 @@ Logs the user out of the current session. Useful for changing users or terminati
 + [www.songwork.org](http://www.songwork.org)
 + [idojisu.world](https://idojisu.world/)
 + [www.publicartsuwon.com/2021](https://www.publicartsuwon.com/2021)
++ [www.dru-plus.org](http://dru-plus.org/)
++ [www.octo.productions](https://octo.productions)
 + [www.justinbeal.com](https://justinbeal.com/)
++ [stray.world](https://stray.world)
 + [www.teigerfoundation.org](https://www.teigerfoundation.org)
 + [www.giornopoetrysystems.org/](https://www.giornopoetrysystems.org)
 

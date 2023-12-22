@@ -153,6 +153,9 @@ Logs the user out of the current session. Useful for changing users or terminati
 + [www.r-e-s-e-a-r-c-h.org](http://www.r-e-s-e-a-r-c-h.org)
 + [www.m-u-l-t-i-p-l-i-c-i-t-y.org](http://www.m-u-l-t-i-p-l-i-c-i-t-y.org)
 + [www.songwork.org](http://www.songwork.org)
++ [idojisu.world](https://idojisu.world/)
++ [www.publicartsuwon.com/2021](https://www.publicartsuwon.com/2021)
++ [www.justinbeal.com](https://justinbeal.com/)
 + [www.teigerfoundation.org](https://www.teigerfoundation.org)
 + [www.giornopoetrysystems.org/](https://www.giornopoetrysystems.org)
 

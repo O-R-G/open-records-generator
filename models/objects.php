@@ -276,13 +276,35 @@ class Objects extends Model
     // get every record that is neither parent nor child nor itself
     // return only one record per object even if linked multiple times 
     // ie, multiple wires in database
-	public function link_list($o)
+	// public function link_list($o)
+	// {	
+    //     global $db;
+    //     $id = $o;
+	// 	$tab = '&nbsp;';
+	// 	// ids_to_exclude: ancestors, self, children
+	// 	$ids_to_exclude = array();
+	// 	$sql_getAncestors = "WITH RECURSIVE cte (fromid) AS ( 
+	// 		SELECT fromid FROM wires WHERE toid = '$id' AND active = '1' 
+	// 		UNION ALL 
+	// 		SELECT w.fromid FROM cte c JOIN wires w ON c.fromid = w.toid WHERE c.fromid != '0') 
+	// 	SELECT * FROM cte";
+	// 	$res = $db->query($sql_getAncestors);
+	// 	while ($obj = $res->fetch_assoc())
+	// 		$ids_to_exclude[] = $obj['fromid'];
+	// 	$ids_to_exclude[] = $id;
+	// 	$ids_to_exclude = array_merge($ids_to_exclude, $this->children_ids($id));
+    //     return $this->traverse_recursive($id, $ids_to_exclude);
+	// }
+	public function get_ancestors_and_children($o)
 	{	
         global $db;
         $id = $o;
 		$tab = '&nbsp;';
-		// ids_to_exclude: ancestors, self, children
-		$ids_to_exclude = array();
+		$output = array(
+			'ancestors' => array(),
+			'self' => $id,
+			'children' => array()
+		);
 		$sql_getAncestors = "WITH RECURSIVE cte (fromid) AS ( 
 			SELECT fromid FROM wires WHERE toid = '$id' AND active = '1' 
 			UNION ALL 
@@ -290,10 +312,10 @@ class Objects extends Model
 		SELECT * FROM cte";
 		$res = $db->query($sql_getAncestors);
 		while ($obj = $res->fetch_assoc())
-			$ids_to_exclude[] = $obj['fromid'];
-		$ids_to_exclude[] = $id;
-		$ids_to_exclude = array_merge($ids_to_exclude, $this->children_ids($id));
-        return $this->traverse_recursive($id, $ids_to_exclude);
+			$output['ancestors'][] = $obj['fromid'];
+		$output['children'] = $this->children_ids($id);
+		
+        return $output;
 	}
 	// returns an array of [path] of objects rooted at $o
 	// depth is equal to the length of each path array
@@ -316,17 +338,49 @@ class Objects extends Model
 		}
 		return $paths;
 	}
-	public function traverse_recursive($o, $excludes = array()){
+	// public function traverse_recursive($o, $excludes = array()){
+	// 	global $db;
+	// 	$id = $o;
+	// 	$tab = '&nbsp;&nbsp;&nbsp;';
+	// 	$excludes_command = empty($excludes) ? 'false' : 'IF(wires.toid IN (' . implode(',', $excludes) . '), true,false)';
+		
+	// 	$sql = "WITH RECURSIVE cte ( `toid`, `name1`, `indent`, `path_string`, `path`, `exclude`) AS ( 
+	// 			SELECT wires.toid, objects.name1, CAST( '' AS CHAR(512) ), objects.name1, CAST( objects.id AS CHAR(512) ), $excludes_command FROM wires, objects WHERE objects.active = '1' AND wires.active = '1' AND objects.id = wires.toid AND wires.fromid = '0'
+	// 			UNION ALL
+	// 			SELECT wires.toid, objects.name1, CONCAT( cte.indent, '$tab' ), CONCAT( cte.path_string, ' > ', objects.name1 ), CONCAT( cte.path, ',', objects.id ), $excludes_command FROM cte INNER JOIN wires ON cte.toid = wires.fromid INNER JOIN objects ON wires.toid = objects.id AND wires.active = '1' AND objects.active = '1'
+	// 		)
+	// 		SELECT * FROM cte ORDER BY `path_string`";
+	// 	$items = array();
+	// 	$res = $db->query($sql);
+	// 	while($obj = $res->fetch_assoc()){
+	// 		$obj['path'] = explode(',', $obj['path']);
+	// 		$items[] = $obj;
+	// 	}
+    //     return $items;
+	// }
+	public function traverse_recursive($root, $reference=false, $excludes = array()){
 		global $db;
-		$id = $o;
+		
+		$reference = $reference ? $reference : $root;
+		$id = $root;
 		$tab = '&nbsp;&nbsp;&nbsp;';
 		$excludes_command = empty($excludes) ? 'false' : 'IF(wires.toid IN (' . implode(',', $excludes) . '), true,false)';
-		$sql = "WITH RECURSIVE cte ( `toid`, `name1`, `indent`, `path_string`, `path`, `exclude`) AS ( 
-				SELECT wires.toid, objects.name1, CAST( '' AS CHAR(512) ), objects.name1, CAST( objects.id AS CHAR(512) ), $excludes_command FROM wires, objects WHERE objects.active = '1' AND wires.active = '1' AND objects.id = wires.toid AND wires.fromid = '0'
-				UNION ALL
-				SELECT wires.toid, objects.name1, CONCAT( cte.indent, '$tab' ), CONCAT( cte.path_string, ' > ', objects.name1 ), CONCAT( cte.path, ',', objects.id ), $excludes_command FROM cte INNER JOIN wires ON cte.toid = wires.fromid INNER JOIN objects ON wires.toid = objects.id AND wires.active = '1' AND objects.active = '1'
-			)
-			SELECT * FROM cte ORDER BY `path_string`";
+		$ancestors_and_children = $this->get_ancestors_and_children($reference);
+		
+		$ancestors_str = '(' . implode(',', $ancestors_and_children['ancestors']) . ')';
+		$children_str = '(' . implode(',', $ancestors_and_children['children']) . ')';
+		// $roles_command = "IF(wires.toid = $reference, 'self', IF(wires.toid IN $ancestors_str, 'ancestor', IF(wires.toid)))";
+		$role_command = "CASE WHEN wires.toid = $reference THEN 'self'";
+		if(!empty($ancestors_and_children['ancestors'])) $role_command .= " WHEN wires.toid IN (" . implode(',', $ancestors_and_children['ancestors']) . ") THEN 'ancestor'";
+		if(!empty($ancestors_and_children['children'])) $role_command .= " WHEN wires.toid IN (" . implode(',', $ancestors_and_children['children']) . ") THEN 'child'";
+		$role_command .= " ELSE '' END";
+		$sql = "WITH RECURSIVE cte ( `toid`, `name1`, `indent`, `path_string`, `path`, `role`, `exclude`) AS ( 
+			SELECT wires.toid, objects.name1, CAST( '' AS CHAR(512) ), objects.name1, CAST( objects.id AS CHAR(512) ), $role_command, $excludes_command FROM wires, objects WHERE objects.active = '1' AND wires.active = '1' AND objects.id = wires.toid AND wires.fromid = '0'
+			UNION ALL
+			SELECT wires.toid, objects.name1, CONCAT( cte.indent, '$tab' ), CONCAT( cte.path_string, ' > ', objects.name1 ), CONCAT( cte.path, ',', objects.id ), $role_command, $excludes_command FROM cte INNER JOIN wires ON cte.toid = wires.fromid INNER JOIN objects ON wires.toid = objects.id AND wires.active = '1' AND objects.active = '1'
+		)
+		SELECT * FROM cte ORDER BY `path_string`";
+		var_dump($sql);
 		$items = array();
 		$res = $db->query($sql);
 		while($obj = $res->fetch_assoc()){

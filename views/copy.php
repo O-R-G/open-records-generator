@@ -58,18 +58,21 @@ if($uu->urls())
 			<form 
 				enctype="multipart/form-data"
 				action="<? echo $l_url; ?>"
-				method="post" 
+				method="post"
+				onsubmit="checkFamilyRole(event);"
 			>
 				<div class="form">
 					<div class="select-container">
 						<select name='wires_toid'><?
 							// $all_items = $oo->traverse(0);
-							$all_items = $oo->traverse_recursive(0);
+							// $all_items = $oo->traverse_recursive(0);
+							$all_items = $oo->traverse_recursive(0, $uu->id);
 							foreach($all_items as $itm)
 							{
 								$i = $itm['path'];
 								$m = end($i);
-							?><option value="<? echo $m; ?>"><?
+								$role = $itm['role'];
+							?><option value="<? echo $m; ?>" data-family-role="<?php echo $role; ?>"><?
 								echo $itm['indent'] . $itm['name1'];
 							?></option><?
 							}
@@ -101,11 +104,7 @@ if($uu->urls())
 							value='Cancel' 
 							onClick="<? echo $js_back; ?>"
 						>
-						<input 
-							name='submit' 
-							type='submit' 
-							value="Copy Object"
-						>
+						<button>Copy Object</button>
 						
 					</div>
 				</div>
@@ -148,7 +147,26 @@ if($uu->urls())
 				filter_input.value = '';
 				select.innerHTML = full_options;
 			});
-
+			function checkFamilyRole(event){
+				event.preventDefault();
+				
+				let form = event.target;
+				let select = form.querySelector('select');
+				let selected = select.options[select.selectedIndex];
+				let role = selected.getAttribute('data-family-role');
+				if(role && role !== 'child') {
+					console.log(selected.getAttribute('data-family-role'));
+					if(isDeepInput = form.querySelector('input[name="isDeep"]')) { 
+						// console.log(isDeepInput.value);
+						if(isDeepInput.checked) {
+							alert('You can\'t copy this record when "Copy children" is checked');
+							return;
+						}
+					}
+				}
+				
+				form.submit();
+			}
 		</script>
 	<? 
 	}

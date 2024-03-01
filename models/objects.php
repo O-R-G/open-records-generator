@@ -380,7 +380,6 @@ class Objects extends Model
 			SELECT wires.toid, objects.name1, CONCAT( cte.indent, '$tab' ), CONCAT( cte.path_string, ' > ', objects.name1 ), CONCAT( cte.path, ',', objects.id ), $role_command, $excludes_command FROM cte INNER JOIN wires ON cte.toid = wires.fromid INNER JOIN objects ON wires.toid = objects.id AND wires.active = '1' AND objects.active = '1'
 		)
 		SELECT * FROM cte ORDER BY `path_string`";
-		var_dump($sql);
 		$items = array();
 		$res = $db->query($sql);
 		while($obj = $res->fetch_assoc()){

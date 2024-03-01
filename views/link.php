@@ -112,7 +112,7 @@ if($uu->urls())
 				options = document.querySelectorAll('.select-container option');
 				for (let i = 0; i < options.length; i++) {
 					let txtValue = options[i].textContent || options[i].innerText;
-					if (txtValue.toUpperCase().indexOf(filter) > -1) {
+					if (txtValue.toUpperCase().indexOf(filter) > -1 && !options[i].disabled) {
 						if( !hasFound ){
 							hasFound = true;
 							options[i].setAttribute('selected', 'selected');

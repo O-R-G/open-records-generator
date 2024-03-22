@@ -366,7 +366,7 @@ class Objects extends Model
 		$tab = '&nbsp;&nbsp;&nbsp;';
 		$excludes_command = empty($excludes) ? 'false' : 'IF(wires.toid IN (' . implode(',', $excludes) . '), true,false)';
 		$ancestors_and_children = $this->get_ancestors_and_children($reference);
-		
+		// var_dump($reference);
 		$ancestors_str = '(' . implode(',', $ancestors_and_children['ancestors']) . ')';
 		$children_str = '(' . implode(',', $ancestors_and_children['children']) . ')';
 		// $roles_command = "IF(wires.toid = $reference, 'self', IF(wires.toid IN $ancestors_str, 'ancestor', IF(wires.toid)))";
@@ -375,7 +375,7 @@ class Objects extends Model
 		if(!empty($ancestors_and_children['children'])) $role_command .= " WHEN wires.toid IN (" . implode(',', $ancestors_and_children['children']) . ") THEN 'child'";
 		$role_command .= " ELSE '' END";
 		$sql = "WITH RECURSIVE cte ( `toid`, `name1`, `indent`, `path_string`, `path`, `role`, `exclude`) AS ( 
-			SELECT wires.toid, objects.name1, CAST( '' AS CHAR(512) ), objects.name1, CAST( objects.id AS CHAR(512) ), $role_command, $excludes_command FROM wires, objects WHERE objects.active = '1' AND wires.active = '1' AND objects.id = wires.toid AND wires.fromid = '0'
+			SELECT wires.toid, objects.name1, CAST( '' AS CHAR(512) ), objects.name1, CAST( objects.id AS CHAR(512) ), $role_command, $excludes_command FROM wires, objects WHERE objects.active = '1' AND wires.active = '1' AND objects.id = wires.toid AND wires.fromid = '$id'
 			UNION ALL
 			SELECT wires.toid, objects.name1, CONCAT( cte.indent, '$tab' ), CONCAT( cte.path_string, ' > ', objects.name1 ), CONCAT( cte.path, ',', objects.id ), $role_command, $excludes_command FROM cte INNER JOIN wires ON cte.toid = wires.fromid INNER JOIN objects ON wires.toid = objects.id AND wires.active = '1' AND objects.active = '1'
 		)
@@ -419,8 +419,9 @@ class Objects extends Model
 	{
 		$nav = array();
 		$pass = true;
-		
 		$top = $this->children_ids_nav($root_id);
+		
+		$ids = array_search($root_id, $ids) === FALSE ? $ids : array_slice($ids, 1);
 		$root_index = array_search($root_id, $ids) === FALSE ? 0 : array_search($root_id, $ids);
 		
 		foreach($top as $t)
@@ -431,7 +432,7 @@ class Objects extends Model
 			$url = implode("/", $urls);			
 			$nav[] = array('depth'=>$d, 'o'=>$o, 'url'=>$url);
 			
-			if(isset($ids[$root_index]) && !empty($ids) && $pass && $t == $ids[$root_index])
+			if(!empty($ids) && isset($ids[$root_index]) && $pass && $t == $ids[$root_index])
 			{
 				$pass = false; // short-circuit if statement
 
@@ -464,6 +465,25 @@ class Objects extends Model
 				}
 			}
 		}
+		return $nav;
+	}
+
+	public function nav_full_tree($root_id=0, $d=0, $ancestor_urls=array())
+	{
+		$nav = array();
+		$pass = true;
+		$items = $this->children_ids_nav($root_id);
+		
+		foreach($items as $key => $id) {
+			$o = $this->get($id);
+			$urls = $ancestor_urls;
+			$urls[] = $o['url'];
+			$url = implode("/", $urls);
+			$nav[] = array('depth'=>$d, 'o'=>$o, 'url'=>$url);
+			if(count($this->children_ids_nav($id)))
+				$nav = array_merge($nav, $this->nav_full_tree($id, $d+1, $urls));
+		}
+		
 		return $nav;
 	}
 	

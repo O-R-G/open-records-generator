@@ -23,6 +23,7 @@ foreach($all_paths as $p)
 			$l++; 
 	}
 }
+if(!isset($dep_paths)) $dep_paths = array();
 ?><div id="body-container">
 	<div id="body" class="centre"><?
 	// TODO: this code is duplicated in 

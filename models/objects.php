@@ -399,7 +399,7 @@ class Objects extends Model
 		{
 			$d = count($path);
 			$o = $this->get($path[(count($path)-1)]);
-		
+			
 			$pops = $prevd - $d + 1;
 			$urls = array_slice($urls, 0, count($urls) - $pops);
 			$urls[] = $o['url'];
@@ -465,25 +465,6 @@ class Objects extends Model
 				}
 			}
 		}
-		return $nav;
-	}
-
-	public function nav_full_tree($root_id=0, $d=0, $ancestor_urls=array())
-	{
-		$nav = array();
-		$pass = true;
-		$items = $this->children_ids_nav($root_id);
-		
-		foreach($items as $key => $id) {
-			$o = $this->get($id);
-			$urls = $ancestor_urls;
-			$urls[] = $o['url'];
-			$url = implode("/", $urls);
-			$nav[] = array('depth'=>$d, 'o'=>$o, 'url'=>$url);
-			if(count($this->children_ids_nav($id)))
-				$nav = array_merge($nav, $this->nav_full_tree($id, $d+1, $urls));
-		}
-		
 		return $nav;
 	}
 	

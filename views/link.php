@@ -54,9 +54,7 @@ if($uu->urls())
 				<div class="form">
 					<div class="select-container">
 						<select name='wires_toid[]'><?
-                            // unlinked_list() massively optimized using mysql query
-                            // in place of multiple array_merge()
-							$all_items = $oo->traverse_recursive($uu->id);
+							$all_items = $oo->traverse_recursive(0, $uu->id);
 							foreach($all_items as $i)
 							{
 								$m = $i['toid'];

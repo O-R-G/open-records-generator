@@ -64,8 +64,6 @@ if($uu->urls())
 				<div class="form">
 					<div class="select-container">
 						<select name='wires_toid'><?
-							// $all_items = $oo->traverse(0);
-							// $all_items = $oo->traverse_recursive(0);
 							$all_items = $oo->traverse_recursive(0, $uu->id);
 							foreach($all_items as $itm)
 							{
@@ -120,6 +118,8 @@ if($uu->urls())
 			let clear_input = document.getElementsByClassName('clear_btn')[0];
 			let select = document.querySelector('.select-container > select');
 			let full_options = select.innerHTML;
+			// let isDeepInput = document.querySelector('input[name="isDeep"]');
+			// console.log(isDeepInput);
 
 			filter_btn.addEventListener('click', function(){
 				let hasFound = false;
@@ -147,6 +147,24 @@ if($uu->urls())
 				filter_input.value = '';
 				select.innerHTML = full_options;
 			});
+
+			// isDeepInput.onchange = ()=>{
+			// 	console.log('onchange');
+			// 	let options_with_role = document.querySelectorAll('option:not([data-family-role=""])');
+			// 	console.log(options_with_role);
+			// 	if (isDeepInput.checked) {
+			// 		for(let opt of options_with_role) {
+			// 			opt.disabled = true;
+			// 			console.log(opt);
+			// 		}
+			// 	}
+			// 	else {
+			// 		for(let opt of options_with_role) {
+			// 			opt.disabled = false;
+			// 		}
+			// 	}
+			// }
+
 			function checkFamilyRole(event){
 				event.preventDefault();
 				

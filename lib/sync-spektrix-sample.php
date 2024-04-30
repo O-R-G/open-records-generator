@@ -69,14 +69,17 @@ $api_userpwd = generateSpektrixUserpwd($api_url['events'], $spektrixAPIKey, $spe
 $sql = array(
     'getEvent' => "SELECT objects.id, objects.name1, objects.begin, objects.end FROM objects, wires WHERE objects.name2=? AND wires.toid=objects.id AND objects.active=1 AND wires.active=1 AND wires.fromid=?",
     'getIns' => "SELECT * FROM `".$spektrixTable."` WHERE event_id=? AND event_instance_id=?",
+    'getInsAll' => "SELECT * FROM `".$spektrixTable."` WHERE date_time>?",
     'updateIns' => "UPDATE `".$spektrixTable."` SET venue=?,date_time=?,duration=?,date_modified=? WHERE id=?",
-    'insertIns' => "INSERT INTO `".$spektrixTable."` (event_id, event_instance_id, venue, date_time, duration, date_modified, date_created) VALUES (?, ?, ?, ?, ?, ?, ?)"
+    'insertIns' => "INSERT INTO `".$spektrixTable."` (event_id, event_instance_id, venue, date_time, duration, date_modified, date_created) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    'deleteIns' => "DELETE FROM `".$spektrixTable."` WHERE event_instance_id=?"
 );
 
 $eventAddCount = 0;
 $eventUpdateCount = 0;
 $insAddCount = 0;
 $insUpdateCount = 0;
+$insDeleteCount = 0;
 $eventDetails = array();
 $printEventDetailsDetails = false;
 $event_ids = array();
@@ -229,7 +232,7 @@ foreach($instances as $ins){
     $result = $stmt->get_result()->fetch_assoc();
     $now = addslashes(date($oo::MYSQL_DATE_FMT, strtotime("now")));
     
-    if($result != null && sizeof($result) > 0)
+    if($result != null && sizeof($result) > 0)      // instance found in db
     {
         $new = array(
             'venue'         => $venue,
@@ -240,9 +243,8 @@ foreach($instances as $ins){
             'venue'         => $result['venue'],
             'date_time'     => $result['date_time'],
             'duration'      => $result['duration']
-        );
-
-        if(!empty(array_diff($old, $new)))
+        ); 
+        if(!empty(array_diff($old, $new)))          
         {
             /* 
                 update an instance 
@@ -259,7 +261,7 @@ foreach($instances as $ins){
         }
         continue;
     }
-    else
+    else                                            // instance not found
     {
         /* 
             insert an instance 
@@ -273,12 +275,37 @@ foreach($instances as $ins){
         continue;
     }
 }
+/* 
+    delete an instance 
+*/
+$stmt = $db->prepare($sql['getInsAll']);
+$stmt->bind_param("s", $now);
+$stmt->execute();
+$result = $stmt->get_result();
+while ($row = $result->fetch_assoc()) {
+    $event_instance_id = $row['event_instance_id'];
+    $match = FALSE;
+    foreach ($instances as $ins) {
+        $ins_id = intval($ins['id']);
+        if ($ins_id == $event_instance_id) {
+            $match = TRUE;
+            break;
+        }
+    }
+    if (!$match) {
+        // event only in database, not in spektrix
+        $stmt = $db->prepare($sql['deleteIns']);
+        $stmt->bind_param("s", $event_instance_id);
+        $stmt->execute();
+        $insDeleteCount++;
+    }
+}
 $response['status'] = 'success';
-$response['body'] .= "Synced.<br /><br />";
-$response['body'] .= "<br />Events added: $eventAddCount<br />Events updated: $eventUpdateCount<br /><br />";
-$response['body'] .= "<br />Instances added: $insAddCount<br />Instances updated: $insUpdateCount<br /><br />";
+$response['body'] .= "Synced.<br />";
+$response['body'] .= "<br />Events added: $eventAddCount<br />Events updated: $eventUpdateCount<br />";
+$response['body'] .= "<br />Instances added: $insAddCount<br />Instances updated: $insUpdateCount<br />Instances deleted: $insDeleteCount<br />";
 if($printEventDetailsDetails) {
-    $response['body'] .= 'Detail: <br>';
+    $response['body'] .= '<br />Detail: <br />';
     $e_counter = 1;
     $e_digits = count($eventDetails) < 100 ? 2 : 3;
     $i_pad = '&nbsp;';
@@ -299,3 +326,4 @@ if($printEventDetailsDetails) {
     }
 }
 echo json_encode($response);
+?>

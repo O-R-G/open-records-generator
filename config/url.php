@@ -10,8 +10,7 @@ class URL extends URL_Base {
 	// $this->ids = array of all object ids
 	// $this->id = this object's id
 	// if no object selected,
-	// $this->urls, $this->url, and $this->ids are not set
-	// $this->id is 0
+	// $this->urls, $this->url, $this->ids, $this->id are not set
 
 	function __construct($urls=null) {
 
@@ -31,26 +30,35 @@ class URL extends URL_Base {
 		// check that the object that this URL refers to exists
 		try {
 			$ids = $oo->urls_to_ids($urls);
-		}
-		catch(Exception $e) {
-			$urls = array_slice($urls, 0, $e->getMessage());
-			$ids = $oo->urls_to_ids($urls);
-			// $loc = $host.implode("/".$base)."/".implode("/", $urls);
-			// header("Location: ".$loc);
-		}
+		} catch(Exception $e) {
+            // nothing
+        }                
 
-		$id = end($ids);
-		if(!$id)
-			$id = 0;
-		if(sizeof($ids) == 1 && empty($ids[0]))
+		if (sizeof($ids) !== sizeof($urls) ||
+		    sizeof($ids) == 1 && empty($ids[0]))
 			unset($ids);
+
+        /*
+            three possible results for $id
+
+            1. $id = '[1..x]'       valid url
+            2. $id = '0'            home url
+            3. $id = null           invalid
+        */    
+
+        if ($ids)
+		    $id = end($ids);
+        if(!$id)
+            if (count($urls) === 0)
+                $id = '0';
+            else
+    			unset($id);
 
 		$this->urls = $urls;
 		$this->url = end($urls);
 		$this->ids = $ids;
 		$this->id = $id;
 		$this->url_str = implode($urls);
-		// $this->back_url =
 	}
 
     public function parents()

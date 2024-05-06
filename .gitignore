@@ -1,3 +1,6 @@
+# macos
+.DS_Store
+
 # site-specific configuration files
 .htaccess
 settings.store

@@ -36,7 +36,7 @@ class URL extends URL_Base {
 
 		if (sizeof($ids) !== sizeof($urls) ||
 		    sizeof($ids) == 1 && empty($ids[0]))
-			unset($ids);
+			$ids = null;
 
         /*
             three possible results for $id
@@ -46,13 +46,7 @@ class URL extends URL_Base {
             3. $id = null           invalid
         */    
 
-        if ($ids)
-		    $id = end($ids);
-        if(!$id)
-            if (count($urls) === 0)
-                $id = '0';
-            else
-    			unset($id);
+        $id = $ids ? end($ids) : (count($urls) == 0 ? '0' : null);
 
 		$this->urls = $urls;
 		$this->url = end($urls);

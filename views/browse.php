@@ -21,10 +21,11 @@
 	// self
 	if($uu->id)
 	{
+		$self = $oo->get($uu->id);
 		?><div class="self-container"><?
 		if($name)
 		{
-			?><span id="object-name"><? echo $name; ?></span>
+			?><span id="object-name"><? echo $name; ?> (<? echo $self['id']; ?>)</span>
 			<span class="action">
 				<?php if ($user != 'guest'): ?>
 					<a href="<? echo $admin_path."edit/".$uu->urls(); ?>">EDIT... </a>
@@ -136,7 +137,7 @@
 					$url.= $c["url"];
 
 					?><div class="child">
-						<span><? echo $j_pad; ?></span>
+						<span><? echo $j_pad; ?> (<? echo $c['id']; ?>)</span>
 						<a href="<? echo $url; ?>"><? echo $c["name1"]; ?></a>
 					</div><?
 				}

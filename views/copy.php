@@ -5,6 +5,7 @@ if($uu->urls())
 {
 	$l_url .= "/".$uu->urls();
 }
+
 ?><div id="body-container">
 	<div id="body"><?php
 	// $all_items = $oo->traverse(0);
@@ -62,6 +63,7 @@ if($uu->urls())
 				onsubmit="checkFamilyRole(event);"
 			>
 				<div class="form">
+					<input type='text' name="source_db">
 					<div class="select-container">
 						<select name='wires_toid'><?
 							$all_items = $oo->traverse_recursive(0, $uu->id);
@@ -78,6 +80,9 @@ if($uu->urls())
 						<div class = 'filter-container'>
 							<input class = 'filter_input' type = '' placeholder = 'Filter by keywords'><a href = '#null' class = 'filter_btn'>FILTER...</a><a href = '#null' class = 'clear_btn'>CLEAR...</a>
 						</div>
+					</div>
+					<div class='id-input-container'>
+						<input name="source_id" type="text" placeholder="id of the item to be copied" />
 					</div>
 					<div class="button-container">
 						<div>
@@ -118,6 +123,8 @@ if($uu->urls())
 			let clear_input = document.getElementsByClassName('clear_btn')[0];
 			let select = document.querySelector('.select-container > select');
 			let full_options = select.innerHTML;
+			const source_db_input = document.querySelector('input[name="source_db"]');
+			console.log(source_db_input);
 			// let isDeepInput = document.querySelector('input[name="isDeep"]');
 			// console.log(isDeepInput);
 
@@ -148,6 +155,17 @@ if($uu->urls())
 				select.innerHTML = full_options;
 			});
 
+			if(source_db_input) {
+				source_db_input.addEventListener('input', (e)=>{
+					console.log(e.target.value)
+					if(e.target.value) {
+						source_db_input.classList.add('active');
+					} else {
+						source_db_input.classList.remove('active');
+					}
+				});
+			}
+
 			// isDeepInput.onchange = ()=>{
 			// 	console.log('onchange');
 			// 	let options_with_role = document.querySelectorAll('option:not([data-family-role=""])');
@@ -167,8 +185,11 @@ if($uu->urls())
 
 			function checkFamilyRole(event){
 				event.preventDefault();
-				
 				let form = event.target;
+				if(source_db_input && source_db_input.value) {
+					form.submit();
+					return;
+				}
 				let select = form.querySelector('select');
 				let selected = select.options[select.selectedIndex];
 				let role = selected.getAttribute('data-family-role');
@@ -186,6 +207,17 @@ if($uu->urls())
 				form.submit();
 			}
 		</script>
+		<style>
+			input[name="source_db"].active ~ .select-container {
+				display: none;
+			}
+			.id-input-container {
+				display: none
+			}
+			input[name="source_db"].active ~ .id-input-container {
+				display: block;
+			}
+		</style>
 	<? 
 	}
 	else 
@@ -264,6 +296,82 @@ if($uu->urls())
 			return $insert_id;
 		}
 
+		function copyRecordFromAnotherDb($toid, $fromid, $source_db, $isDeep = false, $isUnique = false){
+			global $vars;
+			global $db;
+			global $media_root;
+			global $ww;
+			global $oo;
+
+			$vars_string = implode('`, `', $vars);
+			$vars_string = '`' . $vars_string . '`';
+			$vars_string .= ', `created`, `modified`';
+			// duplicate object record
+			$sql = "INSERT INTO objects ($vars_string) SELECT $vars_string FROM $source_db.objects WHERE id = $toid";
+			$res = $db->query($sql);
+			$insert_id = $db->insert_id;
+
+			/* 
+			   add '. * (copy)' to name1
+               add '-copy' to url
+			*/
+			if(!$isUnique)
+			{
+				$sql = "SELECT name1, url FROM objects WHERE id = '$toid' AND active = 1";
+				$res = $db->query($sql);
+				$row = $res->fetch_assoc();
+				$name1 = "." . $row['name1'] . " (copy)";
+				$url = $row['url'] . "-(copy)";
+				$sql = "UPDATE objects SET name1 = '" . $name1 . "', url = '" . $url . "' WHERE id = " . $insert_id . "";
+				$res = $db->query($sql);
+			}
+            
+			/* 
+			  duplicate media
+			  get media file attached to object being copied
+			*/
+			// $sql = "SELECT * from media where object = '$toid' AND active = '1'";
+			// $res = $db->query($sql);
+			// $m_arr_arr = array();
+			// while($row = $res->fetch_assoc())
+			// {
+			// 	$m_arr = array();
+			// 	$m_file = m_root($row);
+				
+			// 	$sql = "SELECT id FROM media ORDER BY id DESC LIMIT 1";
+			// 	$res_n = $db->query($sql);
+			// 	$n = $res_n->fetch_assoc()["id"] + 1;
+				
+			// 	$m_file_copy = $media_root.m_pad($n).".".$row['type'];
+			// 	copy($m_file, $m_file_copy);
+				
+			// 	$sql = "INSERT INTO media (type, caption, object, created, modified)
+			// 	SELECT type, caption, '$insert_id', created, modified
+			// 	FROM media
+			// 	WHERE id = '".$row['id']."'";
+			// 	$db->query($sql);
+			// }
+			$ww->create_wire($fromid, $insert_id);
+			if($isDeep) {
+				$sql_children = "SELECT o.* FROM $source_db.objects AS o, $source_db.wires AS w WHERE o.active = '1' AND w.active = '1' AND o.id = w.toid AND w.fromid = $toid";
+				$result = $db->query($sql_children);
+				$children = array();
+				while($object = $result->fetch_assoc()) {
+					$children[] = $object;
+				}
+				// $children = $oo->children($toid);
+				foreach($children as $child){
+					// $copied_id = copyRecord($child['id'], $insert_id, $isDeep, true);
+					$copied_id = copyRecordFromAnotherDb($child['id'], $insert_id, $source_db, $isDeep, true);
+					// $descendant = $oo->children($child['id']);
+					// if( count($descendant) ) loopChildren($child['id'], $descendant);
+				}
+				// loopChildren($uu->id, $children);
+			}
+
+			return $insert_id;
+		}
+
 		// function loopChildren($id, $children){
 		// 	global $oo;
 		// 	foreach($children as $child){
@@ -276,7 +384,12 @@ if($uu->urls())
 		if($rr->wires_toid)
 		{
 			$wires_toid = addslashes($rr->wires_toid);
-			$copied_id = copyRecord($wires_toid, $uu->id, $rr->isDeep);
+			if(!$_POST['source_db'])
+				$copied_id = copyRecord($wires_toid, $uu->id, $rr->isDeep);
+			else {
+				$wires_toid = intval($_POST['source_id']);
+				$copied_id = copyRecord($wires_toid, $uu->id, $_POST['source_db'], $rr->isDeep);
+			}
 			
 		?><div>Record copied successfully.</div><?
 		}

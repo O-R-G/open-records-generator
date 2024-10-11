@@ -388,7 +388,7 @@ if($uu->urls())
 				$copied_id = copyRecord($wires_toid, $uu->id, $rr->isDeep);
 			else {
 				$wires_toid = intval($_POST['source_id']);
-				$copied_id = copyRecord($wires_toid, $uu->id, $_POST['source_db'], $rr->isDeep);
+				$copied_id = copyRecordFromAnotherDb($wires_toid, $uu->id, $_POST['source_db'], $rr->isDeep);
 			}
 			
 		?><div>Record copied successfully.</div><?

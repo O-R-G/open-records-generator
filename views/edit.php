@@ -385,12 +385,11 @@ if ($rr->action != "update" && $uu->id)
 				function removeDivFromEditable(editable){
 					let h = divToBr(editable.innerHTML);
 					if(h !== false) {
-						console.log('h is not false');
+						// console.log('h is not false');
 						const selection = window.getSelection();
 						const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
 						const preCaretOffset = range ? getCaretCharacterOffsetWithin(editable) : 0;
 						editable.innerHTML = h;
-						// console.log(range);
 						setCaretPosition(editable, preCaretOffset);
 					}
 				}
@@ -836,15 +835,17 @@ if ($rr->action != "update" && $uu->id)
 
 			let editables = document.querySelectorAll('div[contenteditable="true"]');
 			for(let i = 0; i < editables.length; i++) {
-				let h = divToBr(editables[i].innerHTML);
-				if(h !== false) editables[i].innerHTML = h;
+				removeDivFromEditable(editables[i]);
+				// let h = divToBr(editables[i].innerHTML);
+				// if(h !== false) editables[i].innerHTML = h;
 				editables[i].addEventListener('focusout', function(e){
 					// console.log(editables[i].getAttribute('name') + ' focusout');
 					if(!e.relatedTarget || e.relatedTarget.parentNode.parentNode !== editables[i].parentNode)
 					{
 						// console.log('calling divToBr()');
-						let h = divToBr(editables[i].innerHTML);
-						if(h !== false) editables[i].innerHTML = h;
+						// let h = divToBr(editables[i].innerHTML);
+						// if(h !== false) editables[i].innerHTML = h;
+						removeDivFromEditable(editables[i]);
 					}
 				});
 			}

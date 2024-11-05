@@ -379,18 +379,17 @@ if ($rr->action != "update" && $uu->id)
 					clipboardData = e.clipboardData || window.clipboardData;
 					pastedData = clipboardData.getData('text/plain');
 					document.execCommand('insertText', false, pastedData);
-					removeDivFromEditable(editable);
+					// removeDivFromEditable(editable);
 					
 				}
 				function removeDivFromEditable(editable){
 					let h = divToBr(editable.innerHTML);
 					if(h !== false) {
-						// console.log('h is not false');
-						const selection = window.getSelection();
-						const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
-						const preCaretOffset = range ? getCaretCharacterOffsetWithin(editable) : 0;
+						// const selection = window.getSelection();
+						// const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+						// const preCaretOffset = range ? getCaretCharacterOffsetWithin(editable) : 0;
 						editable.innerHTML = h;
-						setCaretPosition(editable, preCaretOffset);
+						// setCaretPosition(editable, preCaretOffset);
 					}
 				}
 				function getCaretCharacterOffsetWithin(element) {
@@ -815,17 +814,8 @@ if ($rr->action != "update" && $uu->id)
 			{
 				input.addEventListener('change', function(){
 					tbu.innerHTML = '';
-					console.log('change');
 					for(let i = 0; i < this.files.length; i++) {
 						let item = renderPreviewItem(this.files[i], i);
-						console.log(item);
-						// if(item === false){
-						// 	console.log('not webm/webp!');
-						// 	alert('You can only upload webp and webm here.');
-						// 	input.value = null;
-						// 	tbu.innerHTML = '';
-						// 	break;
-						// }
 						tbu.appendChild(item);
 					}
 				});
@@ -836,15 +826,8 @@ if ($rr->action != "update" && $uu->id)
 			let editables = document.querySelectorAll('div[contenteditable="true"]');
 			for(let i = 0; i < editables.length; i++) {
 				removeDivFromEditable(editables[i]);
-				// let h = divToBr(editables[i].innerHTML);
-				// if(h !== false) editables[i].innerHTML = h;
 				editables[i].addEventListener('focusout', function(e){
-					// console.log(editables[i].getAttribute('name') + ' focusout');
-					if(!e.relatedTarget || e.relatedTarget.parentNode.parentNode !== editables[i].parentNode)
-					{
-						// console.log('calling divToBr()');
-						// let h = divToBr(editables[i].innerHTML);
-						// if(h !== false) editables[i].innerHTML = h;
+					if(!e.relatedTarget || e.relatedTarget.parentNode.parentNode !== editables[i].parentNode) {
 						removeDivFromEditable(editables[i]);
 					}
 				});
@@ -854,23 +837,26 @@ if ($rr->action != "update" && $uu->id)
 			// let submitBtn = document.querySelector('input[type="submit"]');
 			editForm.addEventListener('submit', function(e){
 				e.preventDefault();
-				commitAll();
 				let editables = document.querySelectorAll('div[contenteditable="true"]');
+				for(let i = 0; i < editables.length; i++) {
+					removeDivFromEditable(editables[i]);
+				}
+				commitAll();
 				let pass = true;
 				for(let i = 0; i < editables.length; i++) {
 					let n = editables[i].getAttribute('name');
 					let ta = document.getElementById(n + '-textarea');
+					
 					if(!ta) {
 						alert(name + ' doesnt have textarea');
 						pass = false;
 					}
 					else if(ta.value != pretty(editables[i].innerHTML)) {
 						alert(name + ': values of editable and textarea mismatch');
-						console.log(ta.value);
-						console.log(editables[i].innerHTML);
 						pass = false;
 					}
 				}
+				
 				if(pass) editForm.submit();
 			});
 		</script>

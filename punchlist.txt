@@ -18,3 +18,8 @@
 
 + lib/lib.php
 	+ line 156 - 164: Add if statements like if($rr->captions != null) to catch warnings when there's no media/caption updated. 
+
+- add and grey out the ancestors to the copy/link dropdown
+- add the following functions to lib.php
+	- search (as in gps)
+	- get_item_by_path()

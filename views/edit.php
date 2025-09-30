@@ -626,6 +626,25 @@ if ($rr->action != "update" && $uu->id)
 				</div><?
 				}
 				// show existing images
+				// check if the column 'metadata' exist in media
+				$hasMediaMetadata = false;
+				$sql_check_metadata = "SELECT COUNT(*) 
+					FROM INFORMATION_SCHEMA.COLUMNS 
+					WHERE TABLE_SCHEMA = DATABASE()
+					AND TABLE_NAME = 'media'
+					AND COLUMN_NAME = 'metadata'";
+				$result = $db->query($sql_check_metadata);
+				if ($result) {
+					// fetch_row() returns a numeric array; [0] is the COUNT(*)
+					$count = $result->fetch_row()[0];
+
+					if ($count > 0) {
+						$hasMediaMetadata = true;
+					}
+					$result->free();   // optional, free result set
+				} else {
+					echo "Query error: " . $db->error;
+				}
 				for($i = 0; $i < $num_medias; $i++)
 				{
 					$im = str_pad($i+1, 2, "0", STR_PAD_LEFT);
@@ -643,6 +662,16 @@ if ($rr->action != "update" && $uu->id)
 					><?
 						echo $medias[$i]["caption"];
 					?></textarea>
+					<?php if($hasMediaMetadata): ?>
+					<div class="field-name">Metadata</div>
+					<textarea name="metadatas[]" onclick="hideToolBars(); resetViews('', default_editor_mode);" form="edit-form"
+						<?php if ($user == 'guest'): ?>
+							disabled = "disabled"
+						<?php endif; ?>
+					><?
+						echo $medias[$i]["metadata"];
+					?></textarea>
+					<?php endif; ?>
 					<span>rank</span>
 					<select name="ranks[<?php echo $i; ?>]" form="edit-form"
 						<?php if ($user == 'guest'): ?>
@@ -859,6 +888,30 @@ else
 			$m = $mm->get($m_id);
 			if($m["caption"] != $caption)
 				$m_arr["caption"] = "'".$caption."'";
+			if($m["rank"] != $rank)
+				$m_arr["rank"] = "'".$rank."'";
+
+			if(isset($m_arr))
+			{
+				$arr["modified"] = "'".date("Y-m-d H:i:s")."'";
+				$updated = $mm->update($m_id, $m_arr);
+			}
+		}
+    }
+	if (is_array($rr->metadatas)) {
+	    $num_metadatas = sizeof($rr->metadatas);
+	    if (sizeof($rr->medias) < $num_metadatas)
+		    $num_metadatas = sizeof($rr->medias);
+		for ($i = 0; $i < $num_metadatas; $i++)
+		{
+			unset($m_arr);
+			$m_id = $rr->medias[$i];
+			$metadata = addslashes($rr->metadatas[$i]);
+			$rank = addslashes($rr->ranks[$i]);
+
+			$m = $mm->get($m_id);
+			if($m["metadata"] != $metadata)
+				$m_arr["metadata"] = "'".$metadata."'";
 			if($m["rank"] != $rank)
 				$m_arr["rank"] = "'".$rank."'";
 

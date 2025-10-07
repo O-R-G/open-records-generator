@@ -873,6 +873,13 @@ else
 		}
 	}
 
+	$hasMediaMetadata = false;
+	$sql_check_metadata = "SELECT COUNT(*) 
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = DATABASE()
+		AND TABLE_NAME = 'media'
+		AND COLUMN_NAME = 'metadata'";
+	$result = $db->query($sql_check_metadata);
 	// update caption, weight, rank
     if (is_array($rr->captions)) {
 	    $num_captions = sizeof($rr->captions);
@@ -884,36 +891,15 @@ else
 			$m_id = $rr->medias[$i];
 			$caption = addslashes($rr->captions[$i]);
 			$rank = addslashes($rr->ranks[$i]);
+			$metadata = $hasMediaMetadata ? addslashes($rr->metadatas[$i]) : '';
 
 			$m = $mm->get($m_id);
 			if($m["caption"] != $caption)
 				$m_arr["caption"] = "'".$caption."'";
 			if($m["rank"] != $rank)
 				$m_arr["rank"] = "'".$rank."'";
-
-			if(isset($m_arr))
-			{
-				$arr["modified"] = "'".date("Y-m-d H:i:s")."'";
-				$updated = $mm->update($m_id, $m_arr);
-			}
-		}
-    }
-	if (is_array($rr->metadatas)) {
-	    $num_metadatas = sizeof($rr->metadatas);
-	    if (sizeof($rr->medias) < $num_metadatas)
-		    $num_metadatas = sizeof($rr->medias);
-		for ($i = 0; $i < $num_metadatas; $i++)
-		{
-			unset($m_arr);
-			$m_id = $rr->medias[$i];
-			$metadata = addslashes($rr->metadatas[$i]);
-			$rank = addslashes($rr->ranks[$i]);
-
-			$m = $mm->get($m_id);
-			if($m["metadata"] != $metadata)
+			if($metadata !== '' && $m["metadata"] != $metadata)
 				$m_arr["metadata"] = "'".$metadata."'";
-			if($m["rank"] != $rank)
-				$m_arr["rank"] = "'".$rank."'";
 
 			if(isset($m_arr))
 			{
@@ -922,6 +908,30 @@ else
 			}
 		}
     }
+	// if (is_array($rr->metadatas)) {
+	//     $num_metadatas = sizeof($rr->metadatas);
+	//     if (sizeof($rr->medias) < $num_metadatas)
+	// 	    $num_metadatas = sizeof($rr->medias);
+	// 	for ($i = 0; $i < $num_metadatas; $i++)
+	// 	{
+	// 		unset($m_arr);
+	// 		$m_id = $rr->medias[$i];
+	// 		$metadata = addslashes($rr->metadatas[$i]);
+	// 		$rank = addslashes($rr->ranks[$i]);
+
+	// 		$m = $mm->get($m_id);
+	// 		if($m["metadata"] != $metadata)
+	// 			$m_arr["metadata"] = "'".$metadata."'";
+	// 		if($m["rank"] != $rank)
+	// 			$m_arr["rank"] = "'".$rank."'";
+
+	// 		if(isset($m_arr))
+	// 		{
+	// 			$arr["modified"] = "'".date("Y-m-d H:i:s")."'";
+	// 			$updated = $mm->update($m_id, $m_arr);
+	// 		}
+	// 	}
+    // }
 	if(file_exists(__DIR__ . '/../lib/post-processing.php'))
 		require_once(__DIR__ . '/../lib/post-processing.php');
 	?><div class="self-container"><?

@@ -138,4 +138,22 @@ $var_info["label"]["rank"] = "Rank";
 
 $syncName = '';
 
+/* 
+	to use custom field names, simply override $var_info["label"][column].
+	e.g., $var_info["label"]["name1"] = "Title"
+
+	to use more (or less) fields, override or modify $var, and add the corresponding label and input-type;
+	e.g., $var[] = "address1"
+	      $var_info["input-type"]["address1"] = "text";
+		  $var_info["label"]["address1"] = "Event ID";
+
+	take advantage of $uri and if statements to have customized fields for different types of pages.
+	e.g., if(count($uri) === 4 && $uri[2] === 'edit' && $uri[3] === 'about) {
+	        $vars = array("name1", "deck", "body", "notes", "url", "rank");
+			$var_info["label"]["deck"] = "Bio";
+			$var_info["label"]["body"] = "Resume";
+			$var_info["label"]["notes"] = "Contact";
+	      }
+*/
+
 ?>

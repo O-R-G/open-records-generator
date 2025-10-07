@@ -49,6 +49,7 @@ CREATE TABLE `objects` (
   `fax` tinytext,
   `url` tinytext,
   `email` tinytext,
+  `search` text,
   `begin` datetime default NULL,
   `end` datetime default NULL,
   `date` datetime default NULL,

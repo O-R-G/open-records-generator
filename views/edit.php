@@ -922,7 +922,8 @@ else
 			}
 		}
     }
-
+	if(file_exists(__DIR__ . '/../lib/post-processing.php'))
+		require_once(__DIR__ . '/../lib/post-processing.php');
 	?><div class="self-container"><?
 		// should change this url to reflect updated url
 		$urls = array_slice($uu->urls, 0, count($uu->urls)-1);

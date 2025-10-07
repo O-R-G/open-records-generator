@@ -176,6 +176,8 @@ function insert_object(&$new, $siblings)
 				$ww->create_wire($uu->id, $toid);
 				// media
 				process_media($toid);
+				if(file_exists(__DIR__ . '/../lib/post-processing.php'))
+					require_once(__DIR__ . '/../lib/post-processing.php');
 			?><div>Record added successfully.
 				<?
 				if(!$urlIsValid)

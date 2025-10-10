@@ -908,30 +908,6 @@ else
 			}
 		}
     }
-	// if (is_array($rr->metadatas)) {
-	//     $num_metadatas = sizeof($rr->metadatas);
-	//     if (sizeof($rr->medias) < $num_metadatas)
-	// 	    $num_metadatas = sizeof($rr->medias);
-	// 	for ($i = 0; $i < $num_metadatas; $i++)
-	// 	{
-	// 		unset($m_arr);
-	// 		$m_id = $rr->medias[$i];
-	// 		$metadata = addslashes($rr->metadatas[$i]);
-	// 		$rank = addslashes($rr->ranks[$i]);
-
-	// 		$m = $mm->get($m_id);
-	// 		if($m["metadata"] != $metadata)
-	// 			$m_arr["metadata"] = "'".$metadata."'";
-	// 		if($m["rank"] != $rank)
-	// 			$m_arr["rank"] = "'".$rank."'";
-
-	// 		if(isset($m_arr))
-	// 		{
-	// 			$arr["modified"] = "'".date("Y-m-d H:i:s")."'";
-	// 			$updated = $mm->update($m_id, $m_arr);
-	// 		}
-	// 	}
-    // }
 	if(file_exists(__DIR__ . '/../lib/post-processing.php'))
 		require_once(__DIR__ . '/../lib/post-processing.php');
 	?><div class="self-container"><?

@@ -107,6 +107,7 @@ if ($view == "logout")
 		<meta charset="utf-8">
 		<meta name="description" content="anglophile">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="robots" content="noindex, nofollow">
 		<link rel="shortcut icon" href="<? echo $admin_path;?>media/icon.png">
 		<link rel="apple-touch-icon-precomposed" href="<? echo $admin_path;?>media/icon.png">
 		<link rel="stylesheet" href="<? echo $admin_path; ?>static/main.css">

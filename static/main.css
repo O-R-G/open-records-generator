@@ -143,7 +143,9 @@ aside {
 .field-name {
     display: inline-block;
 }
-
+.existing-image .field-name {
+	margin-top: 3px;
+}
 .editable {
     font-family: -apple-system, sans-serif;
     font-style: normal;

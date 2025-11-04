@@ -717,7 +717,8 @@ if ($rr->action != "update" && $uu->id)
 							<img src="<?php echo $medias[$i]['display']; ?>">
 						</a>
 					</div>
-					<textarea name="captions[]" onclick="hideToolBars(); resetViews('', default_editor_mode);" form="edit-form"
+					<label for="caption-<?php echo $i; ?>" class="field-name">Caption</label>
+					<textarea id="caption-<?php echo $i; ?>" name="captions[]" onclick="hideToolBars(); resetViews('', default_editor_mode);" form="edit-form"
 						<?php if ($user == 'guest'): ?>
 							disabled = "disabled"
 						<?php endif; ?>
@@ -725,8 +726,8 @@ if ($rr->action != "update" && $uu->id)
 						echo $medias[$i]["caption"];
 					?></textarea>
 					<?php if($hasMediaMetadata): ?>
-					<div class="field-name">Metadata</div>
-					<textarea name="metadatas[]" onclick="hideToolBars(); resetViews('', default_editor_mode);" form="edit-form"
+					<label for="metadata-<?php echo $i; ?>" class="field-name">Metadata</label>
+					<textarea id="metadata-<?php echo $i; ?>" name="metadata[]" onclick="hideToolBars(); resetViews('', default_editor_mode);" form="edit-form"
 						<?php if ($user == 'guest'): ?>
 							disabled = "disabled"
 						<?php endif; ?>
@@ -931,6 +932,17 @@ else
 		AND TABLE_NAME = 'media'
 		AND COLUMN_NAME = 'metadata'";
 	$result = $db->query($sql_check_metadata);
+	if ($result) {
+		// fetch_row() returns a numeric array; [0] is the COUNT(*)
+		$count = $result->fetch_row()[0];
+
+		if ($count > 0) {
+			$hasMediaMetadata = true;
+		}
+		$result->free();   // optional, free result set
+	} else {
+		echo "Query error: " . $db->error;
+	}
 	// update caption, weight, rank
     if (is_array($rr->captions)) {
 	    $num_captions = sizeof($rr->captions);
@@ -942,7 +954,7 @@ else
 			$m_id = $rr->medias[$i];
 			$caption = addslashes($rr->captions[$i]);
 			$rank = addslashes($rr->ranks[$i]);
-			$metadata = $hasMediaMetadata ? addslashes($rr->metadatas[$i]) : '';
+			$metadata = $hasMediaMetadata ? addslashes($rr->metadata[$i]) : '';
 
 			$m = $mm->get($m_id);
 			if($m["caption"] != $caption)

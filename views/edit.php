@@ -619,9 +619,9 @@ if ($rr->action != "update" && $uu->id)
 														let v = '<?php echo $var; ?>';
 														document.getElementById(v + "-imagecontainer").style.display = "none";
 														document.getElementById(v + "-editable").focus();
-														let captionAttr = '<?php echo preg_replace(array('/\r\n/', '/\s+/', '/"/', '/\'/'), array('. ', ' ', '&quot;', '&apos;'), trim($medias[$i]['caption'])); ?>';
+														let captionAttr = '<?php echo preg_replace(array('/\r\n/', '/\s+/', '/"/', '/\'/'), array('. ', ' ', '&quot;', '&apos;'), $medias[$i]['caption'] ? trim($medias[$i]['caption']) : ''); ?>';
 														if(captionAttr !== '') captionAttr = 'caption="' + captionAttr + '"';
-														let caption = '<?php echo preg_replace(array('/\r\n/', '/\s+/', '/"/', '/\'/'), array('<br> ', ' ',  '&quot;', '&apos;'), trim($medias[$i]['caption'])); ?>';
+														let caption = '<?php echo preg_replace(array('/\r\n/', '/\s+/', '/"/', '/\'/'), array('<br> ', ' ',  '&quot;', '&apos;'), $medias[$i]['caption'] ? trim($medias[$i]['caption']) : ''); ?>';
 														if(caption !== '') caption = '<blockquote class="caption">' + caption + '</blockquote><br>';
 														let html = '<br><img src="<?php echo $medias[$i]['fileNoPath']; ?>" ' + captionAttr + '><br>'+caption;
 														document.execCommand("insertHTML", 0, html);

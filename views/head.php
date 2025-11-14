@@ -101,6 +101,8 @@ else
 if ($view == "logout")
 	header("HTTP/1.1 401 Unauthorized");
 
+$display_id = $user === 'admin' && isset($_GET['display-id']);
+
 ?>
 <!DOCTYPE html>
 <html>

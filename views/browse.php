@@ -1,3 +1,32 @@
+<?php
+	function handleUrl($url){
+		global $display_id;
+		$output = $url;
+		if($display_id) {
+			$parts = parse_url($url);
+			if(!isset($parts['query']))
+				$output .= '?display-id';
+			else {
+				// if()
+				$query_keys = get_query_keys($parts['query']);
+				if(!in_array('display-id', $query_keys)) {
+					$output .= '&display-id';
+				}
+			}
+		}
+		return $output;
+	}
+	function get_query_keys($query) {
+		$output = array();
+		if ($query === '' || $query === null) return $output;
+
+		$parts = explode('&', $query);
+		foreach($parts as $p) {
+			$output[] = explode('=', $p)[0];
+		}
+		return $output;
+	}
+?>
 <div id="body-container">
 	<div id="body"><?
 
@@ -13,8 +42,10 @@
 		$a = $uu->ids[$i];
 		$ancestor = $oo->get($a);
 		$a_url.= "/".$ancestor["url"];
+
 		?><div class="ancestor">
-			<a href="<? echo $a_url; ?>"><? echo $ancestor["name1"]; ?></a>
+			<?php echo $display_id ? '<span class="record-id">['.$a.']</span>' : ''; ?>
+			<a href="<? echo handleUrl($a_url); ?>"><? echo $ancestor["name1"]; ?></a>
 		</div><?
 	}
 
@@ -24,7 +55,9 @@
 		?><div class="self-container"><?
 		if($name)
 		{
-			?><span id="object-name"><? echo $name; ?></span>
+			echo $display_id ? '<span class="record-id">['.$uu->id.']</span>' : ''; 
+			?>
+			<span id="object-name"><? echo $name; ?></span>
 			<span class="action">
 				<?php if ($user != 'guest'): ?>
 					<a href="<? echo $admin_path."edit/".$uu->urls(); ?>">EDIT... </a>
@@ -109,6 +142,7 @@
 
 							?><div class="child">
 								<span><? echo $j_pad; ?></span>
+								<?php echo $display_id ? '<span class="record-id">['.$c['id'].']</span>' : ''; ?>
 								<a href="<? echo $url; ?>"><? echo $c["name1"]; ?></a>
 							</div><?
 						}
@@ -134,9 +168,11 @@
 					if($uu->urls())
 						$url.= $uu->urls()."/";
 					$url.= $c["url"];
+					$url = handleUrl($url);
 
 					?><div class="child">
 						<span><? echo $j_pad; ?></span>
+						<?php echo $display_id ? '<span class="record-id">['.$c['id'].']</span>' : ''; ?>
 						<a href="<? echo $url; ?>"><? echo $c["name1"]; ?></a>
 					</div><?
 				}

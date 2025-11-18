@@ -206,11 +206,15 @@ textarea.small {
 }
 
 .toolbar {
-	width: 484px;
+	/* width: 484px; */
 	position: sticky;
 	position: -webkit-sticky;
 	top: 0px;
 
+}
+#body-html,
+#body-text {
+	right: 0;
 }
 
 .imagebox {

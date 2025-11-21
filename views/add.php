@@ -153,13 +153,21 @@ function insert_object(&$new, $siblings)
 						onClick="<? echo $js_back; ?>"
 					>
 					<input
-						type='submit'
-						name='submit'
+						id="submit-button"
+						type='button'
 						value='Add Object'
 					>
 				</div>
 			</form>
-		</div><?
+		</div>
+		<script>
+			let form = document.querySelector('form');
+			let submitButton = document.getElementById('submit-button');
+			submitButton.addEventListener('click', function(e){
+				form.submit();
+				
+			});
+		</script><?
 		}
 		// process form
 		else

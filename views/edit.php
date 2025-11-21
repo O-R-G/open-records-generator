@@ -820,7 +820,8 @@ if ($rr->action != "update" && $uu->id)
 						form="edit-form"
 					>
 					<input
-						type='submit'
+						id="submit-button"
+						type='button'
 						value='Update Object'
 						form="edit-form"
 						<?php if ($user == 'guest'): ?>
@@ -864,8 +865,8 @@ if ($rr->action != "update" && $uu->id)
 			}
 
 			let editForm = document.getElementById('edit-form');
-			// let submitBtn = document.querySelector('input[type="submit"]');
-			editForm.addEventListener('submit', function(e){
+			let submitButton = document.getElementById('submit-button');
+			submitButton.addEventListener('click', function(e){
 				e.preventDefault();
 				let editables = document.querySelectorAll('div[contenteditable="true"]');
 				for(let i = 0; i < editables.length; i++) {
@@ -888,7 +889,9 @@ if ($rr->action != "update" && $uu->id)
 				}
 				
 				if(pass) editForm.submit();
+				
 			});
+			
 		</script>
 	</div>
 <?php

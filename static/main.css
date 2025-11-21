@@ -351,6 +351,14 @@ select {
 	line-height: inherit;
 	flex: 0 0 120px;
 }
+/* input[type="submit"] {
+	background-color: rgb(233, 233, 234);
+	color: #000;
+	border-radius: 10px;
+	line-height: 18px;
+	padding: 0 11px;
+	font-weight: inherit
+} */
 @media screen and (max-device-width: 568px) {
 	html {
 		font-size: 13px;

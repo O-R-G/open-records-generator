@@ -23,3 +23,5 @@
 - add the following functions to lib.php
 	- search (as in gps)
 	- get_item_by_path()
+- add the column "published_at"
+- auto-replace an existing page when a page is published?

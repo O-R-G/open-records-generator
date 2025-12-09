@@ -114,7 +114,7 @@ $display_id = $user === 'admin' && isset($_GET['display-id']);
 		<meta name="robots" content="noindex, nofollow">
 		<link rel="shortcut icon" href="<? echo $admin_path;?>media/icon.png">
 		<link rel="apple-touch-icon-precomposed" href="<? echo $admin_path;?>media/icon.png">
-		<link rel="stylesheet" href="<? echo $admin_path; ?>static/main.css">
+		<link rel="stylesheet" href="<? echo $admin_path; ?>static/main.css?v=2025120901">
 	</head>
 	<body>
 		<div id="page">

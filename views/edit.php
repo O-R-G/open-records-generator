@@ -81,16 +81,8 @@ function appendLinebreakToBr($str){
 	// + edit.php
 	// + link.php
 	// ancestors
-	$a_url = $admin_path."browse";
-	for($i = 0; $i < count($uu->ids)-1; $i++)
-	{
-		$a = $uu->ids[$i];
-		$ancestor = $oo->get($a);
-		$a_url.= "/".$ancestor["url"];
-		?><div class="ancestor">
-			<a href="<?php echo $a_url; ?>"><?php echo $ancestor["name1"]; ?></a>
-		</div><?
-	}
+	require_once(__DIR__ . '/includes/ancestors.php');
+	echo renderAncestors($uu->ids);
 if ($rr->action != "update" && $uu->id)
 {
 	// get existing image data
@@ -118,14 +110,10 @@ if ($rr->action != "update" && $uu->id)
 	$form_url = $admin_path."edit/".$uu->urls();
 // object contents
 ?><div id="form-container">
-		<div class="self">
-			<a href="<?php echo $browse_url; ?>"><?php echo $name; ?></a>
-		</div>
-		<!-- <form
-			method="post"
-			enctype="multipart/form-data"
-			action="<?php echo $form_url; ?>"
-		> -->
+		<?php
+		require_once(__DIR__.'/includes/self.php');
+		echo renderSelf($name, $browse_url, $uu->id);
+		?>
 			<div class="form">
 				<script>
 				var default_editor_mode = '<?php echo $settings['default_editor_mode']; ?>';
@@ -315,11 +303,12 @@ if ($rr->action != "update" && $uu->id)
 				
 				// pretifies html (barely) by adding two new lines after a </div>
 				function pretty(str) {
-					while(str.charCodeAt(0) == '9' || str.charCodeAt(0) == '10'){
-						str = str.substring(1, str.length);
-					}
+					// while(str.charCodeAt(0) == '9' || str.charCodeAt(0) == '10'){
+					// 	str = str.substring(1, str.length);
+					// }
+					let output = str.replace(/^\s+/, '');
 			        // return (str + '').replace(/(?<=<\/div>)(?!\n)/gi, '\n\n');
-                    return str;
+                    return output;
 				}
 
 				function indent(name){
@@ -331,41 +320,41 @@ if ($rr->action != "update" && $uu->id)
 	                document.execCommand('removeFormat',false,'');
                 }
 
-                function getCaretPosition(editableDiv) {
-					var caretPos = 0,
-						sel, range;
-					if (window.getSelection) {
-						sel = window.getSelection();
-						if (sel.rangeCount) {
-							range = sel.getRangeAt(0);
-							if (range.commonAncestorContainer.parentNode == editableDiv) {
-								// console.log(range);
-								caretPos = range.endOffset;
-							}
-						}
-					} else if (document.selection && document.selection.createRange) {
-						range = document.selection.createRange();
-						if (range.parentElement() == editableDiv) {
-							var tempEl = document.createElement("span");
-							editableDiv.insertBefore(tempEl, editableDiv.firstChild);
-							var tempRange = range.duplicate();
-							tempRange.moveToElementText(tempEl);
-							tempRange.setEndPoint("EndToEnd", range);
-							caretPos = tempRange.text.length;
-						}
-					}
-					// console.log(caretPos);
-					return caretPos;
-				}
-                function getSelectionText() {
-				    var text = "";
-				    if (window.getSelection) {
-				        text = window.getSelection().toString();
-				    } else if (document.selection && document.selection.type != "Control") {
-				        text = document.selection.createRange().text;
-				    }
-				    return text;
-				}
+                // function getCaretPosition(editableDiv) {
+				// 	var caretPos = 0,
+				// 		sel, range;
+				// 	if (window.getSelection) {
+				// 		sel = window.getSelection();
+				// 		if (sel.rangeCount) {
+				// 			range = sel.getRangeAt(0);
+				// 			if (range.commonAncestorContainer.parentNode == editableDiv) {
+				// 				// console.log(range);
+				// 				caretPos = range.endOffset;
+				// 			}
+				// 		}
+				// 	} else if (document.selection && document.selection.createRange) {
+				// 		range = document.selection.createRange();
+				// 		if (range.parentElement() == editableDiv) {
+				// 			var tempEl = document.createElement("span");
+				// 			editableDiv.insertBefore(tempEl, editableDiv.firstChild);
+				// 			var tempRange = range.duplicate();
+				// 			tempRange.moveToElementText(tempEl);
+				// 			tempRange.setEndPoint("EndToEnd", range);
+				// 			caretPos = tempRange.text.length;
+				// 		}
+				// 	}
+				// 	// console.log(caretPos);
+				// 	return caretPos;
+				// }
+                // function getSelectionText() {
+				//     var text = "";
+				//     if (window.getSelection) {
+				//         text = window.getSelection().toString();
+				//     } else if (document.selection && document.selection.type != "Control") {
+				//         text = document.selection.createRange().text;
+				//     }
+				//     return text;
+				// }
 				
                 function handleEditablePaste(e, editable) {
                 	var clipboardData, pastedData;
@@ -378,8 +367,60 @@ if ($rr->action != "update" && $uu->id)
 					clipboardData = e.clipboardData || window.clipboardData;
 					pastedData = clipboardData.getData('text/plain');
 					document.execCommand('insertText', false, pastedData);
+					// removeDivFromEditable(editable);
+					
+				}
+				function removeDivFromEditable(editable){
 					let h = divToBr(editable.innerHTML);
-					if(h !== false) editable.innerHTML = h;
+					if(h !== false) {
+						// const selection = window.getSelection();
+						// const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+						// const preCaretOffset = range ? getCaretCharacterOffsetWithin(editable) : 0;
+						editable.innerHTML = h;
+						// setCaretPosition(editable, preCaretOffset);
+					}
+				}
+				function getCaretCharacterOffsetWithin(element) {
+					let caretOffset = 0;
+					const selection = window.getSelection();
+					if (selection.rangeCount > 0) {
+						const range = selection.getRangeAt(0);
+						const preCaretRange = range.cloneRange();
+						preCaretRange.selectNodeContents(element);
+						preCaretRange.setEnd(range.startContainer, range.startOffset);
+						let preCaretRangeString = preCaretRange.toString();
+						preCaretRangeString = preCaretRangeString.replace(/^\s+/, '');
+						caretOffset = preCaretRangeString.length;
+					}
+					return caretOffset;
+				}
+
+				function setCaretPosition(element, offset) {
+					const range = document.createRange();
+					const selection = window.getSelection();
+
+					let currentOffset = 0;
+					let found = false;
+
+					// Traverse the child nodes of the element to set caret
+					element.childNodes.forEach(node => {
+						if (found) return;
+
+						if (node.nodeType === Node.TEXT_NODE) {
+							if (currentOffset + node.length >= offset) {
+								range.setStart(node, offset - currentOffset);
+								found = true;
+							} else {
+								currentOffset += node.length;
+							}
+						} else {
+							currentOffset += node.textContent.length;
+						}
+					});
+
+					range.collapse(true);
+					selection.removeAllRanges();
+					selection.addRange(range);
 				}
 				function strContainsOnlySpaces(str, report = false){
 					/* check if a string contains only any type of space */
@@ -422,16 +463,21 @@ if ($rr->action != "update" && $uu->id)
 						2. collapse closing tags at the very end
 						/(?:<\/div>)+$/g => ''
 						
-						3. collapse closing tags that follow br
-						/<br>(?:<\/div>)+/g => '<br>'
+						3. collapse closing tags (and the following opening tags) that follow br
+						/<br>(?:<\/div>)+(?:<div>)* /g => '<br>'
 
-						4. replace the tag groups containg one or more tags with br
+						4. collapse opening tags (and the following closing tags) that follow br
+						/<br>(?:<div>)+(?:<\/div>)* /g => '<br>'
+
+						5. replace the tag groups containg one or more tags with br
 						/(?:<div>|<\/div>)+/g => '<br>'                
 					*/
+					
+
 					str = pretty(str);
 					if(strContainsOnlySpaces(str)) return '';
 					if(str.indexOf('<div>') === -1) return false;
-					console.log('start divToBr . . . ')
+					
 					let output = str;
 					let search = [
 						{
@@ -452,6 +498,10 @@ if ($rr->action != "update" && $uu->id)
 						},
 						{
 							'pattern': /<br>(?:<\/div>)+(?:<div>)*/g,
+							'replacement': '<br>'
+						},
+						{
+							'pattern': /<br>(?:<div>)+/g,
 							'replacement': '<br>'
 						},
 						{
@@ -557,9 +607,9 @@ if ($rr->action != "update" && $uu->id)
 														let v = '<?php echo $var; ?>';
 														document.getElementById(v + "-imagecontainer").style.display = "none";
 														document.getElementById(v + "-editable").focus();
-														let captionAttr = '<?php echo preg_replace(array('/\r\n/', '/\s+/', '/"/', '/\'/'), array('. ', ' ', '&quot;', '&apos;'), trim($medias[$i]['caption'])); ?>';
+														let captionAttr = '<?php echo preg_replace(array('/\r\n/', '/\s+/', '/"/', '/\'/'), array('. ', ' ', '&quot;', '&apos;'), $medias[$i]['caption'] ? trim($medias[$i]['caption']) : ''); ?>';
 														if(captionAttr !== '') captionAttr = 'caption="' + captionAttr + '"';
-														let caption = '<?php echo preg_replace(array('/\r\n/', '/\s+/', '/"/', '/\'/'), array('<br> ', ' ',  '&quot;', '&apos;'), trim($medias[$i]['caption'])); ?>';
+														let caption = '<?php echo preg_replace(array('/\r\n/', '/\s+/', '/"/', '/\'/'), array('<br> ', ' ',  '&quot;', '&apos;'), $medias[$i]['caption'] ? trim($medias[$i]['caption']) : ''); ?>';
 														if(caption !== '') caption = '<blockquote class="caption">' + caption + '</blockquote><br>';
 														let html = '<br><img src="<?php echo $medias[$i]['fileNoPath']; ?>" ' + captionAttr + '><br>'+caption;
 														document.execCommand("insertHTML", 0, html);
@@ -626,6 +676,25 @@ if ($rr->action != "update" && $uu->id)
 				</div><?
 				}
 				// show existing images
+				// check if the column 'metadata' exist in media
+				$hasMediaMetadata = false;
+				$sql_check_metadata = "SELECT COUNT(*) 
+					FROM INFORMATION_SCHEMA.COLUMNS 
+					WHERE TABLE_SCHEMA = DATABASE()
+					AND TABLE_NAME = 'media'
+					AND COLUMN_NAME = 'metadata'";
+				$result = $db->query($sql_check_metadata);
+				if ($result) {
+					// fetch_row() returns a numeric array; [0] is the COUNT(*)
+					$count = $result->fetch_row()[0];
+
+					if ($count > 0) {
+						$hasMediaMetadata = true;
+					}
+					$result->free();   // optional, free result set
+				} else {
+					echo "Query error: " . $db->error;
+				}
 				for($i = 0; $i < $num_medias; $i++)
 				{
 					$im = str_pad($i+1, 2, "0", STR_PAD_LEFT);
@@ -636,13 +705,24 @@ if ($rr->action != "update" && $uu->id)
 							<img src="<?php echo $medias[$i]['display']; ?>">
 						</a>
 					</div>
-					<textarea name="captions[]" onclick="hideToolBars(); resetViews('', default_editor_mode);" form="edit-form"
+					<label for="caption-<?php echo $i; ?>" class="field-name">Caption</label>
+					<textarea id="caption-<?php echo $i; ?>" name="captions[]" onclick="hideToolBars(); resetViews('', default_editor_mode);" form="edit-form"
 						<?php if ($user == 'guest'): ?>
 							disabled = "disabled"
 						<?php endif; ?>
 					><?
 						echo $medias[$i]["caption"];
 					?></textarea>
+					<?php if($hasMediaMetadata): ?>
+					<label for="metadata-<?php echo $i; ?>" class="field-name">Metadata</label>
+					<textarea id="metadata-<?php echo $i; ?>" name="metadata[]" onclick="hideToolBars(); resetViews('', default_editor_mode);" form="edit-form"
+						<?php if ($user == 'guest'): ?>
+							disabled = "disabled"
+						<?php endif; ?>
+					><?
+						echo $medias[$i]["metadata"];
+					?></textarea>
+					<?php endif; ?>
 					<span>rank</span>
 					<select name="ranks[<?php echo $i; ?>]" form="edit-form"
 						<?php if ($user == 'guest'): ?>
@@ -741,7 +821,7 @@ if ($rr->action != "update" && $uu->id)
 		<form
 			method="post"
 			enctype="multipart/form-data"
-			action="<?php echo $form_url; ?>"
+			action="<?php echo $form_url.$q; ?>"
 			id="edit-form"
 		>
 		</form>
@@ -752,17 +832,8 @@ if ($rr->action != "update" && $uu->id)
 			{
 				input.addEventListener('change', function(){
 					tbu.innerHTML = '';
-					console.log('change');
 					for(let i = 0; i < this.files.length; i++) {
 						let item = renderPreviewItem(this.files[i], i);
-						console.log(item);
-						// if(item === false){
-						// 	console.log('not webm/webp!');
-						// 	alert('You can only upload webp and webm here.');
-						// 	input.value = null;
-						// 	tbu.innerHTML = '';
-						// 	break;
-						// }
 						tbu.appendChild(item);
 					}
 				});
@@ -772,15 +843,10 @@ if ($rr->action != "update" && $uu->id)
 
 			let editables = document.querySelectorAll('div[contenteditable="true"]');
 			for(let i = 0; i < editables.length; i++) {
-				let h = divToBr(editables[i].innerHTML);
-				if(h !== false) editables[i].innerHTML = h;
+				removeDivFromEditable(editables[i]);
 				editables[i].addEventListener('focusout', function(e){
-					console.log(editables[i].getAttribute('name') + ' focusout');
-					if(!e.relatedTarget || e.relatedTarget.parentNode.parentNode !== editables[i].parentNode)
-					{
-						console.log('calling divToBr()');
-						let h = divToBr(editables[i].innerHTML);
-						if(h !== false) editables[i].innerHTML = h;
+					if(!e.relatedTarget || e.relatedTarget.parentNode.parentNode !== editables[i].parentNode) {
+						removeDivFromEditable(editables[i]);
 					}
 				});
 			}
@@ -789,23 +855,26 @@ if ($rr->action != "update" && $uu->id)
 			// let submitBtn = document.querySelector('input[type="submit"]');
 			editForm.addEventListener('submit', function(e){
 				e.preventDefault();
-				commitAll();
 				let editables = document.querySelectorAll('div[contenteditable="true"]');
+				for(let i = 0; i < editables.length; i++) {
+					removeDivFromEditable(editables[i]);
+				}
+				commitAll();
 				let pass = true;
 				for(let i = 0; i < editables.length; i++) {
 					let n = editables[i].getAttribute('name');
 					let ta = document.getElementById(n + '-textarea');
+					
 					if(!ta) {
 						alert(name + ' doesnt have textarea');
 						pass = false;
 					}
 					else if(ta.value != pretty(editables[i].innerHTML)) {
 						alert(name + ': values of editable and textarea mismatch');
-						console.log(ta.value);
-						console.log(editables[i].innerHTML);
 						pass = false;
 					}
 				}
+				
 				if(pass) editForm.submit();
 			});
 		</script>
@@ -844,6 +913,24 @@ else
 		}
 	}
 
+	$hasMediaMetadata = false;
+	$sql_check_metadata = "SELECT COUNT(*) 
+		FROM INFORMATION_SCHEMA.COLUMNS 
+		WHERE TABLE_SCHEMA = DATABASE()
+		AND TABLE_NAME = 'media'
+		AND COLUMN_NAME = 'metadata'";
+	$result = $db->query($sql_check_metadata);
+	if ($result) {
+		// fetch_row() returns a numeric array; [0] is the COUNT(*)
+		$count = $result->fetch_row()[0];
+
+		if ($count > 0) {
+			$hasMediaMetadata = true;
+		}
+		$result->free();   // optional, free result set
+	} else {
+		echo "Query error: " . $db->error;
+	}
 	// update caption, weight, rank
     if (is_array($rr->captions)) {
 	    $num_captions = sizeof($rr->captions);
@@ -855,12 +942,15 @@ else
 			$m_id = $rr->medias[$i];
 			$caption = addslashes($rr->captions[$i]);
 			$rank = addslashes($rr->ranks[$i]);
+			$metadata = $hasMediaMetadata ? addslashes($rr->metadata[$i]) : '';
 
 			$m = $mm->get($m_id);
 			if($m["caption"] != $caption)
 				$m_arr["caption"] = "'".$caption."'";
 			if($m["rank"] != $rank)
 				$m_arr["rank"] = "'".$rank."'";
+			if($metadata !== '' && $m["metadata"] != $metadata)
+				$m_arr["metadata"] = "'".$metadata."'";
 
 			if(isset($m_arr))
 			{
@@ -869,7 +959,8 @@ else
 			}
 		}
     }
-
+	if(file_exists(__DIR__ . '/../lib/post-processing.php'))
+		require_once(__DIR__ . '/../lib/post-processing.php');
 	?><div class="self-container"><?
 		// should change this url to reflect updated url
 		$urls = array_slice($uu->urls, 0, count($uu->urls)-1);
@@ -878,7 +969,10 @@ else
 		if(!empty($u))
 			$url.= $u."/";
 		$url.= $new['url'];
-		?><p><a href="<?php echo $url; ?>"><?php echo $new['name1']; ?></a></p><?
+
+		require_once(__DIR__ . '/includes/self.php');
+		echo renderSelf($new['name1'], $url, $uu->id) . '<br>';
+
 	// Job well done?
 	if($updated)
 	{

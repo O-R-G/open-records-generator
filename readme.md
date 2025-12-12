@@ -1,7 +1,7 @@
 # OPEN RECORDS GENERATOR
-Version 3.5.0
+Version 3.6.0
 O-R-G inc.  
-Last updated 20 December 2023
+Last updated 7 October 2025
 
 ## INSTRUCTIONS
 
@@ -84,7 +84,7 @@ Logs the user out of the current session. Useful for changing users or terminati
 + 3.3.0 -- June 2020: add wysiwyg functionality to master and cleanup repository including updated readme.md and repo transferred to O-R-G github team.
 + 3.3.1 -- August 19 2021: fix php 8 warnings, add html wrap and additional validation, update url validation, optimize any get_all() and unlinked_list()
 + 3.5.0 -- December 10 2023: integrate recursive search when processing large directory trees and add divToBr() function to retaiun simple html markup in sql databases
-
++ 3.6.0 -- October 7 2025: add new column `search` to objects and `metadata` to media. add an array of split url as $uri to index.php. add post-processing-sample.php to lib/. if post-processing.php presents, it will be required by add.php and edit.php after the record is added/updated.
 
 ## SITES
 + [o-r-g.com](http://www.o-r-g.com/)

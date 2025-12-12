@@ -9,6 +9,8 @@
 
 # Dump of table media
 # ------------------------------------------------------------
+DROP TABLE IF EXISTS `media`;
+
 
 CREATE TABLE `media` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -20,6 +22,7 @@ CREATE TABLE `media` (
   `rank` int(10) unsigned default NULL,
   `type` varchar(10) NOT NULL default 'jpg',
   `caption` blob,
+  `metadata` text,
   PRIMARY KEY  (`id`)
 );
 
@@ -27,7 +30,7 @@ CREATE TABLE `media` (
 
 # Dump of table objects
 # ------------------------------------------------------------
-
+DROP TABLE IF EXISTS `objects`;
 CREATE TABLE `objects` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `active` int(1) unsigned NOT NULL default '1',
@@ -46,6 +49,7 @@ CREATE TABLE `objects` (
   `fax` tinytext,
   `url` tinytext,
   `email` tinytext,
+  `search` text,
   `begin` datetime default NULL,
   `end` datetime default NULL,
   `date` datetime default NULL,
@@ -60,7 +64,7 @@ CREATE TABLE `objects` (
 
 # Dump of table wires
 # ------------------------------------------------------------
-
+DROP TABLE IF EXISTS `wires`;
 CREATE TABLE `wires` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `active` int(1) unsigned NOT NULL default '1',

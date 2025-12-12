@@ -11,6 +11,8 @@ require_once($config_dir."org-settings.php");
 // logged in user via .htaccess, .htpasswd
 // $user = $_SERVER['REMOTE_USER'] ? $_SERVER['REMOTE_USER'] : $_SERVER['REDIRECT_REMOTE_USER'];
 $user = $_SERVER['PHP_AUTH_USER'] ? $_SERVER['PHP_AUTH_USER'] : $_SERVER['REDIRECT_REMOTE_USER'];
+if($user == 'dev')
+	$user = 'admin';
 $db = db_connect($user);
 
 // this function determines which part of the url contains
@@ -99,6 +101,8 @@ else
 if ($view == "logout")
 	header("HTTP/1.1 401 Unauthorized");
 
+$display_id = $user === 'admin' && isset($_GET['display-id']);
+$q = empty($_GET) ? '' : '?' . http_build_query($_GET);
 ?>
 <!DOCTYPE html>
 <html>
@@ -107,16 +111,17 @@ if ($view == "logout")
 		<meta charset="utf-8">
 		<meta name="description" content="anglophile">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="robots" content="noindex, nofollow">
 		<link rel="shortcut icon" href="<? echo $admin_path;?>media/icon.png">
 		<link rel="apple-touch-icon-precomposed" href="<? echo $admin_path;?>media/icon.png">
-		<link rel="stylesheet" href="<? echo $admin_path; ?>static/main.css">
+		<link rel="stylesheet" href="<? echo $admin_path; ?>static/main.css?v=2025120901">
 	</head>
 	<body>
 		<div id="page">
 			<div id="header-container">
 				<header class="centre">
 					<div id="nav">
-						<a href="<?php echo $admin_path; ?>browse"><?php echo $db_name; ?> Database</a>
+						<a href="<?php echo $admin_path; ?>browse<?php echo $q; ?>"><?php echo $db_name; ?> Database</a>
 					</div>
 				</header>
 			</div>

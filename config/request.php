@@ -36,6 +36,7 @@ class Request
 	public $medias; // array
 	public $types;
 	public $captions;
+	public $metadata;
 	public $ranks;
 	public $deletes;
 
@@ -51,7 +52,7 @@ class Request
 
 		// post variables
 		$vars = array(	'name1', 'name2', 'city', 'state', 'zip', 'country', 'phone', 'address1', 'address2', 'deck', 'body', 'notes', 'begin', 'end', 'url', 'rank', 'email',
-						'medias', 'types', 'captions', 'ranks', 'deletes',
+						'medias', 'types', 'captions', 'metadata', 'ranks', 'deletes',
 						'submit', 'action',
 						'wires_toid',
 						'max_uploads', 'default_editor_mode', 'order_type',

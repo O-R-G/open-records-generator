@@ -143,7 +143,9 @@ aside {
 .field-name {
     display: inline-block;
 }
-
+.existing-image .field-name {
+	margin-top: 3px;
+}
 .editable {
     font-family: -apple-system, sans-serif;
     font-style: normal;
@@ -204,11 +206,15 @@ textarea.small {
 }
 
 .toolbar {
-	width: 484px;
+	/* width: 484px; */
 	position: sticky;
 	position: -webkit-sticky;
 	top: 0px;
 
+}
+#body-html,
+#body-txt {
+	right: 0;
 }
 
 .imagebox {
@@ -345,6 +351,20 @@ select {
 	line-height: inherit;
 	flex: 0 0 120px;
 }
+/* input[type="submit"] {
+	background-color: rgb(233, 233, 234);
+	color: #000;
+	border-radius: 10px;
+	line-height: 18px;
+	padding: 0 11px;
+	font-weight: inherit
+} */
+#deck-html, 
+#deck-txt 
+{
+	right: 0
+}
+
 @media screen and (max-device-width: 568px) {
 	html {
 		font-size: 13px;

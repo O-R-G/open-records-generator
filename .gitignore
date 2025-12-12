@@ -10,3 +10,4 @@ config.php
 .env
 lib/sync-spektrix.php
 lib/sync-shopify.php
+lib/post-processing.php

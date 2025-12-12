@@ -102,7 +102,7 @@ if ($view == "logout")
 	header("HTTP/1.1 401 Unauthorized");
 
 $display_id = $user === 'admin' && isset($_GET['display-id']);
-
+$q = empty($_GET) ? '' : '?' . http_build_query($_GET);
 ?>
 <!DOCTYPE html>
 <html>
@@ -121,7 +121,7 @@ $display_id = $user === 'admin' && isset($_GET['display-id']);
 			<div id="header-container">
 				<header class="centre">
 					<div id="nav">
-						<a href="<?php echo $admin_path; ?>browse"><?php echo $db_name; ?> Database</a>
+						<a href="<?php echo $admin_path; ?>browse<?php echo $q; ?>"><?php echo $db_name; ?> Database</a>
 					</div>
 				</header>
 			</div>

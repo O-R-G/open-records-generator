@@ -31,7 +31,7 @@ if($uu->urls())
 		$ancestor = $oo->get($a);
 		$a_url.= "/".$ancestor["url"];
 		?><div class="ancestor">
-			<a href="<?php echo $a_url; ?>"><?php echo $ancestor["name1"]; ?></a>
+			<a href="<?php echo $a_url . $q; ?>"><?php echo $ancestor["name1"]; ?></a>
 		</div><?php
 	}
 	// END TODO
@@ -42,9 +42,10 @@ if($uu->urls())
 	if($uu->id)
 	{
 	?><div class="self-container">
-		<div class="self">
-			<a href="<? echo $browse_url; ?>"><? echo $name; ?></a>
-		</div>
+		<?php 
+			require_once(__DIR__ . '/includes/self.php');
+			echo renderSelf($name, $browse_url, $uu->id);
+		?>
 	</div><?
 	}
 	if($rr->action != "copy") 
@@ -65,13 +66,16 @@ if($uu->urls())
 					<div class="select-container">
 						<select name='wires_toid'><?
 							$all_items = $oo->traverse_recursive(0, $uu->id);
+							
 							foreach($all_items as $itm)
 							{
 								$i = $itm['path'];
 								$m = end($i);
 								$role = $itm['role'];
+								$name = $display_id ? $itm['indent'] . '['.$itm['toid'].'] ' . $itm['name1'] : $itm['indent'] . $itm['name1'];
+									
 							?><option value="<? echo $m; ?>" data-family-role="<?php echo $role; ?>"><?
-								echo $itm['indent'] . $itm['name1'];
+								echo $name;
 							?></option><?
 							}
 						?></select>

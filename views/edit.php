@@ -81,16 +81,8 @@ function appendLinebreakToBr($str){
 	// + edit.php
 	// + link.php
 	// ancestors
-	$a_url = $admin_path."browse";
-	for($i = 0; $i < count($uu->ids)-1; $i++)
-	{
-		$a = $uu->ids[$i];
-		$ancestor = $oo->get($a);
-		$a_url.= "/".$ancestor["url"];
-		?><div class="ancestor">
-			<a href="<?php echo $a_url; ?>"><?php echo $ancestor["name1"]; ?></a>
-		</div><?
-	}
+	require_once(__DIR__ . '/includes/ancestors.php');
+	echo renderAncestors($uu->ids);
 if ($rr->action != "update" && $uu->id)
 {
 	// get existing image data
@@ -118,14 +110,10 @@ if ($rr->action != "update" && $uu->id)
 	$form_url = $admin_path."edit/".$uu->urls();
 // object contents
 ?><div id="form-container">
-		<div class="self">
-			<a href="<?php echo $browse_url; ?>"><?php echo $name; ?></a>
-		</div>
-		<!-- <form
-			method="post"
-			enctype="multipart/form-data"
-			action="<?php echo $form_url; ?>"
-		> -->
+		<?php
+		require_once(__DIR__.'/includes/self.php');
+		echo renderSelf($name, $browse_url, $uu->id);
+		?>
 			<div class="form">
 				<script>
 				var default_editor_mode = '<?php echo $settings['default_editor_mode']; ?>';
@@ -833,7 +821,7 @@ if ($rr->action != "update" && $uu->id)
 		<form
 			method="post"
 			enctype="multipart/form-data"
-			action="<?php echo $form_url; ?>"
+			action="<?php echo $form_url.$q; ?>"
 			id="edit-form"
 		>
 		</form>
@@ -981,7 +969,10 @@ else
 		if(!empty($u))
 			$url.= $u."/";
 		$url.= $new['url'];
-		?><p><a href="<?php echo $url; ?>"><?php echo $new['name1']; ?></a></p><?
+
+		require_once(__DIR__ . '/includes/self.php');
+		echo renderSelf($new['name1'], $url, $uu->id) . '<br>';
+
 	// Job well done?
 	if($updated)
 	{

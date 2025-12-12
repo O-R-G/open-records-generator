@@ -31,9 +31,10 @@ if($uu->urls())
 		if($uu->id)
 		{
 		?><div class="self-container">
-			<div class="self">
-				<a href="<? echo $browse_url; ?>"><? echo $name; ?></a>
-			</div>
+			<?php 
+				require_once(__DIR__ . '/includes/self.php');
+				echo renderSelf($name, $browse_url, $uu->id);
+			?>
 		</div><?
 		}
 	if($rr->action != "link") 

@@ -1,4 +1,5 @@
-<?
+<?php
+
 $browse_url = $admin_path.'browse/'.$uu->urls();
 
 $urlIsValid = true;
@@ -72,25 +73,18 @@ function insert_object(&$new, $siblings)
 	// + edit.php
 	// + link.php
 	// ancestors
-	$a_url = $admin_path."browse";
-	for($i = 0; $i < count($uu->ids)-1; $i++)
-	{
-		$a = $uu->ids[$i];
-		$ancestor = $oo->get($a);
-		$a_url.= "/".$ancestor["url"];
-		?><div class="ancestor">
-			<a href="<? echo $a_url; ?>"><? echo $ancestor["name1"]; ?></a>
-		</div><?
-	}
+	require_once(__DIR__ . '/includes/ancestors.php');
+	echo renderAncestors($uu->ids);
 	// END TODO
 
 		// this code is duplicated in:
 		// + link.php
 		// + add.php
 		?><div class="self-container">
-			<div class="self">
-				<a href="<? echo $browse_url; ?>"><? echo $name; ?></a>
-			</div>
+			<?php 
+				require_once(__DIR__ . '/includes/self.php');
+				echo renderSelf($name, $browse_url, $uu->id);
+			?>
 		</div><?
 
 
@@ -100,6 +94,7 @@ function insert_object(&$new, $siblings)
 			$form_url = $admin_path."add";
 			if($uu->urls())
 				$form_url.="/".$uu->urls();
+			$form_url .= $q;
 		?><div id="form-container">
 			<div class="self">You are adding a new object.</div>
 			<form

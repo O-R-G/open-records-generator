@@ -179,7 +179,6 @@ if ($rr->action != "update" && $uu->id)
 				}
 
 				function commitAll() {
-					// console.log('commitAll');
 					var names = <?
 						$textnames = [];
 						foreach($vars as $var) {
@@ -195,8 +194,6 @@ if ($rr->action != "update" && $uu->id)
 					}
 				}
 				function commit(name) {
-					// if(name == 'deck')
-					// 	console.log('commit');
 					var editable = document.getElementById(name + '-editable');
 					var textarea = document.getElementById(name + '-textarea');
 					wrapFirstChildWithDiv(editable);
@@ -838,6 +835,12 @@ if ($rr->action != "update" && $uu->id)
 		>
 		</form>
 		<script>
+			let lastPointerTarget = null;
+
+			document.addEventListener('pointerdown', (e) => {
+				lastPointerTarget = e.target;
+			});
+
 			let input = document.querySelector('input[name="uploads[]"]');
 			let tbu = document.getElementById('tbu-container');
 			if(input && tbu)
@@ -857,9 +860,12 @@ if ($rr->action != "update" && $uu->id)
 			for(let i = 0; i < editables.length; i++) {
 				removeDivFromEditable(editables[i]);
 				editables[i].addEventListener('focusout', function(e){
-					if(!e.relatedTarget || e.relatedTarget.parentNode.parentNode !== editables[i].parentNode) {
+					if(!lastPointerTarget || lastPointerTarget.parentNode.parentNode !== editables[i].parentNode) {
 						removeDivFromEditable(editables[i]);
 					}
+					// if(!e.relatedTarget || e.relatedTarget.parentNode.parentNode !== editables[i].parentNode) {
+					// 	removeDivFromEditable(editables[i]);
+					// }
 				});
 			}
 

@@ -22,7 +22,6 @@ CREATE TABLE `media` (
   `rank` int(10) unsigned default NULL,
   `type` varchar(10) NOT NULL default 'jpg',
   `caption` blob,
-  `metadata` text,
   PRIMARY KEY  (`id`)
 );
 

@@ -212,8 +212,7 @@ textarea.small {
 	top: 0px;
 
 }
-#body-html,
-#body-txt {
+.toolbar .right {
 	right: 0;
 }
 

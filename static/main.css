@@ -28,6 +28,7 @@ body {
 	--line-height: 16px;
 	--width: 500px;
 	--padding: 16px;
+	--gap: 15px;
 	--small-gap: 3px;
 	width: var(--width);
 	font-size: var(--font-size);
@@ -38,16 +39,18 @@ body {
 body[data-size="medium"] {
 	--font-size: 14px;
 	--editable-font-size: 14px;
-	--line-height: 20px;
+	--line-height: 21px;
 	--width: 600px;
 	--padding: 18px;
+	--gap: 17px;
 	--small-gap: 4px;
 } 
 body[data-size="large"] {
 	--font-size: 17px;
 	--editable-font-size: 17px;
-	--line-height: 24px;
+	--line-height: 26px;
 	--width: 720px;
+	--gap: 20px;
 	--padding: 20px;
 } 
 
@@ -160,7 +163,7 @@ aside {
 
 .field,
 .image-upload {
-	margin: 15px 0;
+	margin: var(--gap) 0;
 }
 
 .field-name {

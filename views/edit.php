@@ -167,7 +167,6 @@ if ($rr->action != "update" && $uu->id)
 				}
 
 				function commitAll() {
-					// console.log('commitAll');
 					var names = <?
 						$textnames = [];
 						foreach($vars as $var) {
@@ -183,8 +182,6 @@ if ($rr->action != "update" && $uu->id)
 					}
 				}
 				function commit(name) {
-					// if(name == 'deck')
-					// 	console.log('commit');
 					var editable = document.getElementById(name + '-editable');
 					var textarea = document.getElementById(name + '-textarea');
 					wrapFirstChildWithDiv(editable);
@@ -677,24 +674,7 @@ if ($rr->action != "update" && $uu->id)
 				}
 				// show existing images
 				// check if the column 'metadata' exist in media
-				$hasMediaMetadata = false;
-				$sql_check_metadata = "SELECT COUNT(*) 
-					FROM INFORMATION_SCHEMA.COLUMNS 
-					WHERE TABLE_SCHEMA = DATABASE()
-					AND TABLE_NAME = 'media'
-					AND COLUMN_NAME = 'metadata'";
-				$result = $db->query($sql_check_metadata);
-				if ($result) {
-					// fetch_row() returns a numeric array; [0] is the COUNT(*)
-					$count = $result->fetch_row()[0];
-
-					if ($count > 0) {
-						$hasMediaMetadata = true;
-					}
-					$result->free();   // optional, free result set
-				} else {
-					echo "Query error: " . $db->error;
-				}
+				
 				for($i = 0; $i < $num_medias; $i++)
 				{
 					$im = str_pad($i+1, 2, "0", STR_PAD_LEFT);
@@ -705,7 +685,6 @@ if ($rr->action != "update" && $uu->id)
 							<img src="<?php echo $medias[$i]['display']; ?>">
 						</a>
 					</div>
-					<label for="caption-<?php echo $i; ?>" class="field-name">Caption</label>
 					<textarea id="caption-<?php echo $i; ?>" name="captions[]" onclick="hideToolBars(); resetViews('', default_editor_mode);" form="edit-form"
 						<?php if ($user == 'guest'): ?>
 							disabled = "disabled"
@@ -713,16 +692,6 @@ if ($rr->action != "update" && $uu->id)
 					><?
 						echo $medias[$i]["caption"];
 					?></textarea>
-					<?php if($hasMediaMetadata): ?>
-					<label for="metadata-<?php echo $i; ?>" class="field-name">Metadata</label>
-					<textarea id="metadata-<?php echo $i; ?>" name="metadata[]" onclick="hideToolBars(); resetViews('', default_editor_mode);" form="edit-form"
-						<?php if ($user == 'guest'): ?>
-							disabled = "disabled"
-						<?php endif; ?>
-					><?
-						echo $medias[$i]["metadata"];
-					?></textarea>
-					<?php endif; ?>
 					<span>rank</span>
 					<select name="ranks[<?php echo $i; ?>]" form="edit-form"
 						<?php if ($user == 'guest'): ?>
@@ -826,6 +795,12 @@ if ($rr->action != "update" && $uu->id)
 		>
 		</form>
 		<script>
+			let lastPointerTarget = null;
+
+			document.addEventListener('pointerdown', (e) => {
+				lastPointerTarget = e.target;
+			});
+
 			let input = document.querySelector('input[name="uploads[]"]');
 			let tbu = document.getElementById('tbu-container');
 			if(input && tbu)
@@ -845,9 +820,12 @@ if ($rr->action != "update" && $uu->id)
 			for(let i = 0; i < editables.length; i++) {
 				removeDivFromEditable(editables[i]);
 				editables[i].addEventListener('focusout', function(e){
-					if(!e.relatedTarget || e.relatedTarget.parentNode.parentNode !== editables[i].parentNode) {
+					if(!lastPointerTarget || lastPointerTarget.parentNode.parentNode !== editables[i].parentNode) {
 						removeDivFromEditable(editables[i]);
 					}
+					// if(!e.relatedTarget || e.relatedTarget.parentNode.parentNode !== editables[i].parentNode) {
+					// 	removeDivFromEditable(editables[i]);
+					// }
 				});
 			}
 
@@ -912,25 +890,7 @@ else
 			$updated = true;
 		}
 	}
-
-	$hasMediaMetadata = false;
-	$sql_check_metadata = "SELECT COUNT(*) 
-		FROM INFORMATION_SCHEMA.COLUMNS 
-		WHERE TABLE_SCHEMA = DATABASE()
-		AND TABLE_NAME = 'media'
-		AND COLUMN_NAME = 'metadata'";
-	$result = $db->query($sql_check_metadata);
-	if ($result) {
-		// fetch_row() returns a numeric array; [0] is the COUNT(*)
-		$count = $result->fetch_row()[0];
-
-		if ($count > 0) {
-			$hasMediaMetadata = true;
-		}
-		$result->free();   // optional, free result set
-	} else {
-		echo "Query error: " . $db->error;
-	}
+	
 	// update caption, weight, rank
     if (is_array($rr->captions)) {
 	    $num_captions = sizeof($rr->captions);
@@ -942,15 +902,12 @@ else
 			$m_id = $rr->medias[$i];
 			$caption = addslashes($rr->captions[$i]);
 			$rank = addslashes($rr->ranks[$i]);
-			$metadata = $hasMediaMetadata ? addslashes($rr->metadata[$i]) : '';
 
 			$m = $mm->get($m_id);
 			if($m["caption"] != $caption)
 				$m_arr["caption"] = "'".$caption."'";
 			if($m["rank"] != $rank)
 				$m_arr["rank"] = "'".$rank."'";
-			if($metadata !== '' && $m["metadata"] != $metadata)
-				$m_arr["metadata"] = "'".$metadata."'";
 
 			if(isset($m_arr))
 			{

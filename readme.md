@@ -163,21 +163,21 @@ Logs the user out of the current session. Useful for changing users or terminati
 + [www.giornopoetrysystems.org/](https://www.giornopoetrysystems.org)
 
 ## DEV NOTES
-for basic password protection, create the an `.htpasswd` file with the following command:
 
-`htpasswd -c /PATH/TO/HTPASSWD`
+0. config
 
-and then create an `.htaccess` file in the OPEN-RECORDS-GENERATOR directory:
+		cp config/config-sample.php config/config.php    
 
-`AuthUserFile /PATH/TO/HTPASSWD`  
-`AuthName "OPEN-RECORDS-GENERATOR"`  
-`AuthType Basic`  
-`Require valid-user`  
+1. auth
 
-requires mysql database configuration using the following template: `db/3.3.sql` and corresponding credentials added in `config/config.php`.
+		htpasswd -c /path/to/.htpasswd user pass
+
+2. database
+
+		sudo mysql < db/3.3.sql
+
+3. permissions
+
+		chmod 777 config/settings.store 
 
 requires license for commercial use in `static/license.txt`.
-
-set permissions 777 for config/settings.store to allow preferences storage
-
-copy config-sample.php to config.php, modify as required

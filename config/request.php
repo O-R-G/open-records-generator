@@ -43,6 +43,7 @@ class Request
 	public $max_uploads;
 	public $default_editor_mode;
 	public $order_type;
+	public $size;
 
 	public $isDeep;
 
@@ -55,7 +56,7 @@ class Request
 						'medias', 'types', 'captions', 'metadata', 'ranks', 'deletes',
 						'submit', 'action',
 						'wires_toid',
-						'max_uploads', 'default_editor_mode', 'order_type',
+						'max_uploads', 'default_editor_mode', 'order_type', 'size',
 						'isDeep'
 					);
 

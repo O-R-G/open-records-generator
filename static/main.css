@@ -23,10 +23,33 @@ html {
 }
 
 body {
-	width: 500px;
+	--font-size: 12px;
+	--editable-font-size: 11px;
+	--line-height: 16px;
+	--width: 500px;
+	--padding: 16px;
+	--small-gap: 3px;
+	width: var(--width);
+	font-size: var(--font-size);
+	line-height: var(--line-height);
     max-width: 100%;
     margin: 0px auto;
 }
+body[data-size="medium"] {
+	--font-size: 14px;
+	--editable-font-size: 14px;
+	--line-height: 20px;
+	--width: 600px;
+	--padding: 18px;
+	--small-gap: 4px;
+} 
+body[data-size="large"] {
+	--font-size: 17px;
+	--editable-font-size: 17px;
+	--line-height: 24px;
+	--width: 720px;
+	--padding: 20px;
+} 
 
 /* this is so that the text on link.php looks normal. */
 p:first-of-type {
@@ -105,7 +128,7 @@ aside {
 #header-container,
 #body > div,
 #footer-container {
-	padding: 16px;
+	padding: var(--padding);
 }
 
 .child + #object-actions,
@@ -114,13 +137,13 @@ aside {
 .children-container,
 .children-page + #object-actions
 {
-	padding-top: 16px;
+	padding-top: var(--padding);
 }
 
 .license-container,
 .existing-image,
 .to-upload-image {
-	padding: 16px 0px;
+	padding: var(--padding) 0px;
 }
 
 .remove-upload {
@@ -144,14 +167,14 @@ aside {
     display: inline-block;
 }
 .existing-image .field-name {
-	margin-top: 3px;
+	margin-top: var(--small-gap);
 }
 .editable {
     font-family: -apple-system, sans-serif;
     font-style: normal;
     font-weight: 400;
-    font-size: 11px;
-    line-height: 16px;
+    font-size: var(--editable-font-size);
+    line-height: inherit;
     padding: 4px;
     background-color: #FFF;
     -webkit-appearance: textfield;
@@ -181,8 +204,9 @@ input[type="checkbox"] {
 input[type="checkbox"] + label{
 	cursor: pointer;
 }
-textarea {
-	/*resize: vertical;*/
+
+input, button, select, textarea {
+	font-size: var(--font-size);
 }
 
 textarea.large {
@@ -311,7 +335,7 @@ select {
 	width: 100%;
 }
 .filter-container{
-	margin-top: 3px;
+	margin-top: var(--small-gap);
 }
 .filter-container > input, 
 .filter-container > a
@@ -340,7 +364,7 @@ select {
 }
 .sync-row + .sync-row
 {
-	margin-top: 2px;
+	margin-top: var(--small-gap);
 }
 .sync-row > label{
 	flex: 1;
@@ -350,6 +374,12 @@ select {
 	font-size: inherit;
 	line-height: inherit;
 	flex: 0 0 120px;
+}
+body[data-size="medium"] .sync-row > select{
+	flex: 0 0 160px;
+}
+body[data-size="large"] .sync-row > select{
+	flex: 0 0 210px;
 }
 /* input[type="submit"] {
 	background-color: rgb(233, 233, 234);
@@ -367,7 +397,7 @@ select {
 
 @media screen and (max-device-width: 568px) {
 	html {
-		font-size: 13px;
-		line-height: 1.5;
+		/* font-size: 13px;
+		line-height: 1.5; */
 	}
 }

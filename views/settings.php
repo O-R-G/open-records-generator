@@ -30,9 +30,7 @@
 		else
 		{	
 			$rr_arr = get_object_vars($rr);
-			foreach($org_settings as $org_setting)
-			{
-				
+			foreach($org_settings as $org_setting) {
 				$name = $org_setting['name'];
 				$settings[$name] = $rr_arr[$name];
  			}

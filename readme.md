@@ -1,7 +1,7 @@
 # OPEN RECORDS GENERATOR
 Version 3.6.0
 O-R-G inc.  
-Last updated 7 October 2025
+Last updated 30 January 2026
 
 ## INSTRUCTIONS
 
@@ -85,6 +85,7 @@ Logs the user out of the current session. Useful for changing users or terminati
 + 3.3.1 -- August 19 2021: fix php 8 warnings, add html wrap and additional validation, update url validation, optimize any get_all() and unlinked_list()
 + 3.5.0 -- December 10 2023: integrate recursive search when processing large directory trees and add divToBr() function to retaiun simple html markup in sql databases
 + 3.6.0 -- October 7 2025: add new column `search` to objects and `metadata` to media. add an array of split url as $uri to index.php. add post-processing-sample.php to lib/. if post-processing.php presents, it will be required by add.php and edit.php after the record is added/updated.
++ 3.6.1 -- January 30 2026: remove the column `metadata` from media. add `size` to the settings.
 
 ## SITES
 + [o-r-g.com](http://www.o-r-g.com/)
@@ -161,6 +162,10 @@ Logs the user out of the current session. Useful for changing users or terminati
 + [stray.world](https://stray.world)
 + [www.teigerfoundation.org](https://www.teigerfoundation.org)
 + [www.giornopoetrysystems.org/](https://www.giornopoetrysystems.org)
++ [grey-area.cukrarna.art](https://grey-area.cukrarna.art)
++ [nicholasblechman.com](https://nicholasblechman.com)
++ [a-new-program-for-graphic-design.org](https://a-new-program-for-graphic-design.org)
++ [a-co-program-for-graphic-design.org](https://a-co-program-for-graphic-design.org)
 
 ## DEV NOTES
 

@@ -174,7 +174,7 @@ if ($rr->action != "update" && $uu->id)
 								$textnames[] = $var;
 							}
 						}
-						echo '["' . implode('", "', $textnames) . '"]'
+						echo empty($textnames) ? '[]' : '["' . implode('", "', $textnames) . '"]';
 						?>;
 
 					for (let i = 0; i < names.length; i++) {
@@ -276,7 +276,7 @@ if ($rr->action != "update" && $uu->id)
 								$textnames[] = $var;
 							}
 						}
-						echo '["' . implode('", "', $textnames) . '"]'
+						echo empty($textnames) ? '[]' : '["' . implode('", "', $textnames) . '"]';
 						?>;
 
 					if(editorMode == 'rich_text')

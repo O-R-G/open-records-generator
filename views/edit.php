@@ -928,8 +928,13 @@ else
 			}
 		}
     }
-	if(file_exists(__DIR__ . '/../lib/post-processing.php'))
-		require_once(__DIR__ . '/../lib/post-processing.php');
+	if(isset($post_processing_script_paths) && is_array($post_processing_script_paths)) {
+		foreach($post_processing_script_paths as $script_path) {
+			if(file_exists($script_path)) {
+				include_once($script_path);
+			}
+		}
+	}
 	?><div class="self-container"><?
 		// should change this url to reflect updated url
 		$urls = array_slice($uu->urls, 0, count($uu->urls)-1);

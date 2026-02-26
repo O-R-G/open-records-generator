@@ -102,7 +102,18 @@ if ($view == "logout")
 	header("HTTP/1.1 401 Unauthorized");
 
 $display_id = $user === 'admin' && isset($_GET['display-id']);
+$q = empty($_GET) ? '' : '?' . http_build_query($_GET);
 
+$body_attr = array();
+if(isset($settings['size'])) {
+	$body_attr['data-size'] = $settings['size'];
+} else {
+	$body_attr['data-size'] = 'small';
+}
+$body_attr_str = '';
+array_walk($body_attr, function($value, $key) use (&$body_attr_str) {
+    $body_attr_str .= " $key=\"$value\"";
+});
 ?>
 <!DOCTYPE html>
 <html>
@@ -116,12 +127,12 @@ $display_id = $user === 'admin' && isset($_GET['display-id']);
 		<link rel="apple-touch-icon-precomposed" href="<? echo $admin_path;?>media/icon.png">
 		<link rel="stylesheet" href="<? echo $admin_path; ?>static/main.css?v=2025120901">
 	</head>
-	<body>
+	<body <?php echo $body_attr_str; ?>>
 		<div id="page">
 			<div id="header-container">
 				<header class="centre">
 					<div id="nav">
-						<a href="<?php echo $admin_path; ?>browse"><?php echo $db_name; ?> Database</a>
+						<a href="<?php echo $admin_path; ?>browse<?php echo $q; ?>"><?php echo $db_name; ?> Database</a>
 					</div>
 				</header>
 			</div>

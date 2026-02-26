@@ -48,6 +48,26 @@ $org_settings = array(
 				'value'   => 'alphabetical'
 			)
 		)
+	),
+	'size' => array(
+		'input_type' => 'select',
+		'display' => 'size',
+		'name' => 'size',
+		'default' => 's',
+		'options' => array(
+			array(
+				'display' => 'Small',
+				'value'   => 'small'
+			),
+			array(
+				'display' => 'Medium',
+				'value'   => 'medium'
+			),
+			array(
+				'display' => 'Large',
+				'value'   => 'large'
+			)
+		)
 	)
 );
 for($i = 5; $i <= 50; $i+= 5)

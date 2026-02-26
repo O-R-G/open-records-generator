@@ -1,32 +1,3 @@
-<?php
-	function handleUrl($url){
-		global $display_id;
-		$output = $url;
-		if($display_id) {
-			$parts = parse_url($url);
-			if(!isset($parts['query']))
-				$output .= '?display-id';
-			else {
-				// if()
-				$query_keys = get_query_keys($parts['query']);
-				if(!in_array('display-id', $query_keys)) {
-					$output .= '&display-id';
-				}
-			}
-		}
-		return $output;
-	}
-	function get_query_keys($query) {
-		$output = array();
-		if ($query === '' || $query === null) return $output;
-
-		$parts = explode('&', $query);
-		foreach($parts as $p) {
-			$output[] = explode('=', $p)[0];
-		}
-		return $output;
-	}
-?>
 <div id="body-container">
 	<div id="body"><?
 
@@ -36,19 +7,8 @@
 	// + edit.php
 	// + link.php
 	// ancestors
-	$a_url = $admin_path."browse";
-	for($i = 0; $i < count($uu->ids)-1; $i++)
-	{
-		$a = $uu->ids[$i];
-		$ancestor = $oo->get($a);
-		$a_url.= "/".$ancestor["url"];
-
-		?><div class="ancestor">
-			<?php echo $display_id ? '<span class="record-id">['.$a.']</span>' : ''; ?>
-			<a href="<? echo handleUrl($a_url); ?>"><? echo $ancestor["name1"]; ?></a>
-		</div><?
-	}
-
+	require_once(__DIR__ . '/includes/ancestors.php');
+	echo renderAncestors($uu->ids);
 	// self
 	if($uu->id)
 	{
@@ -60,14 +20,14 @@
 			<span id="object-name"><? echo $name; ?></span>
 			<span class="action">
 				<?php if ($user != 'guest'): ?>
-					<a href="<? echo $admin_path."edit/".$uu->urls(); ?>">EDIT... </a>
+					<a href="<? echo $admin_path."edit/".$uu->urls() . $q; ?>">EDIT... </a>
 				<?php else: ?>
-					<a href="<? echo $admin_path."edit/".$uu->urls(); ?>">VIEW... </a>
+					<a href="<? echo $admin_path."edit/".$uu->urls() . $q; ?>">VIEW... </a>
 				<?php endif; ?>
 			</span>
 			<?php if ($user != 'guest'): ?>
 				<span class="action">
-					<a href="<? echo $admin_path."delete/".$uu->urls(); ?>">DELETE... </a>
+					<a href="<? echo $admin_path."delete/".$uu->urls() . $q; ?>">DELETE... </a>
 				</span>
 			<?php endif; ?><?
 		}
@@ -143,18 +103,11 @@
 							?><div class="child">
 								<span><? echo $j_pad; ?></span>
 								<?php echo $display_id ? '<span class="record-id">['.$c['id'].']</span>' : ''; ?>
-								<a href="<? echo $url; ?>"><? echo $c["name1"]; ?></a>
+								<a href="<? echo $url.$q; ?>"><? echo $c["name1"]; ?></a>
 							</div><?
 						}
 					?></div><?
 				}
-				?>
-					<!-- <div class = 'children-index'><span class = 'children-prev'><<</span><?
-					for($i = 0; $i < $page_total; $i++){
-						?><span class = 'folio'><? echo $i+1 ?></span><?
-					}
-					?><span class = 'children-next'>>></span></div> -->
-					<?
 			}else{
 				for($i = 0; $i < $num_children; $i++)
 				{
@@ -167,8 +120,8 @@
 					$url = $admin_path."browse/";
 					if($uu->urls())
 						$url.= $uu->urls()."/";
-					$url.= $c["url"];
-					$url = handleUrl($url);
+					$url.= $c["url"] . $q;
+					// $url = handleUrl($url);
 
 					?><div class="child">
 						<span><? echo $j_pad; ?></span>
@@ -183,14 +136,14 @@
 			?><div id="object-actions">
 				<?php if ($user != 'guest'): ?>
 					<span class="action">
-						<a href="<? echo $admin_path."add/".$uu->urls(); ?>">ADD OBJECT... </a>
+						<a href="<? echo $admin_path."add/".$uu->urls() . $q; ?>">ADD OBJECT... </a>
 					</span>
 					<span class="action">
-						<a href="<? echo $admin_path."link/".$uu->urls(); ?>">LINK... </a>
+						<a href="<? echo $admin_path."link/".$uu->urls() . $q; ?>">LINK... </a>
 					</span>
 					<?php if ($user == 'admin'): ?>
 						<span class="action">
-							<a href="<? echo $admin_path."copy/".$uu->urls(); ?>">COPY... </a>
+							<a href="<? echo $admin_path."copy/".$uu->urls() . $q; ?>">COPY... </a>
 						</span>
 					<?php endif; ?>
 					<?php endif; ?>

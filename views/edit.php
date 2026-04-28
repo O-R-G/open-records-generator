@@ -769,19 +769,26 @@ if ($rr->action != "update" && $uu->id)
 					<div>
 						Scheduled to:
 						<br>
-						<select name="scheduled_action">
+						<select name="scheduled_action" data-value="">
 							<option value="">None</option>
 							<option value="publish">Publish</option>
 							<option value="publish_and_replace">Publish and Replace</option>
 						</select>
-						<select name="object_to_replace">
-							<?php 
-								foreach($siblings as $sibling) {
-									$s_item = $oo->get($sibling);
-									?><option value="<?php echo $sibling; ?>"><?php echo $s_item['name1']; ?></option><?
-								}
-							?>
-						</select>
+						<div id="scheduled-time-container">
+							<label>On:</label><br>
+							<input name="scheduled_time" placeholder="2000-01-01 12:00:00" />
+						</div>
+						<div id="object-to-replace-container">
+							<label>Object to replace:</label><br>
+							<select name="object_to_replace">
+								<?php 
+									foreach($siblings as $sibling) {
+										$s_item = $oo->get($sibling);
+										?><option value="<?php echo $sibling; ?>"><?php echo $s_item['name1']; ?></option><?
+									}
+								?>
+							</select>
+						</div>
 						<script>
 							const select_scheduled_action = document.querySelector('select[name="scheduled_action"]');
 							if(select_scheduled_action) {

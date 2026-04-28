@@ -413,11 +413,17 @@ body[data-size="large"] .sync-row > select{
 	/* display: block; */
 	/* margin-bottom: 20px; */
 }
-select[name="object_to_replace"] {
-	
+select[name="scheduled_action"][data-value=""] ~ #scheduled-time-container {
 	display: none;
 }
-select[name="scheduled_action"][data-value="publish_and_replace"] + select[name="object_to_replace"] {
+#scheduled-time-container,
+#scheduled-time-container input {
+	margin-top: 0.5em;
+}
+#object-to-replace-container {
+	display: none;
+}
+select[name="scheduled_action"][data-value="publish_and_replace"] ~ #object-to-replace-container {
 	display: block;
 }
 @media screen and (max-device-width: 568px) {

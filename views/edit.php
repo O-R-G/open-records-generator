@@ -762,7 +762,39 @@ if ($rr->action != "update" && $uu->id)
 					<?php
 					*/
 				} ?>
+				<div id="schedule-container">
+					<?php 
+						$siblings = $oo->siblings($uu->id);
+					?>
+					<div>
+						Scheduled to:
+						<br>
+						<select name="scheduled_action">
+							<option value="">None</option>
+							<option value="publish">Publish</option>
+							<option value="publish_and_replace">Publish and Replace</option>
+						</select>
+						<select name="object_to_replace">
+							<?php 
+								foreach($siblings as $sibling) {
+									$s_item = $oo->get($sibling);
+									?><option value="<?php echo $sibling; ?>"><?php echo $s_item['name1']; ?></option><?
+								}
+							?>
+						</select>
+						<script>
+							const select_scheduled_action = document.querySelector('select[name="scheduled_action"]');
+							if(select_scheduled_action) {
+								select_scheduled_action.addEventListener('change', ()=>{
+									// console.log(select_scheduled_action.value);
+									select_scheduled_action.dataset.value = select_scheduled_action.value;
+								})
+							}
+						</script>
+					</div>
+				</div>
 				<div class="button-container">
+					
 					<input
 						type='hidden'
 						name='action'

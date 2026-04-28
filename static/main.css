@@ -406,7 +406,20 @@ body[data-size="large"] .sync-row > select{
 {
 	right: 0
 }
-
+#schedule-container select {
+	width: 100%;
+	padding: 0.1em;
+	margin-top: 0.5em;
+	/* display: block; */
+	/* margin-bottom: 20px; */
+}
+select[name="object_to_replace"] {
+	
+	display: none;
+}
+select[name="scheduled_action"][data-value="publish_and_replace"] + select[name="object_to_replace"] {
+	display: block;
+}
 @media screen and (max-device-width: 568px) {
 	html {
 		/* font-size: 13px;

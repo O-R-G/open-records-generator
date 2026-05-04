@@ -85,6 +85,38 @@ function appendLinebreakToBr($str){
 	echo renderAncestors($uu->ids);
 if ($rr->action != "update" && $uu->id)
 {
+	require_once(__DIR__ . '/../schedule/actions_config.php');
+	function renderScheduleField($sibling_ids){
+		global $action_config;
+		global $oo;
+		$options = array_reduce($action_config, function($carry, $item){
+			$carry .= '<option value="'.$item['value'].'">'.$item['display'].'</option>';
+		}, '');
+		$siblings_html = '';
+		foreach($sibling_ids as $s_id) {
+			$s_item = $oo->get($s_id);
+			$siblings_html.= '<option value="'. $s_id .'">' . $s_item['name1'] . '</option>';
+		}
+		$output = '<div id="schedule-container">
+			<div>
+				Scheduled to:
+				<br>
+				<select name="scheduled_action" data-value="">'.$options.'</select>
+				<div id="scheduled-time-container">
+					<label>On:</label><br>
+					<input name="scheduled_time" placeholder="2000-01-01 12:00:00" />
+				</div>
+				<div id="object-to-replace-container">
+					<label>Object to replace:</label><br>
+					<select name="object_to_replace">
+						'.$siblings_html.'
+					</select>
+				</div>
+			</div>
+		</div>';
+
+		return $output;
+	}
 	// get existing image data
 	$medias = $oo->media($uu->id);
 	$num_medias = count($medias);
@@ -761,45 +793,19 @@ if ($rr->action != "update" && $uu->id)
 					</div>
 					<?php
 					*/
-				} ?>
-				<div id="schedule-container">
-					<?php 
-						$siblings = $oo->siblings($uu->id);
-					?>
-					<div>
-						Scheduled to:
-						<br>
-						<select name="scheduled_action" data-value="">
-							<option value="">None</option>
-							<option value="publish">Publish</option>
-							<option value="publish_and_replace">Publish and Replace</option>
-						</select>
-						<div id="scheduled-time-container">
-							<label>On:</label><br>
-							<input name="scheduled_time" placeholder="2000-01-01 12:00:00" />
-						</div>
-						<div id="object-to-replace-container">
-							<label>Object to replace:</label><br>
-							<select name="object_to_replace">
-								<?php 
-									foreach($siblings as $sibling) {
-										$s_item = $oo->get($sibling);
-										?><option value="<?php echo $sibling; ?>"><?php echo $s_item['name1']; ?></option><?
-									}
-								?>
-							</select>
-						</div>
-						<script>
-							const select_scheduled_action = document.querySelector('select[name="scheduled_action"]');
-							if(select_scheduled_action) {
-								select_scheduled_action.addEventListener('change', ()=>{
-									// console.log(select_scheduled_action.value);
-									select_scheduled_action.dataset.value = select_scheduled_action.value;
-								})
-							}
-						</script>
-					</div>
-				</div>
+				} 
+				$siblings = $oo->siblings($uu->id);
+				echo renderScheduleField($siblings);
+				?>
+				<script>
+					const select_scheduled_action = document.querySelector('select[name="scheduled_action"]');
+					if(select_scheduled_action) {
+						select_scheduled_action.addEventListener('change', ()=>{
+							select_scheduled_action.dataset.value = select_scheduled_action.value;
+						})
+					}
+				</script>
+				
 				<div class="button-container">
 					
 					<input

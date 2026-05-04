@@ -11,3 +11,4 @@ config.php
 lib/sync-spektrix.php
 lib/sync-shopify.php
 lib/post-processing.php
+schedule/*.json

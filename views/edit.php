@@ -943,7 +943,6 @@ else
 			// echo 'schedule not updated<br>';
 		}
 	}
-
 	// delete media
 	// check to see if $rr->deletes exists (isset)
 	// because if checkbox is unchecked that variable "doesn't exist"

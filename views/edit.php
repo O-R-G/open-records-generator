@@ -938,7 +938,7 @@ else
 		}
 		if($scheduleUpdated) {
 			// echo 'schedule updated<br>';
-			file_put_contents($schedule_dir . 'schedule.php', "<?php \n \$schedule = " . var_export($updated_schedule, true) . ';' );
+			writeSchedule($updated_schedule, $schedule_dir . 'schedule.php');
 		} else {
 			// echo 'schedule not updated<br>';
 		}

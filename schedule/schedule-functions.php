@@ -26,7 +26,6 @@ function addAction($schedule, $record_id, $params){
     );
     $new_action = [...$action_template, ...$params];
     array_unshift($schedule, $new_action);
-    var_dump($schedule);
     return $schedule;
 }
 function updateAction($schedule, $id_to_update, $params){
@@ -38,4 +37,47 @@ function updateAction($schedule, $id_to_update, $params){
     }
     unset($s);
     return array_values($schedule);
+}
+function writeSchedule($schedule, $path_to_schedule){
+    file_put_contents($path_to_schedule, "<?php \n \$schedule = " . var_export($schedule, true) . ';' );
+}
+function publishRecord($id){
+    global $db;
+    $sql = "UPDATE objects SET name1 = (
+        CASE
+            WHEN SUBSTRING(name1, 1, 1) = '.' THEN SUBSTRING(name1, 2)
+            ELSE name1
+        END
+    ) WHERE id = $id";
+    $db->query($sql);
+}
+function swapRecords($id, $id_to_replace){
+    global $db;
+    $sql_get_record_to_replace = "SELECT `name1`, `url` FROM objects WHERE id = $id_to_replace";
+    $record_to_replace = $db->query($sql_get_record_to_replace)->fetch_assoc();
+    $sql_update_new_record = "UPDATE `objects` SET `url` = '$record_to_replace[url]' WHERE id = $id";
+    $db->query($sql_update_new_record);
+    $sql_update_record_to_replace = "UPDATE `objects` SET `name1` = '$record_to_replace[name1] (keep)', `url` = '$record_to_replace[url]-keep' WHERE id = $id_to_replace";
+    $db->query($sql_update_record_to_replace);
+}
+function handleSchedule($path_to_schedule){
+    require_once($path_to_schedule);
+    $now = time();
+    $updated_schedule = $schedule;
+    $scheduleUpdated = false;
+    foreach($updated_schedule as &$action) {
+        if(!$action['processed'] && strtotime($action['datetime']) <= $now) {
+            if($action['action'] === 'publish') {
+                publishRecord($action['record-id']);
+            } else if($action['action'] === 'publish-and-replace') {
+                publishRecord($action['record-id']);
+                swapRecords($action['record-id'], $action['record-to-replace']);
+            }
+            $action['processed'] = true;
+            if(!$scheduleUpdated) $scheduleUpdated = true;
+        }
+    }
+    unset($action);
+    if($scheduleUpdated)
+        writeSchedule($updated_schedule, $path_to_schedule);
 }

@@ -188,7 +188,8 @@ aside {
 
 /* form elements */
 textarea,
-input[type="text"] {
+input[type="text"],
+select.full-width {
 	padding: 5px;
 }
 
@@ -208,7 +209,7 @@ input[type="checkbox"] + label{
 	cursor: pointer;
 }
 
-input, button, select, textarea {
+input, button, select, textarea, select.full-width {
 	font-size: var(--font-size);
 }
 input[type="file"], 
@@ -294,6 +295,9 @@ select {
 }
 select[name^="ranks"] {
 	min-width: 1.5em;
+}
+select.full-width {
+	width: 100%;
 }
 #body {
     width: 100%;
@@ -407,25 +411,23 @@ body[data-size="large"] .sync-row > select{
 	right: 0
 }
 #schedule-container select {
-	width: 100%;
+	/* width: 100%;
 	padding: 0.1em;
-	margin-top: 0.5em;
-	/* display: block; */
-	/* margin-bottom: 20px; */
+	margin-top: 0.5em; */
 }
-select[name="scheduled_action"][data-value=""] ~ #scheduled-time-container {
+/* select[name="scheduled_action"][data-value=""] ~ #scheduled-time-container {
 	display: none;
-}
+} */
 #scheduled-time-container,
 #scheduled-time-container input {
 	margin-top: 0.5em;
 }
-#object-to-replace-container {
+/* #object-to-replace-container {
 	display: none;
-}
-select[name="scheduled_action"][data-value="publish_and_replace"] ~ #object-to-replace-container {
+} */
+/* select[name="scheduled_action"][data-value="publish_and_replace"] ~ #object-to-replace-container {
 	display: block;
-}
+} */
 @media screen and (max-device-width: 568px) {
 	html {
 		/* font-size: 13px;

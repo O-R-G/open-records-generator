@@ -12,5 +12,4 @@ lib/sync-spektrix.php
 lib/sync-shopify.php
 lib/post-processing.php
 
-schedule/schedule-*.php
-!schedule/schedule-sample.php
+schedule/schedule.php

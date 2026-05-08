@@ -85,35 +85,13 @@ function appendLinebreakToBr($str){
 	echo renderAncestors($uu->ids);
 if ($rr->action != "update" && $uu->id)
 {
-	require_once(__DIR__ . '/../schedule/actions_config.php');
+	$schedule_dir = __DIR__ . '/../schedule/';
+	require_once($schedule_dir . 'schedule_config.php');
+	require_once($schedule_dir . 'schedule.php');
+	require_once($schedule_dir . 'schedule-functions.php');
+	$existing_action = findExistingAction($schedule, $uu->id);
 	function renderScheduleField($sibling_ids){
-		global $action_config;
-		global $oo;
-		$options = array_reduce($action_config, function($carry, $item){
-			$carry .= '<option value="'.$item['value'].'">'.$item['display'].'</option>';
-		}, '');
-		$siblings_html = '';
-		foreach($sibling_ids as $s_id) {
-			$s_item = $oo->get($s_id);
-			$siblings_html.= '<option value="'. $s_id .'">' . $s_item['name1'] . '</option>';
-		}
-		$output = '<div id="schedule-container">
-			<div>
-				Scheduled to:
-				<br>
-				<select name="scheduled_action" data-value="">'.$options.'</select>
-				<div id="scheduled-time-container">
-					<label>On:</label><br>
-					<input name="scheduled_time" placeholder="2000-01-01 12:00:00" />
-				</div>
-				<div id="object-to-replace-container">
-					<label>Object to replace:</label><br>
-					<select name="object_to_replace">
-						'.$siblings_html.'
-					</select>
-				</div>
-			</div>
-		</div>';
+		$output = '<div id="schedule-container" class="field"></div>';
 
 		return $output;
 	}
@@ -794,16 +772,21 @@ if ($rr->action != "update" && $uu->id)
 					<?php
 					*/
 				} 
-				$siblings = $oo->siblings($uu->id);
-				echo renderScheduleField($siblings);
+				$sibling_ids = $oo->siblings($uu->id);
+				$siblings = [];
+				foreach($sibling_ids as $s_id){
+					$siblings[] = $oo->get($s_id);
+				}
+				echo renderScheduleField($sibling_ids);
 				?>
+				<script src="/open-records-generator/schedule/Schedule.js"></script>
 				<script>
-					const select_scheduled_action = document.querySelector('select[name="scheduled_action"]');
-					if(select_scheduled_action) {
-						select_scheduled_action.addEventListener('change', ()=>{
-							select_scheduled_action.dataset.value = select_scheduled_action.value;
-						})
-					}
+					const container = document.getElementById('schedule-container');
+					const schedule_config = <?php echo json_encode($schedule_config); ?>;
+					const siblings = <?php echo json_encode($siblings); ?>;
+					const existing_action = <?php echo $existing_action == null ? 'null' : json_encode($existing_action); ?>;
+					new Schedule(container, schedule_config, siblings, existing_action);
+					
 				</script>
 				
 				<div class="button-container">
@@ -921,6 +904,45 @@ else
 
 	// process new media
 	$updated = (process_media($uu->id) || $updated);
+	
+	// handle scheduled action
+	if(isset($_POST['scheduled-action'])) {
+		$schedule_dir = __DIR__ . '/../schedule/';
+		require_once($schedule_dir . 'schedule_config.php');
+		require_once($schedule_dir . 'schedule.php');
+		require_once($schedule_dir . 'schedule-functions.php');
+		$existing_action = findExistingAction($schedule, $uu->id);
+		$updated_schedule = $schedule;
+		$scheduleUpdated = true;
+		if($_POST['scheduled-action'] === '') {
+			if($existing_action !== null) {
+				$updated_schedule = removeAction($updated_schedule, $existing_action['id']);
+			} else {
+				$scheduleUpdated = false;
+			}
+		} else {
+			$params = array(
+				'action' => $_POST['scheduled-action'],
+				'datetime' => $_POST['scheduled-datetime'] ?? '',
+				'record-to-replace' => isset($_POST['record-to-replace']) ? intval( $_POST['record-to-replace'] ) : ''
+			);
+			if($existing_action !== null) {
+				if($existing_action != [...$existing_action, ...$params]){
+					$updated_schedule = updateAction($updated_schedule, $existing_action['id'], $params);
+				} else {
+					$scheduleUpdated = false;
+				}
+			} else {
+				$updated_schedule = addAction($updated_schedule, intval($uu->id), $params);
+			}
+		}
+		if($scheduleUpdated) {
+			// echo 'schedule updated<br>';
+			file_put_contents($schedule_dir . 'schedule.php', "<?php \n \$schedule = " . var_export($updated_schedule, true) . ';' );
+		} else {
+			// echo 'schedule not updated<br>';
+		}
+	}
 
 	// delete media
 	// check to see if $rr->deletes exists (isset)

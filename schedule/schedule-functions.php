@@ -24,14 +24,16 @@ function addAction($schedule, $record_id, $params){
         'record-to-replace' => '',
         'processed' => false
     );
-    $new_action = [...$action_template, ...$params];
+    // $new_action = [...$action_template, ...$params];
+    $new_action = array_merge($action_template, $params);
     array_unshift($schedule, $new_action);
     return $schedule;
 }
 function updateAction($schedule, $id_to_update, $params){
     foreach($schedule as $key => &$s) {
         if($s['id'] == $id_to_update) {
-            $s = [...$s, ...$params];
+            // $s = [...$s, ...$params];
+            $s = array_merge($s, $params);
             break;
         }
     }

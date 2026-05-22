@@ -914,6 +914,7 @@ else
 		$existing_action = findExistingAction($schedule, $uu->id);
 		$updated_schedule = $schedule;
 		$scheduleUpdated = true;
+		$action_errors = [];
 		if($_POST['scheduled-action'] === '') {
 			if($existing_action !== null) {
 				$updated_schedule = removeAction($updated_schedule, $existing_action['id']);
@@ -921,20 +922,45 @@ else
 				$scheduleUpdated = false;
 			}
 		} else {
-			$params = array(
-				'action' => $_POST['scheduled-action'],
-				'datetime' => $_POST['scheduled-datetime'] ?? '',
-				'record-to-replace' => isset($_POST['record-to-replace']) ? intval( $_POST['record-to-replace'] ) : ''
-			);
-			if($existing_action !== null) {
-				if($existing_action != [...$existing_action, ...$params]){
-					$updated_schedule = updateAction($updated_schedule, $existing_action['id'], $params);
+			$action = $_POST['scheduled-action'];
+			$datetime = $_POST['scheduled-datetime'] ?? '';
+			$isHidden = substr($item['name1'], 0, 1) === '.';
+			$actionsThatRequiresHidden = ['publish', 'publish-and-replace'];
+			$actionsThatRequiresLater = ['publish', 'publish-and-replace'];
+			
+			if(in_array($action, $actionsThatRequiresHidden) && !$isHidden) {
+				$action_errors[] = [
+					'type' => 'hidden',
+					'message' => 'The record needs to be hidden.'
+				];
+			}
+			$scheduled = strtotime($datetime);
+			$now = time();
+			if(in_array($action, $actionsThatRequiresLater) && $scheduled < $now) {
+				$action_errors[] = [
+					'type' => 'datetime',
+					'message' => 'The scheduled time needs to be later then now.'
+				];
+			}
+			if(count($action_errors) === 0) {
+				$params = array(
+					'action' => $_POST['scheduled-action'],
+					'datetime' => $_POST['scheduled-datetime'] ?? '',
+					'record-to-replace' => isset($_POST['record-to-replace']) ? intval( $_POST['record-to-replace'] ) : ''
+				);
+				if($existing_action !== null) {
+					if($existing_action != [...$existing_action, ...$params]){
+						$updated_schedule = updateAction($updated_schedule, $existing_action['id'], $params);
+					} else {
+						$scheduleUpdated = false;
+					}
 				} else {
-					$scheduleUpdated = false;
+					$updated_schedule = addAction($updated_schedule, intval($uu->id), $params);
 				}
 			} else {
-				$updated_schedule = addAction($updated_schedule, intval($uu->id), $params);
+				$scheduleUpdated = false;
 			}
+			
 		}
 		if($scheduleUpdated) {
 			// echo 'schedule updated<br>';
@@ -989,6 +1015,7 @@ else
 			}
 		}
 	}
+	$updated = $updated || $scheduleUpdated;
 	?><div class="self-container"><?
 		// should change this url to reflect updated url
 		$urls = array_slice($uu->urls, 0, count($uu->urls)-1);
@@ -1013,6 +1040,13 @@ else
 	else
 	{
 	?><p>Nothing was edited, therefore update not required.</p><?
+	}
+	if(isset($action_errors) && count($action_errors) > 0) {
+		?><p>The action is not updated because:
+			<ul><?php foreach($action_errors as $err){
+				?><li><? echo $err['message']; ?></li><?php
+			} ?></ul>
+		</p><?
 	}
 	?></div><?
 }

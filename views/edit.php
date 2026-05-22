@@ -90,11 +90,6 @@ if ($rr->action != "update" && $uu->id)
 	require_once($schedule_dir . 'schedule.php');
 	require_once($schedule_dir . 'schedule-functions.php');
 	$existing_action = findExistingAction($schedule, $uu->id);
-	function renderScheduleField($sibling_ids){
-		$output = '<div id="schedule-container" class="field"></div>';
-
-		return $output;
-	}
 	// get existing image data
 	$medias = $oo->media($uu->id);
 	$num_medias = count($medias);
@@ -777,7 +772,7 @@ if ($rr->action != "update" && $uu->id)
 				foreach($sibling_ids as $s_id){
 					$siblings[] = $oo->get($s_id);
 				}
-				echo renderScheduleField($sibling_ids);
+				echo '<div id="schedule-container" class="field"></div>';
 				?>
 				<script src="/open-records-generator/schedule/Schedule.js"></script>
 				<script>

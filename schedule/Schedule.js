@@ -39,21 +39,21 @@ class Schedule{
         let existing_value = this.existingAction && this.existingAction['datetime'] ? this.existingAction['datetime'] : '';
         this.datetime_section = document.createElement('div');
         this.datetime_section.id = input_id + '-container';
-        this.datetime_section.className = 'dontdisplay field';
-        this.datetime_section.innerHTML = '<label for="'+input_id+'">On:</label><br><input form="edit-form" id="'+input_id+'" name="'+input_id+'" type="text" placeholder="2000-01-01 12:00:00" value="'+existing_value+'" />';
+        this.datetime_section.className = 'dontdisplay';
+        this.datetime_section.innerHTML = '<input form="edit-form" id="'+input_id+'" name="'+input_id+'" type="text" placeholder="2000-01-01 12:00:00" value="'+existing_value+'" />';
         this.datetime_input = this.datetime_section.querySelector('input');
 
         input_id = "record-to-replace";
         existing_value = this.existingAction && this.existingAction['record-to-replace'] ? this.existingAction['record-to-replace'] : '';
         this.record_to_replace_section = document.createElement('div');
         this.record_to_replace_section.id = input_id + '-container';
-        this.record_to_replace_section.className = 'dontdisplay field';
-        this.record_to_replace_section.innerHTML = '<label for="'+input_id+'">Record to replace:</label><br><select form="edit-form" id="'+input_id+'" name="'+input_id+'" class="full-width">' +(this.siblings.reduce((carry, item)=>{ 
+        this.record_to_replace_section.className = 'dontdisplay';
+        this.record_to_replace_section.innerHTML = '<select form="edit-form" id="'+input_id+'" name="'+input_id+'" class="full-width">' +(this.siblings.reduce((carry, item)=>{ 
             let selected = existing_value == item['id'] ? 'selected' : '';
             return carry + '<option '+selected+' value="'+item['id']+'">'+item['name1']+'</option>' 
         }, ''))+ '</select>';
         this.record_to_replace_select = this.record_to_replace_section.querySelector('select');
-        this.container.innerHTML = 'Scheduled to:<br>';
+        this.container.innerHTML = 'Action<br>';
         this.container.append(this.select, this.datetime_section, this.record_to_replace_section);
     }
     renderOption(display, value, selected){

@@ -906,20 +906,20 @@ else
 		require_once($schedule_dir . 'schedule_config.php');
 		require_once($schedule_dir . 'schedule.php');
 		require_once($schedule_dir . 'schedule-functions.php');
+		$action = $_POST['scheduled-action'];
 		$existing_action = findExistingAction($schedule, $uu->id);
 		$updated_schedule = $schedule;
 		$scheduleUpdated = true;
 		$action_errors = [];
-		if($_POST['scheduled-action'] === '') {
+		if($action === '') {
 			if($existing_action !== null) {
 				$updated_schedule = removeAction($updated_schedule, $existing_action['id']);
 			} else {
 				$scheduleUpdated = false;
 			}
 		} else {
-			$action = $_POST['scheduled-action'];
 			$datetime = $_POST['scheduled-datetime'] ?? '';
-			$isHidden = substr($item['name1'], 0, 1) === '.';
+			$isHidden = substr($new['name1'], 0, 1) === '.';
 			$actionsThatRequiresHidden = ['publish', 'publish-and-replace'];
 			$actionsThatRequiresLater = ['publish', 'publish-and-replace'];
 			
@@ -934,7 +934,7 @@ else
 			if(in_array($action, $actionsThatRequiresLater) && $scheduled < $now) {
 				$action_errors[] = [
 					'type' => 'datetime',
-					'message' => 'The scheduled time needs to be later then now.'
+					'message' => 'The scheduled time needs to be later than now.'
 				];
 			}
 			if(count($action_errors) === 0) {
@@ -953,7 +953,11 @@ else
 					$updated_schedule = addAction($updated_schedule, intval($uu->id), $params);
 				}
 			} else {
-				$scheduleUpdated = false;
+				/* error */
+				if($existing_action !== null) {
+					$updated_schedule = removeAction($updated_schedule, $existing_action['id']);
+				} else
+					$scheduleUpdated = false;
 			}
 			
 		}
@@ -1037,11 +1041,18 @@ else
 	?><p>Nothing was edited, therefore update not required.</p><?
 	}
 	if(isset($action_errors) && count($action_errors) > 0) {
-		?><p>The action is not updated because:
-			<ul><?php foreach($action_errors as $err){
+		$action_display = '';
+		foreach($schedule_config['actions'] as $a) {
+			if($a['value'] === $action) {
+				$action_display = $a['display'];
+				break;
+			}
+				
+		};
+		?><p style="margin-bottom: 0px;">The action "<?php echo $action_display; ?>" is not scheduled because:</p>
+		<ul style="margin-top: 0px;"><?php foreach($action_errors as $err){
 				?><li><? echo $err['message']; ?></li><?php
-			} ?></ul>
-		</p><?
+			} ?></ul><?
 	}
 	?></div><?
 }

@@ -920,8 +920,8 @@ else
 		} else {
 			$datetime = $_POST['scheduled-datetime'] ?? '';
 			$isHidden = substr($new['name1'], 0, 1) === '.';
-			$actionsThatRequiresHidden = ['publish', 'publish-and-replace'];
-			$actionsThatRequiresLater = ['publish', 'publish-and-replace'];
+			$actionsThatRequiresHidden = ['schedule', 'schedule-and-replace'];
+			$actionsThatRequiresLater = ['schedule', 'schedule-and-replace'];
 			
 			if(in_array($action, $actionsThatRequiresHidden) && !$isHidden) {
 				$action_errors[] = [

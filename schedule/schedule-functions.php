@@ -69,9 +69,9 @@ function handleSchedule($path_to_schedule){
     $scheduleUpdated = false;
     foreach($updated_schedule as &$action) {
         if(!$action['processed'] && strtotime($action['datetime']) <= $now) {
-            if($action['action'] === 'publish') {
+            if($action['action'] === 'schedule') {
                 publishRecord($action['record-id']);
-            } else if($action['action'] === 'publish-and-replace') {
+            } else if($action['action'] === 'schedule-and-replace') {
                 publishRecord($action['record-id']);
                 swapRecords($action['record-id'], $action['record-to-replace']);
             }

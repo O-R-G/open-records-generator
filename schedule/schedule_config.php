@@ -9,14 +9,14 @@ $schedule_config = [
             'value'   => ''
         ],
         [
-            'slug'    => 'publish',
-            'display' => 'Publish',
-            'value'   => 'publish'
+            'slug'    => 'schedule',
+            'display' => 'Schedule',
+            'value'   => 'schedule'
         ],
         [
-            'slug'    => 'publish-and-replace',
-            'display' => 'Publish and replace',
-            'value'   => 'publish-and-replace'
+            'slug'    => 'schedule-and-replace',
+            'display' => 'Schedule and replace',
+            'value'   => 'schedule-and-replace'
         ]
     ]
 ];

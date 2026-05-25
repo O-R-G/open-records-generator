@@ -75,12 +75,12 @@ class Schedule{
             this.datetime_input.disabled = true;
             this.record_to_replace_section.classList.add('dontdisplay');
             this.record_to_replace_select.disabled = true;
-        } else if(value === 'publish') {
+        } else if(value === 'schedule') {
             this.datetime_section.classList.remove('dontdisplay');
             this.datetime_input.disabled = false;
             this.record_to_replace_section.classList.add('dontdisplay');
             this.record_to_replace_select.disabled = true;
-        } else if(value === 'publish-and-replace') {
+        } else if(value === 'schedule-and-replace') {
             this.datetime_section.classList.remove('dontdisplay');
             this.datetime_input.disabled = false;
             this.record_to_replace_section.classList.remove('dontdisplay');

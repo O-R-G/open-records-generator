@@ -188,8 +188,7 @@ aside {
 
 /* form elements */
 textarea,
-input[type="text"],
-select.full-width {
+input[type="text"] {
 	padding: 5px;
 }
 

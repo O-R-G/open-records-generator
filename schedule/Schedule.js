@@ -40,7 +40,7 @@ class Schedule{
         this.datetime_section = document.createElement('div');
         this.datetime_section.id = input_id + '-container';
         this.datetime_section.className = 'dontdisplay';
-        this.datetime_section.innerHTML = '<input form="edit-form" id="'+input_id+'" name="'+input_id+'" type="text" placeholder="2000-01-01 12:00:00" value="'+existing_value+'" />';
+        this.datetime_section.innerHTML = '<input form="edit-form" id="'+input_id+'" name="'+input_id+'" type="text" placeholder="e.g., 2000-01-01 12:00:00" value="'+existing_value+'" />';
         this.datetime_input = this.datetime_section.querySelector('input');
 
         input_id = "record-to-replace";

@@ -3,6 +3,54 @@ Version 3.6.0
 O-R-G inc.  
 Last updated 30 January 2026
 
+## INSTALLATION
+
+To install OPEN-RECORDS-GENERATOR, add it to your project as a submodule.
+
+```bash
+git submodule add git@github.com:O-R-G/open-records-generator.git
+```
+
+### LOCAL FILES
+
+After pulling O-R-G, make a copy of `/open-records-generator/config/config-sample.php` and rename it to `config.php`. 
+
+Make a copy of `/open-records-generator/schedule/schedule-sample.php` and rename it to `schedule.php`.
+
+If your website is running on Apache, make a copy of `/open-records-generator/.htaccess-sample` and rename it to `.htaccess`. Replace "/path/to/.htpasswd" in `.htaccess` with the actual path to your `.htpasswd` file.
+
+### LOGINS
+
+If your website is running on Apache, replace "/path/to/.htpasswd" in .`/open-records-generator/.htaccess` with the actual path to your `.htpasswd` file.
+
+If your website is running on Nginx, add the following lines to the `/open-records-generator/` location block:
+
+```nginx
+auth_basic           "open records generator";
+auth_basic_user_file /path/to/.htpasswd;
+```
+
+### MYSQL CREDENTIALS
+
+The credentials can be configured either in the server configuration or in `config.php`
+
+**Apache**
+```
+SetEnv MYSQL_R_DATABASE_URL mysql2://user_full:pass_full@host/database
+SetEnv MYSQL_RW_DATABASE_URL mysql2://user_rw:pass_rw@host/database
+SetEnv MYSQL_FULL_DATABASE_URL mysql2://user_w:pass_w@host/database
+```
+
+**Nginx**
+```
+fastcgi_param MYSQL_R_DATABASE_URL mysql2://user_full:pass_full@host/database;
+fastcgi_param MYSQL_RW_DATABASE_URL mysql2://user_rw:pass_rw@host/database;
+fastcgi_param MYSQL_FULL_DATABASE_URL mysql2://user_w:pass_w@host/database;
+```
+
+**config.php**
+Locate `user_full`, `pass_full`, `user_rw`, and the other placeholder values in config.php, then replace them with your database credentials.
+
 ## INSTRUCTIONS
 
 Your new website runs off of a database. You can easily modify this database by using OPEN-RECORDS-GENERATOR, a light-weight web interface to a robust content management system. You can access this interface by entering the following URL:
@@ -39,13 +87,21 @@ Similar to ADD OBJECT . . . , however LINK . . . lets you lets you insert an exi
 
 Copies an entry to a new location. Only available for admin use. This is different than linking as it creates a duplicate ENTRY rather than just a link to the SAME entry (which is what LINK...) does.
 
-### INFO
-
-This is the license agreement that accompanies the purchase of this software.
-
 ### GENERATE
 
 This button generates a live view of the website whose contents you are managing with OPEN-RECORDS-GENERATOR.
+
+### ACTION
+
+This dropdown allows you to schedule an action for the record.
+
+- **None:** Default option. You can also cancel the scheduled action on this record by selecting **None**.
+- **Schedule:** Publish a record at the designated time by removing the period (`.`) at the beginning of the Name field.
+- **Schedule and replace:** In addition to publishing the record, this action changes the **URL Slug** field to match the selected sibling record. The replaced record will then be hidden.
+
+### INFO
+
+This is the license agreement that accompanies the purchase of this software.
 
 ### SETTINGS
 

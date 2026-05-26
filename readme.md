@@ -1,55 +1,7 @@
 # OPEN RECORDS GENERATOR
 Version 3.6.0
 O-R-G inc.  
-Last updated 30 January 2026
-
-## INSTALLATION
-
-To install OPEN-RECORDS-GENERATOR, add it to your project as a submodule.
-
-```bash
-git submodule add git@github.com:O-R-G/open-records-generator.git
-```
-
-### LOCAL FILES
-
-After pulling O-R-G, make a copy of `/open-records-generator/config/config-sample.php` and rename it to `config.php`. 
-
-Make a copy of `/open-records-generator/schedule/schedule-sample.php` and rename it to `schedule.php`.
-
-If your website is running on Apache, make a copy of `/open-records-generator/.htaccess-sample` and rename it to `.htaccess`. Replace "/path/to/.htpasswd" in `.htaccess` with the actual path to your `.htpasswd` file.
-
-### LOGINS
-
-If your website is running on Apache, replace "/path/to/.htpasswd" in .`/open-records-generator/.htaccess` with the actual path to your `.htpasswd` file.
-
-If your website is running on Nginx, add the following lines to the `/open-records-generator/` location block:
-
-```nginx
-auth_basic           "open records generator";
-auth_basic_user_file /path/to/.htpasswd;
-```
-
-### MYSQL CREDENTIALS
-
-The credentials can be configured either in the server configuration or in `config.php`
-
-**Apache**
-```
-SetEnv MYSQL_R_DATABASE_URL mysql2://user_full:pass_full@host/database
-SetEnv MYSQL_RW_DATABASE_URL mysql2://user_rw:pass_rw@host/database
-SetEnv MYSQL_FULL_DATABASE_URL mysql2://user_w:pass_w@host/database
-```
-
-**Nginx**
-```
-fastcgi_param MYSQL_R_DATABASE_URL mysql2://user_full:pass_full@host/database;
-fastcgi_param MYSQL_RW_DATABASE_URL mysql2://user_rw:pass_rw@host/database;
-fastcgi_param MYSQL_FULL_DATABASE_URL mysql2://user_w:pass_w@host/database;
-```
-
-**config.php**
-Locate `user_full`, `pass_full`, `user_rw`, and the other placeholder values in config.php, then replace them with your database credentials.
+Last updated 26 May 2026
 
 ## INSTRUCTIONS
 
@@ -225,20 +177,44 @@ Logs the user out of the current session. Useful for changing users or terminati
 
 ## DEV NOTES
 
-0. config
+0. add as submodule
+
+		git submodule add git@github.com:O-R-G/open-records-generator.git
+
+1. config
 
 		cp config/config-sample.php config/config.php    
 
-1. auth
+2. schedule
+
+		cp schedule/schedule-sample.php config/schedule.php    
+
+3. auth
 
 		htpasswd -c /path/to/.htpasswd user pass
 
-2. database
+4. database
 
 		sudo mysql < db/3.3.sql
 
-3. permissions
+5. permissions
 
-		chmod 777 config/settings.store 
+		chmod 777 config/settings.store
+
+6. nginx
+
+		location /open-records-generator/ {
+			auth_basic           “site”;
+			auth_basic_user_file /var/www/.htpasswd;
+		  try_files $uri $uri/ /open-records-generator/index.php?$args;        
+		}
+        
+		location ~ \.php$ {
+			include snippets/fastcgi-php.conf;
+			fastcgi_param MYSQL_FULL_DATABASE_URL mysql2://user_full:password@localhost/database;
+			fastcgi_param MYSQL_R_DATABASE_URL mysql2://user_r:password@localhost/database;
+			fastcgi_param MYSQL_RW_DATABASE_URL mysql2://user_rw:password@localhost/database;
+			fastcgi_pass unix:/var/run/php/php-fpm.sock;
+		}
 
 requires license for commercial use in `static/license.txt`.

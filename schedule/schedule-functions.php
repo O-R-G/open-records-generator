@@ -44,7 +44,7 @@ function writeSchedule($schedule, $path_to_schedule){
     file_put_contents($path_to_schedule, "<?php \n \$schedule = " . var_export($schedule, true) . ';' );
 }
 function publishRecord($id){
-    global $db;
+    $db = db_connect('admin');
     $sql = "UPDATE objects SET name1 = (
         CASE
             WHEN SUBSTRING(name1, 1, 1) = '.' THEN SUBSTRING(name1, 2)
@@ -54,7 +54,7 @@ function publishRecord($id){
     $db->query($sql);
 }
 function swapRecords($id, $id_to_replace){
-    global $db;
+    $db = db_connect('admin');
     $sql_get_record_to_replace = "SELECT `name1`, `url` FROM objects WHERE id = $id_to_replace";
     $record_to_replace = $db->query($sql_get_record_to_replace)->fetch_assoc();
     $sql_update_new_record = "UPDATE `objects` SET `url` = '$record_to_replace[url]' WHERE id = $id";

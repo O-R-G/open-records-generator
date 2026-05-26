@@ -290,7 +290,7 @@ input[type="datetime-local"] {
 
 select {
 	max-width: 100%;
-	padding: 0 0.1em;
+	padding: 0.1em 0;
 }
 select[name^="ranks"] {
 	min-width: 1.5em;

@@ -1,10 +1,11 @@
 class Schedule{
-    constructor(container, config, siblings, existingAction){
+    constructor(container, config, siblings, existingAction, timezone){
         this.container = container;
         this.config = config;
         this.actions = this.config.actions;
         this.siblings = siblings;
         this.existingAction = existingAction;
+        this.timezone = timezone;
         this.currentValue = this.existingAction ? this.existingAction.action : '';
         this.select = null;
         this.datetime_section = null;
@@ -40,7 +41,7 @@ class Schedule{
         this.datetime_section = document.createElement('div');
         this.datetime_section.id = input_id + '-container';
         this.datetime_section.className = 'dontdisplay';
-        this.datetime_section.innerHTML = '<input form="edit-form" id="'+input_id+'" name="'+input_id+'" type="text" placeholder="e.g., 2000-01-01 12:00:00" value="'+existing_value+'" />';
+        this.datetime_section.innerHTML = '<input form="edit-form" id="'+input_id+'" name="'+input_id+'" type="text" placeholder="YYYY-DD-MM h:m:s ('+this.timezone+')" value="'+existing_value+'" />';
         this.datetime_input = this.datetime_section.querySelector('input');
 
         input_id = "record-to-replace";

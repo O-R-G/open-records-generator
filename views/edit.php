@@ -780,7 +780,8 @@ if ($rr->action != "update" && $uu->id)
 					const schedule_config = <?php echo json_encode($schedule_config); ?>;
 					const siblings = <?php echo json_encode($siblings); ?>;
 					const existing_action = <?php echo $existing_action == null ? 'null' : json_encode($existing_action); ?>;
-					new Schedule(container, schedule_config, siblings, existing_action);
+					const timezone = '<?php echo date_default_timezone_get(); ?>';
+					new Schedule(container, schedule_config, siblings, existing_action, timezone);
 					
 				</script>
 				

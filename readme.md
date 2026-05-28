@@ -49,7 +49,7 @@ This dropdown allows you to schedule an action for the record.
 
 - **None:** Default option. You can also cancel the scheduled action on this record by selecting **None**.
 - **Schedule:** Publish a record at the designated time by removing the period (`.`) at the beginning of the Name field.
-- **Schedule and replace:** In addition to publishing the record, this action changes the **URL Slug** field to match the selected sibling record. The replaced record will then be hidden.
+- **Schedule and replace:** In addition to publishing the record, this action changes the **URL Slug** and **Name** fields to match the selected sibling record. The replaced record will then be renamed to `Original Name (keep)` and hidden.
 
 ### INFO
 

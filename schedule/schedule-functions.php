@@ -57,7 +57,7 @@ function swapRecords($id, $id_to_replace){
     $db = db_connect('admin');
     $sql_get_record_to_replace = "SELECT `name1`, `url` FROM objects WHERE id = $id_to_replace";
     $record_to_replace = $db->query($sql_get_record_to_replace)->fetch_assoc();
-    $sql_update_new_record = "UPDATE `objects` SET `url` = '$record_to_replace[url]' WHERE id = $id";
+    $sql_update_new_record = "UPDATE `objects` SET `url` = '$record_to_replace[url]', `name1` = '$record_to_replace[name1]' WHERE id = $id";
     $db->query($sql_update_new_record);
     $sql_update_record_to_replace = "UPDATE `objects` SET `name1` = '.$record_to_replace[name1] (keep)', `url` = '$record_to_replace[url]-keep' WHERE id = $id_to_replace";
     $db->query($sql_update_record_to_replace);

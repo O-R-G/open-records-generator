@@ -55,12 +55,45 @@ function publishRecord($id){
 }
 function swapRecords($id, $id_to_replace){
     $db = db_connect('admin');
+
+    /* swap url and name1 of the records */
     $sql_get_record_to_replace = "SELECT `name1`, `url` FROM objects WHERE id = $id_to_replace";
     $record_to_replace = $db->query($sql_get_record_to_replace)->fetch_assoc();
     $sql_update_new_record = "UPDATE `objects` SET `url` = '$record_to_replace[url]', `name1` = '$record_to_replace[name1]' WHERE id = $id";
     $db->query($sql_update_new_record);
     $sql_update_record_to_replace = "UPDATE `objects` SET `name1` = '.$record_to_replace[name1] (keep)', `url` = '$record_to_replace[url]-keep' WHERE id = $id_to_replace";
     $db->query($sql_update_record_to_replace);
+
+    /* 
+        create wires rows to link the children and parents of the original record to the new one 
+        also exclude any child/parent is already linked to the new record. 
+    */
+    $inserts = [];
+    $sql_get_children = "SELECT w.toid 
+        FROM wires w
+        WHERE 
+            w.active = 1 AND 
+            w.fromid = $id_to_replace AND 
+            NOT EXISTS(SELECT 1 FROM wires w2 WHERE w2.fromid = $id AND w2.toid = w.toid AND w2.active = 1)";
+    $result_get_children = $db->query($sql_get_children);
+
+    while($obj = $result_get_children->fetch_assoc()) {
+        $inserts[] = "($id, $obj[toid])";
+    }
+    $sql_get_parents = "SELECT w.fromid 
+        FROM wires w 
+        WHERE 
+            w.active = 1 AND 
+            w.toid = $id_to_replace AND
+            NOT EXISTS(SELECT 1 FROM wires w2 WHERE w2.toid = $id AND w2.fromid = w.fromid AND w2.active = 1)";
+    $result_get_parents = $db->query($sql_get_parents);
+    while($obj = $result_get_parents->fetch_assoc()) {
+        $inserts[] = "($obj[fromid], $id)";
+    }
+    $inserts_str = implode(',', $inserts);
+    $sql_insert_wires = "INSERT INTO wires (`fromid`, `toid`) VALUES $inserts_str";
+
+    $db->query($sql_insert_wires);
 }
 function handleSchedule($path_to_schedule){
     require_once($path_to_schedule);

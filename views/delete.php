@@ -1,8 +1,15 @@
-<?
+<?php
 // the current object is linked elsewhere if (and only if?) it 
 // exists in the tree (returned by $oo->traverse(0)) multiple times
-// $all_paths = $oo->traverse(0);
-// $all_paths = $oo->traverse_recursive(0);
+
+$browse_url = $admin_path.'browse/'.$uu->urls();
+
+function isLinked($id){
+	global $db;
+	$sql = "SELECT COUNT(*) AS count FROM wires WHERE active = 1 AND toid = $id";
+	return $db->query($sql)->fetch_assoc()['count'] > 1;
+}
+
 $all_paths_raw = $oo->traverse_recursive(0);
 foreach($all_paths_raw as $p)
     $all_paths[] = $p['path'];
@@ -32,6 +39,9 @@ if(!isset($dep_paths)) $dep_paths = array();
 	// + edit.php
 	// + link.php
 	// ancestors
+	require_once(__DIR__ . '/includes/ancestors.php');
+	echo renderAncestors($uu->ids);
+	/*
 	$a_url = $admin_path."browse";
 	for($i = 0; $i < count($uu->ids)-1; $i++)
 	{
@@ -42,6 +52,7 @@ if(!isset($dep_paths)) $dep_paths = array();
 			<a href="<? echo $a_url; ?>"><? echo $ancestor["name1"]; ?></a>
 		</div><?
 	}
+	*/
 	// END TODO
 
 	// display form
@@ -51,12 +62,9 @@ if(!isset($dep_paths)) $dep_paths = array();
 		// if this object does not exist elsewhere in the tree,
 		// check to see if its descendents are linked elsewhere
 		// (or will be deleted with the deletion of this object)
+
 		if(!$is_linked || !empty($dep_paths))
 		{
-			// $all_paths = $oo->traverse(0);
-			// $dep_paths = $oo->traverse($uu->id);
-			// $all_paths = $oo->traverse_recursive(0);
-			// $dep_paths = $oo->traverse_recursive($uu->id);
 			$all_paths_raw = $oo->traverse_recursive(0);
 			foreach($all_paths_raw as $p)
 			    $all_paths[] = $p['path'];
@@ -84,9 +92,9 @@ if(!isset($dep_paths)) $dep_paths = array();
 		// + link.php
 		// + add.php
 		?><div class="self-container">
-			<div class="self">
-				<a href="<? echo $browse_url; ?>"><? echo $name; ?></a>
-			</div><?
+			<?php 
+				require_once(__DIR__ . '/includes/self.php');
+				echo renderSelf($name, $browse_url, $uu->id);
 			// display warning
 			if($is_linked)
 			{
@@ -115,6 +123,7 @@ if(!isset($dep_paths)) $dep_paths = array();
 						$child_name = strip_tags($child["name1"]);
 						$j_pad = str_pad($j++, $padout, "0", STR_PAD_LEFT);
 						?><div class="child">
+							<input form="delete-form" type="hidden" name="dependent[]" value="<? echo $d; ?>">
 							<span><? echo $j_pad; ?></span>
 							<a href="<? echo $url; ?>"><? echo $child_name; ?></a>
 						</div><?
@@ -122,6 +131,7 @@ if(!isset($dep_paths)) $dep_paths = array();
 				}
 			}
 		?><form
+				id="delete-form"
 				action="<? echo $admin_path.'delete/'.$uu->urls(); ?>" 
 				method="post"
 			>
@@ -159,6 +169,17 @@ if(!isset($dep_paths)) $dep_paths = array();
 		// if object doesn't exist anywhere else, deactivate it
 		if(!$is_linked)
 			$oo->deactivate($uu->id);
+
+		$dependent = isset($_POST['dependent']) ? $_POST['dependent'] : array();
+		foreach($dependent as $d) {
+			$d_id = intval($d);
+			$oo->deactivate($d_id);
+			$wires = $ww->get_wires_to($d_id);
+			foreach($wires as $w) {
+				$ww->delete_wire($w['fromid'], $d_id);
+			}
+		}
+			
 	?><div class="self-container">
 		<div class="self"><? echo $message; ?></div>
 	</div><?

@@ -57,6 +57,7 @@ function publishRecord($id){
     $db->query($sql);
 }
 function swapRecords($id, $id_to_replace){
+    global $oo;
     $db = db_connect('admin');
 
     /* swap url and name1 of the records */
@@ -64,7 +65,18 @@ function swapRecords($id, $id_to_replace){
     $record_to_replace = $db->query($sql_get_record_to_replace)->fetch_assoc();
     $sql_update_new_record = "UPDATE `objects` SET `url` = '$record_to_replace[url]', `name1` = '$record_to_replace[name1]' WHERE id = $id";
     $db->query($sql_update_new_record);
-    $sql_update_record_to_replace = "UPDATE `objects` SET `name1` = '.$record_to_replace[name1] (keep)', `url` = '$record_to_replace[url]-keep' WHERE id = $id_to_replace";
+
+    $siblings = $oo->siblings($id_to_replace);
+    $s_urls = array();
+    foreach($siblings as $s_id)
+        $s_urls[] = $oo->get($s_id)['url'];
+
+    $new_url = $record_to_replace['url'] . "-keep";
+    $urlIsValid = validate_url($new_url, $s_urls);
+    if( !$urlIsValid )
+        $new_url = valid_url($new_url, intval($id_to_replace), $s_urls);
+
+    $sql_update_record_to_replace = "UPDATE `objects` SET `name1` = '.$record_to_replace[name1] (keep)', `url` = '$new_url' WHERE id = $id_to_replace";
     $db->query($sql_update_record_to_replace);
 
     /* 
@@ -93,6 +105,7 @@ function swapRecords($id, $id_to_replace){
     while($obj = $result_get_parents->fetch_assoc()) {
         $inserts[] = "($obj[fromid], $id)";
     }
+    if(empty($inserts)) return;
     $inserts_str = implode(',', $inserts);
     $sql_insert_wires = "INSERT INTO wires (`fromid`, `toid`) VALUES $inserts_str";
 

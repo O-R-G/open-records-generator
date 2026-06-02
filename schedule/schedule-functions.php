@@ -42,6 +42,9 @@ function updateAction($schedule, $id_to_update, $params){
 }
 function writeSchedule($schedule, $path_to_schedule){
     file_put_contents($path_to_schedule, "<?php \n \$schedule = " . var_export($schedule, true) . ';' );
+    if (function_exists('opcache_invalidate')) {
+        opcache_invalidate($path_to_schedule, true);
+    }
 }
 function publishRecord($id){
     $db = db_connect('admin');

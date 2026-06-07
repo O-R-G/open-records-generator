@@ -49,7 +49,16 @@ This dropdown allows you to schedule an action for the record.
 
 - **None:** Default option. You can also cancel the scheduled action on this record by selecting **None**.
 - **Schedule:** Publish a record at the designated time by removing the period (`.`) at the beginning of the Name field.
+
+	Add the action: https://vimeo.com/1199104072/cf3ea4493f
+
+	Effect of the action: https://vimeo.com/1199104328/3511a892ff
+
 - **Schedule and replace:** In addition to publishing the record, this action changes the **URL Slug** and **Name** fields to match the selected sibling record. The replaced record will then be renamed to `Original Name (keep)` and hidden.
+
+	Add the action: https://vimeo.com/1199105096/47dee56e52
+
+	Effect of the action: https://vimeo.com/1199105469/23b068cca3
 
 ### INFO
 

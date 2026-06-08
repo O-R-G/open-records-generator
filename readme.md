@@ -47,11 +47,11 @@ This button generates a live view of the website whose contents you are managing
 
 This dropdown allows you to schedule an action for the record.
 
-1. `None` [Default] Do nothing. You can also cancel a scheduled action by selecting `None`
+1. `None` [Default]
 
 2. `Schedule` Publish a record at the designated time. See https://vimeo.com/1199554527/438c8bf0cd
 
-3. `Schedule and replace` Publish the record and replace an existing record at the designated time. The replaced record is renamed to `.Original Name (keep)`. See https://vimeo.com/1199557427/1a4551e2c9
+3. `Schedule and replace` Publish the record and replace an existing record at the designated time. The replaced record is renamed `.Original Name (keep)`. See https://vimeo.com/1199557427/1a4551e2c9
 
 ### INFO
 

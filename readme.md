@@ -43,23 +43,6 @@ Copies an entry to a new location. Only available for admin use. This is differe
 
 This button generates a live view of the website whose contents you are managing with OPEN-RECORDS-GENERATOR.
 
-### ACTION
-
-This dropdown allows you to schedule an action for the record.
-
-- **None:** Default option. You can also cancel the scheduled action on this record by selecting **None**.
-- **Schedule:** Publish a record at the designated time by removing the period (`.`) at the beginning of the Name field.
-
-	Add the action: https://vimeo.com/1199104072/cf3ea4493f
-
-	Effect of the action: https://vimeo.com/1199104328/3511a892ff
-
-- **Schedule and replace:** In addition to publishing the record, this action changes the **URL Slug** and **Name** fields to match the selected sibling record. The replaced record will then be renamed to `Original Name (keep)` and hidden.
-
-	Add the action: https://vimeo.com/1199105096/47dee56e52
-
-	Effect of the action: https://vimeo.com/1199105469/23b068cca3
-
 ### INFO
 
 This is the license agreement that accompanies the purchase of this software.
@@ -67,6 +50,16 @@ This is the license agreement that accompanies the purchase of this software.
 ### SETTINGS
 
 There are three setting items. "maximum # of uploads" controls how many images can be added at a time per object. Once that many images are added, you must update the object and go back to reinsert additional images. This is to prevent losing too much work at any time. "default editor mode" determines the default mode of fields like Synposis, Detail, and Notes. It can be either Rich text or HTML. You can also toggle the editor's mode when editing a record. "order type" specifies how the records are ordered. By default, the records are ordered by Name, Rank, Begin, and modified date. Chronological order prioritizes the Begin factor; Alphabetical order prioritizes the Name factor. 
+
+### ACTION
+
+This dropdown available in the EDIT view allows you to schedule an action for the record.
+
+1. `None` [Default]
+
+2. `Schedule` Publish a record at the designated time. See https://vimeo.com/1199554527/438c8bf0cd
+
+3. `Schedule and replace` Publish the record and replace an existing record at the designated time. The replaced record is renamed `.Original Name (keep)`. See https://vimeo.com/1199557427/1a4551e2c9
 
 ### LOG OUT
 

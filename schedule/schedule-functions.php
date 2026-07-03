@@ -3,7 +3,7 @@ function findExistingAction($schedule, $id_to_find){
     $existing_action = array_filter($schedule, function($action) use ($id_to_find) {
         return $action['processed'] === false && $action['record-id'] == $id_to_find;
     });
-    return count($existing_action) ? $existing_action[0] : null;
+    return count($existing_action) ? array_values($existing_action)[0] : null;
 }
 function removeAction($schedule, $id_to_remove){
     foreach($schedule as $key => &$s) {

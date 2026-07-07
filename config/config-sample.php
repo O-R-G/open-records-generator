@@ -140,10 +140,13 @@ $syncName = '';
 
 $request = $_SERVER['REQUEST_URI'];
 $requestclean = strtok($request,"?");
-$uri = explode('/', $requestclean);
-if(empty(end($uri))){
-	array_pop($uri);
+if(!isset($uri)) {
+	$uri = explode('/', $requestclean);
+	if(empty(end($uri)) && count($uri) > 2){
+		array_pop($uri);
+	}
 }
+
 /* 
 	to use custom field names, simply override $var_info["label"][column].
 	e.g., $var_info["label"]["name1"] = "Title"

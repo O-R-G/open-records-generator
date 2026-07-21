@@ -33,6 +33,17 @@ function slug($name = "untitled")
 	return $tmp;
 }
 
+// romanizes non-latin scripts (e.g. Korean) to ASCII before
+// handing off to slug(), since slug()'s remove_accents() only
+// handles Latin diacritics and slug() itself rawurlencode()s at
+// the end, so transliteration has to happen before slug() runs
+function generateUrl($name = "untitled")
+{
+	$t = Transliterator::create('Any-Latin; Latin-ASCII');
+	$tmp = $t->transliterate($name);
+	return slug($tmp);
+}
+
 // return a string of random characters [a-z, 0-9]
 // of length $len
 function rand_str($len=4)

@@ -23,13 +23,13 @@ function update_object(&$old, &$new, $siblings, $vars)
 	{
 		// slug-ify url
 		if($new['url'])
-			$new['url'] = slug($new['url']);
+			$new['url'] = generateUrl($new['url']);
 
 		// if the slugified url is empty,
 		// or the original url field is empty,
 		// slugify the name of the object
 		if(empty($new['url']))
-			$new['url'] = slug($new['name1']);
+			$new['url'] = generateUrl($new['name1']);
 
 		// make sure url doesn't clash with urls of siblings
 		$s_urls = array();

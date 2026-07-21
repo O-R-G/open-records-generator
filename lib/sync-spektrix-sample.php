@@ -159,7 +159,7 @@ foreach($events as $e)
         $s_urls = array();
         foreach($siblings as $s)
             $s_urls[] = $s['url'];
-        $url = slug($e['name']);
+        $url = generateUrl($e['name']);
         
         $processed = array(
             "name1" => '.' . $e['name'], // title - text

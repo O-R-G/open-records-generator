@@ -35,7 +35,7 @@ if($data['action'] == 'update'){
 }
 else if($data['action'] == 'insert'){
 
-	$new_url = slug($data['name1']);
+	$new_url = generateUrl($data['name1']);
 	$new['url'] = "'".$new_url."'";
 	$id = $oo->insert($new);
 

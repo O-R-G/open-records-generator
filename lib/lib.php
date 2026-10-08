@@ -510,5 +510,11 @@ function escape_charaters($string) {
     return $string;
     // return html_entity_decode($string);
 }
-?>
+
+function processCaption($str){
+    $split = explode("\r\n///\r\n", $str);
+    $caption = nl2br($split[0]);
+    $alt = isset($split[1]) ? htmlspecialchars($split[1], ENT_QUOTES, 'UTF-8') : htmlspecialchars($caption, ENT_QUOTES, 'UTF-8');
+    return [$caption, $alt];
+}
 

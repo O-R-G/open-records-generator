@@ -606,14 +606,21 @@ if ($rr->action != "update" && $uu->id)
 												document.getElementById("<?php echo m_pad($medias[$i]['id']) .'-'. $var; ?>").onclick = (function() {
 													// closure for variable issue
 													return function() {
+														<?php
+															[$caption, $alt] = processCaption($medias[$i]['caption']);
+															// $caption_attr = htmlspecialchars($caption_raw, ENT_QUOTES, 'UTF-8');
+															// $alt = $alt ? htmlspecialchars($alt, ENT_QUOTES, 'UTF-8') : '';
+														?>
 														let v = '<?php echo $var; ?>';
 														document.getElementById(v + "-imagecontainer").style.display = "none";
 														document.getElementById(v + "-editable").focus();
-														let captionAttr = '<?php echo preg_replace(array('/\r\n/', '/\s+/', '/"/', '/\'/'), array('. ', ' ', '&quot;', '&apos;'), $medias[$i]['caption'] ? trim($medias[$i]['caption']) : ''); ?>';
-														if(captionAttr !== '') captionAttr = 'caption="' + captionAttr + '"';
-														let caption = '<?php echo preg_replace(array('/\r\n/', '/\s+/', '/"/', '/\'/'), array('<br> ', ' ',  '&quot;', '&apos;'), $medias[$i]['caption'] ? trim($medias[$i]['caption']) : ''); ?>';
+														let alt = `<?php echo $alt ? 'alt="' . $alt . '"' : ''; ?>`;
+														// if(captionAttr !== '') captionAttr = 'caption="' + captionAttr + '"';
+														// let caption = '<?php echo preg_replace(array('/\r\n/', '/\s+/', '/"/', '/\'/'), array('<br> ', ' ',  '&quot;', '&apos;'), $medias[$i]['caption'] ? trim($medias[$i]['caption']) : ''); ?>';
+					
+														let caption = `<?php echo $caption; ?>`;
 														if(caption !== '') caption = '<blockquote class="caption">' + caption + '</blockquote><br>';
-														let html = '<br><img src="<?php echo $medias[$i]['fileNoPath']; ?>" ' + captionAttr + '><br>'+caption;
+														let html = '<br><img src="<?php echo $medias[$i]['fileNoPath']; ?>" ' + alt + '><br>'+caption;
 														document.execCommand("insertHTML", 0, html);
 														setTimeout(function(){
 															document.getElementById(v + "-editable").blur();

@@ -132,7 +132,7 @@ class Objects extends Model
 	
 	// check that URL is of valid object here
 	// throw 404 exception if not
-	public function urls_to_ids($u)
+	public function urls_to_ids_keep($u)
 	{
 		$fromid = 0;
 		$objects = array();
@@ -154,8 +154,71 @@ class Objects extends Model
 				if(!$fromid)
 					throw new Exception($i);
 				$objects[] = $fromid;
+			} else {
+				break;
 			}
 		}
+		return $objects;
+	}
+
+	// resolves all url segments in a single query (one chained
+	// self-join per segment) instead of one round trip per segment,
+	// since the original per-segment loop meant N queries for an
+	// N-segment path
+	public function urls_to_ids($u)
+	{
+		global $db;
+
+		$n = count($u);
+		if ($n === 0)
+			return array();
+
+		$select = array("o1.id AS id1");
+		$joins  = array("wires w1", "JOIN objects o1 ON w1.toid = o1.id");
+		$where  = array("w1.fromid = '0'",
+						"o1.url = '" . $db->real_escape_string($u[0]) . "'",
+						"o1.active = '1'",
+						"w1.active = '1'");
+		$order 	= array("o1.rank", "o1.begin", "o1.end", "o1.name1");
+
+		for($i = 2; $i <= $n; $i++)
+		{
+			$prev = $i - 1;
+			$select[] = "o$i.id AS id$i";
+			$joins[]  = "JOIN wires w$i ON w$i.fromid = o$prev.id";
+			$joins[]  = "JOIN objects o$i ON w$i.toid = o$i.id";
+			$where[]  = "o$i.url = '" . $db->real_escape_string($u[$i - 1]) . "'";
+			$where[]  = "o$i.active = '1'";
+			$where[]  = "w$i.active = '1'";
+			$order[]  = "o$i.rank";
+			$order[]  = "o$i.begin";
+			$order[]  = "o$i.end";
+			$order[]  = "o$i.name1";
+		}
+
+		$sql = "SELECT " . implode(", ", $select) . " " .
+			   "FROM " . implode(" ", $joins) . " " .
+			   "WHERE " . implode(" AND ", $where) . " " .
+			   "ORDER BY " . implode(", ", $order) . " " .
+			   "LIMIT 1";
+
+		$res = $db->query($sql);
+		if(!$res)
+			throw new Exception($db->error);
+
+		if($res->num_rows == 0)
+		{
+			$res->close();
+			return array();
+		}
+
+		$row = $res->fetch_assoc();
+		$res->close();
+
+		$objects = array();
+		for($i = 1; $i <= $n; $i++)
+			$objects[] = $row["id$i"];
+
 		return $objects;
 	}
 	

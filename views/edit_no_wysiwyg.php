@@ -61,6 +61,14 @@ function update_object(&$old, &$new, $siblings, $vars)
 
 		$new['url'] = valid_url($new['url'], strval($old['id']), $s_urls);
 	}
+	else
+	{
+		// url wasn't actually changed (the submitted value just differs
+		// from the stored one because the form displays it rawurldecode()'d) --
+		// keep the already-encoded stored value so the diff check below
+		// doesn't re-save a decoded, un-encoded url
+		$new['url'] = $old['url'];
+	}
 	// deal with dates
 	if(!empty($new['begin']))
 	{

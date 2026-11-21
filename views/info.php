@@ -20,6 +20,9 @@ $license_gnu = file_get_contents($license_gnu_file);
 				<textarea class="large"><? echo $license_gnu; ?></textarea>
 			</div>
 			<div>
+				<?php echo PHP_VERSION; ?>
+			</div>
+			<div>
 				<a href="<? echo $js_back; ?>">&lt; RETURN</a>
 			</div>
 		</div>
